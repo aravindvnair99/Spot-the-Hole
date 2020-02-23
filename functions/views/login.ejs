@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Login | Spot the Hole</title>
+		<link rel="manifest" href="manifest.json" />
+		<script src="/__/firebase/7.9.1/firebase-app.js"></script>
+		<script src="/__/firebase/7.9.1/firebase-auth.js"></script>
+		<script src="/__/firebase/init.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.js"></script>
+		<link
+			type="text/css"
+			rel="stylesheet"
+			href="https://www.gstatic.com/firebasejs/ui/4.4.0/firebase-ui-auth.css"
+		/>
+		<link
+			href="/css/login.css"
+			rel="stylesheet"
+			type="text/css"
+			media="screen"
+		/>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+	</head>
+	<body>
+		<div id="container">
+			<%- include('snackbar') -%>
+			<img
+				class="img-fluid"
+				src="/img/logo2.jpg"
+				width="100%"
+				height="auto"
+			/>
+			<div id="loading">Loading...</div>
+			<div id="loaded" class="hidden">
+				<div id="main">
+					<div id="user-signed-in" class="hidden">
+						<div id="user-info">
+							<div id="photo-container">
+								<img id="photo" />
+							</div>
+							<div id="name"></div>
+							<div id="email"></div>
+							<div id="phone"></div>
+							<div id="is-new-user"></div>
+							<div class="clearfix"></div>
+						</div>
+						<p>
+							<button id="sign-out">Sign Out</button>
+							<button id="delete-account">Delete account</button>
+						</p>
+					</div>
+					<div id="user-signed-out" class="hidden">
+						<div id="firebaseui-spa">
+							<div id="firebaseui-container"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="/js/app.js"></script>
+	</body>
+</html>

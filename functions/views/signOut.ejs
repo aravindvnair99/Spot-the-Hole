@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>Signing out</title>
+		<script src="/__/firebase/7.9.1/firebase-app.js"></script>
+		<script src="/__/firebase/7.9.1/firebase-auth.js"></script>
+		<script src="/__/firebase/init.js"></script>
+		<script>
+			firebase
+				.auth()
+				.signOut()
+				.then(() => {
+					window.location = "/login";
+				})
+				.catch((error) => {
+					alert(error);
+					window.location = "/login";
+				});
+		</script>
+		<style>
+			body,
+			html {
+				padding: 0;
+				margin: 0;
+				height: 100%;
+				font-family: "Raleway";
+				overflow: hidden;
+			}
+			.progress-bar {
+				position: absolute;
+				top: 50%;
+				height: 2px;
+				background: #000;
+			}
+			.done {
+				top: 0;
+				height: 100%;
+				width: 100%;
+				transition: all 0.33s ease;
+			}
+			.count {
+				position: absolute;
+				top: 50%;
+				width: 100%;
+				text-align: center;
+				font-weight: 100;
+				font-size: 3em;
+				margin-top: -1.33em;
+				color: #000;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="progress-bar"></div>
+		<h1 class="count"></h1>
+		<script>
+			var body = document.querySelector("body"),
+				bar = document.querySelector(".progress-bar"),
+				counter = document.querySelector(".count"),
+				i = 0,
+				throttle = 0.7; // 0-1
+			(function draw() {
+				if (i <= 100) {
+					var r = Math.random();
+					requestAnimationFrame(draw);
+					bar.style.width = i + "%";
+					counter.innerHTML = Math.round(i) + "%";
+					if (r < throttle) {
+						// Simulate d/l speed and uneven bitrate
+						i = i + r;
+					}
+				} else {
+					bar.className += " done";
+				}
+			})();
+		</script>
+	</body>
+</html>

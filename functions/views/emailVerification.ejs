@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Email Verification | Spot the Hole</title>
+		<link rel="icon" type="image/jpeg" href="/merchant/img/logo.jpg" />
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+			integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+			crossorigin="anonymous"
+		/>
+		<script src="/__/firebase/7.9.1/firebase-app.js"></script>
+		<script src="/__/firebase/7.9.1/firebase-auth.js"></script>
+		<script src="/__/firebase/init.js"></script>
+		<script>
+			firebase.auth().onAuthStateChanged((user) => {
+				if (user) {
+					if (!user.emailVerified) {
+						firebase
+							.auth()
+							.currentUser.sendEmailVerification()
+							.then(() => {
+								firebase.auth().signOut();
+								showSnackbar(
+									"Email verification sent. Check email to verify account."
+								);
+								document.getElementById("message").innerHTML =
+									"Email verification sent. Check email to verify account.";
+							})
+							.catch((error) => {
+								showSnackbar(error.message);
+							});
+					} else {
+						firebase.auth().signOut();
+						document.getElementById("message").innerHTML =
+							"Already verified. Login to continue.";
+						showSnackbar("Already verified. Login to continue.");
+					}
+				}
+			});
+		</script>
+		<style>
+			body {
+				background-color: #000;
+				color: #ffdc73;
+			}
+		</style>
+	</head>
+	<body>
+		<%- include('snackbar') -%>
+		<div class="container p-3">
+			<div class="row justify-content-center">
+				<div class="col-lg-3">
+					<img
+						class="img-fluid"
+						src="/img/logo.jpg"
+						width="100%"
+						height="auto"
+					/>
+				</div>
+			</div>
+		</div>
+		<div class="container p-3">
+			<div class="row justify-content-center">
+				<div
+					class="col-lg-3 col-lg-offset-8 col-sm-6 col-sm-offset-3"
+					style="text-align: center;"
+				>
+					<h2
+						style="font-family: bree serif;padding-bottom: 20px;letter-spacing: 0.5px;"
+					>
+						Email Verification
+					</h2>
+					<div id="message">
+						Login to continue.
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

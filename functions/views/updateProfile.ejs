@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Update Profile | Spot the Hole</title>
+		<link rel="icon" type="image/jpeg" href="/img/logo.jpg" />
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+			integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+			crossorigin="anonymous"
+		/>
+		<script src="/__/firebase/7.9.1/firebase-app.js"></script>
+		<script src="/__/firebase/7.9.1/firebase-auth.js"></script>
+		<script src="/__/firebase/7.9.1/firebase-storage.js"></script>
+		<script src="/__/firebase/init.js"></script>
+		<script>
+			function initApp() {
+				firebase.auth().onAuthStateChanged(function(user) {
+					if (user) {
+						document.getElementById("uid").value = user.uid;
+						document.getElementById(
+							"profilePicture"
+						).disabled = false;
+						showSnackbar("Fill details to proceed");
+					} else {
+						window.location = "/login";
+						showSnackbar("Login to continue");
+					}
+				});
+			}
+			window.onload = initApp();
+			function handleFileSelect() {
+				var file = document.getElementById("profilePicture").files[0];
+				var metadata = {
+					contentType: file.type,
+					cacheControl: "max-age=604800",
+					customMetadata: {
+						dateCreated: file.lastModified,
+						originalName: file.name
+					}
+				};
+				firebase
+					.storage()
+					.ref()
+					.child(
+						"profilePictures/" +
+							document.getElementById("uid").value
+					)
+					.put(file, metadata)
+					.then((snapshot) => {
+						showSnackbar(
+							"Uploaded " + snapshot.totalBytes / 1024 + " KB."
+						);
+						snapshot.ref.getDownloadURL().then((url) => {
+							document.getElementById("photoURL").value = url;
+						});
+					})
+					.catch((error) => {
+						showSnackbar("Upload failed: " + error);
+					});
+				document.getElementById("submit").disabled = false;
+			}
+			function checkForm(form) {
+				re = /(?=.*[a-z])(?=.*[A-Z])/;
+				if (!re.test(form.firstName.value)) {
+					alert("Error: First Name must contain only letters!");
+					form.firstName.focus();
+					return false;
+				}
+				if (!re.test(form.lastName.value)) {
+					alert("Error: Last Name must contain only letters!");
+					form.lastName.focus();
+					return false;
+				}
+				if (
+					form.password.value != "" &&
+					form.password.value === form.confirmPassword.value
+				) {
+					if (form.password.value.length < 6) {
+						alert(
+							"Error: Password must contain at least six characters!"
+						);
+						form.password.focus();
+						return false;
+					}
+					re = /[0-9]/;
+					if (!re.test(form.password.value)) {
+						alert(
+							"Error: password must contain at least one number (0-9)!"
+						);
+						form.password.focus();
+						return false;
+					}
+					re = /[a-z]/;
+					if (!re.test(form.password.value)) {
+						alert(
+							"Error: password must contain at least one lowercase letter (a-z)!"
+						);
+						form.password.focus();
+						return false;
+					}
+					re = /[A-Z]/;
+					if (!re.test(form.password.value)) {
+						alert(
+							"Error: password must contain at least one uppercase letter (A-Z)!"
+						);
+						form.password.focus();
+						return false;
+					}
+				} else {
+					alert(
+						"Error: Please check that you've entered and confirmed your password!"
+					);
+					form.confirmPassword.focus();
+					return false;
+				}
+				return true;
+			}
+		</script>
+		<style>
+			body {
+				background-color: #000;
+				color: #ffdc73;
+			}
+		</style>
+	</head>
+	<body>
+		<%- include('snackbar') -%>
+		<div class="container p-3">
+			<div class="row justify-content-center">
+				<div class="col-lg-3">
+					<img
+						class="img-fluid"
+						src="img/logo.jpg"
+						width="100%"
+						height="auto"
+					/>
+				</div>
+			</div>
+		</div>
+		<div class="container p-3">
+			<div class="row justify-content-center">
+				<div
+					class="col-lg-3 col-lg-offset-8 col-sm-6 col-sm-offset-3"
+					style="text-align: center;"
+				>
+					<h2
+						style="font-family: bree serif;padding-bottom: 20px;letter-spacing: 0.5px;"
+					>
+						Update Profile
+					</h2>
+					<form
+						method="POST"
+						action="/onUpdateProfile"
+						onsubmit="return checkForm(this);"
+					>
+						<input
+							id="uid"
+							name="uid"
+							autocomplete="off"
+							hidden
+							required
+						/>
+						<input
+							id="photoURL"
+							name="photoURL"
+							autocomplete="off"
+							hidden
+							required
+						/>
+						<div class="form-group">
+							<label for="firstName">First Name:</label>
+							<input
+								style="color: #ffdc73;background-color: black;border-color: #ffdc73;"
+								class="form-control"
+								id="firstName"
+								name="firstName"
+								autocomplete="given-name"
+								required
+							/>
+						</div>
+						<div class="form-group">
+							<label for="lastName">Last Name:</label>
+							<input
+								style="color: #ffdc73;background-color: black;border-color: #ffdc73;"
+								class="form-control"
+								id="lastName"
+								name="lastName"
+								autocomplete="family-name"
+								required
+							/>
+						</div>
+						<div class="form-group">
+							<label for="profilePicture">Profile Picture:</label>
+							<input
+								style="color: #ffdc73;background-color: black;border-color: #ffdc73;"
+								class="form-control"
+								id="profilePicture"
+								name="profilePicture"
+								type="file"
+								required
+								disabled
+								accept=".jpg,.jpeg"
+								onchange="handleFileSelect()"
+							/>
+						</div>
+						<div class="form-group">
+							<label for="password">New Password:</label>
+							<input
+								style="color: #ffdc73;background-color: black;border-color: #ffdc73;"
+								type="password"
+								class="form-control"
+								id="password"
+								name="password"
+								autocomplete="new-password"
+								minlength="6"
+								required
+							/>
+						</div>
+						<div class="form-group">
+							<label for="confirmPassword"
+								>Confirm New Password:</label
+							>
+							<input
+								style="color: #ffdc73;background-color: black;border-color: #ffdc73;"
+								type="password"
+								class="form-control"
+								name="confirmPassword"
+								id="confirmPassword"
+								autocomplete="new-password"
+								minlength="6"
+								required
+							/>
+						</div>
+						<div class="form-group">
+							<label for="phoneNumber">Mobile Number:</label>
+							<input
+								style="color: #ffdc73;background-color: black;border-color: #ffdc73;"
+								type="tel"
+								class="form-control"
+								name="phoneNumber"
+								autocomplete="tel-national"
+								minlength="10"
+								maxlength="10"
+								required
+							/>
+						</div>
+						<div class="form-group">
+							<button
+								type="submit"
+								id="submit"
+								class="btn"
+								style="color: black; background-color: #ffdc73"
+								disabled
+							>
+								Update Profile
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
