@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+
+
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover" />
+<title>Asterial Mobile</title>
+<link rel="stylesheet" type="text/css" href="styles/framework.css">
+<link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:300,300i,400,400i,500,500i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="fonts/css/fontawesome-all.min.css">
+
+<link rel="manifest" href="_manifest.json" data-pwa-version="set_by_pwa.html">
+<link rel="apple-touch-icon" sizes="180x180" href="app/icons/icon-192x192.png">
+</head>
+<body class="theme-light" data-highlight="blue2">
+<div id="page">
+<div id="page-preloader">
+<div class="loader-main"><div class="preload-spinner border-highlight"></div></div>
+</div>
+<div class="header header-fixed header-logo-app">
+<a href="#" class="back-button header-title">Offline Detection</a>
+<a href="#" class="header-icon header-icon-1 back-button"><i class="fas fa-arrow-left"></i></a>
+<a href="#" class="header-icon header-icon-2" data-toggle-theme><i class="fa fa-moon"></i></a>
+</div>
+<div class="footer-menu footer-5-icons footer-menu-center-icon">
+<a href="pages.html"><i class="fa fa-file"></i><span>Pages</span></a>
+<a href="components.html" class="active-nav"><i class="fa fa-gift"></i><span>Features</span></a>
+<a href="index-2.html"><i class="fa fa-home"></i><span>Home</span></a>
+<a href="media.html"><i class="fa fa-camera"></i><span>Media</span></a>
+<a href="page-menu.html"><i class="fa fa-bars"></i><span>Menu</span></a>
+<div class="clear"></div>
+</div>
+<div id="menu-offline" class="menu-box round-medium menu-box-detached" data-menu-type="menu-box-modal" data-menu-height="380" data-menu-width="310" data-menu-effect="menu-over">
+<div data-height="100%" class="caption">
+<div class="caption-center">
+<h1 class="center-text"><i class="fa fa-frown color-red2-dark fa-3x"></i></h1>
+<h2 class="center-text color-theme bolder font-30 top-30">No Connection</h2>
+<p class="boxed-text-huge color-theme opacity-60 bottom-30 top-15">
+This page requires an internet connection to work. Please connect turn on your WiFi or Celluar Data to Enable this page.
+</p>
+<a href="#" class="close-menu button button-xs bg-highlight button-round-medium button-center-medium">Close Message</a>
+<span class="center-text font-9 color-theme">In real conditions you can remove this Button</span>
+</div>
+</div>
+</div>
+<div class="page-content header-clear-large">
+<div class="content">
+<h2>How does it work?</h2>
+<p>
+Simple. On this page, turn off WiFi / Data connection. A message will appear
+notifying you that you are now offline. Also, the message below will change.
+</p>
+</div>
+<div class="content bottom-20">
+<div class="one-half">
+<a href="#" class="simulate-offline button button-m button-full bg-red2-dark round-medium shadow-huge">Simulate Offline</a>
+</div>
+<div class="one-half last-column">
+<a href="#" class="simulate-online button button-m button-full bg-green1-dark round-medium shadow-huge">Simulate Online</a>
+</div>
+<div class="clear"></div>
+</div>
+<div class="divider divider-margins"></div>
+<div class="content">
+<h2>Disable Page</h2>
+<p>
+There maybe cases where you would like to completely remove access from a page if that page is offline.
+You can do that as well by showing a message prompting the user to connect.
+</p>
+</div>
+<a href="#" data-menu="menu-offline" class="button button-margins button-m button-full bg-highlight round-medium shadow-huge bottom-30">Simulate Page Disabled</a>
+<div class="divider divider-margins"></div>
+<div class="content">
+<h2>Where can I use it?</h2>
+<p>
+This function is natively integrated in our code. All pages will detect if you are online or offline and display this message.
+Turn off the internet on any page and the message will pop-up.
+</p>
+</div>
+<div class="divider divider-margins"></div>
+</div>
+<div class="menu-hider"></div>
+</div>
+<script type="text/javascript" src="scripts/jquery.js"></script>
+<script type="text/javascript" src="scripts/plugins.js"></script>
+<script type="text/javascript" src="scripts/custom.js" async></script>
+</body>

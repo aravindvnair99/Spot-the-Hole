@@ -1,0 +1,35 @@
+<div class="footer-title">
+<a href="#">
+<h1>Asterial</h1>
+<span class="color-highlight">Premium Mobile Solutions</span>
+</a>
+</div>
+<p class="footer-text">
+Asterial is the result of over 10 years of experience carefully building Mobile Websites for you.
+</p>
+<div class="footer-socials">
+<a href="#"><i class="fab fa-facebook-f bg-facebook"></i></a>
+<a href="#"><i class="fab fa-twitter bg-twitter"></i></a>
+<a href="#"><i class="fab fa-instagram bg-instagram"></i></a>
+<a href="#"><i class="fa fa-phone bg-green1-dark"></i></a>
+<a href="#" class="back-to-top"><i class="fa fa-chevron-up bg-highlight color-white"></i></a>
+</div>
+<p class="footer-copyright">Copyright <span class="copyright-year"></span>. All Rights Reserved</p>
+<script>
+$(document).ready(function(){      
+    'use strict'	
+    //Back to Top
+    $('.back-to-top').on( "click", function(e){
+        e.preventDefault();
+        $('html, body, .page-content').animate({
+            scrollTop: 0
+        }, 350);
+        return false;
+    });
+    
+    //Copyright Year 
+    var copyrightYear = $('.copyright-year ,#copyright-year');
+    var dteNow = new Date(); var intYear = dteNow.getFullYear();
+    copyrightYear.html(intYear);
+});
+</script>
