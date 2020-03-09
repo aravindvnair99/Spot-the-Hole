@@ -39,33 +39,30 @@ function getUiConfig() {
 				authMethod: "https://accounts.google.com",
 				// Required to enable ID token credentials for this provider.
 				clientId:
-					"979093796052-gr7jqttpga5gprmeduca7klq3je5ueph.apps.googleusercontent.com"
-			},
-			{
-				provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-				scopes: ["public_profile", "email"]
-			},
-			firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-			{
-				provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-				// Whether the display name should be displayed in Sign Up page.
-				requireDisplayName: true,
-				signInMethod: "password"
-			},
-			{
-				provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
-				recaptchaParameters: {
-					size: "invisible"
-				},
-				defaultCountry: "IN"
-			},
-			{
-				provider: "microsoft.com",
-				loginHintKey: "login_hint"
-			},
-			{
-				provider: "yahoo.com"
+					"696028587080-0ephe2a3koj349dgais95f8nssdelffd.apps.googleusercontent.com"
 			}
+			// {
+			// 	provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+			// 	scopes: ["public_profile", "email"]
+			// },
+			// firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+			// {
+			// 	provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+			// 	// Whether the display name should be displayed in Sign Up page.
+			// 	requireDisplayName: true,
+			// 	signInMethod: "password"
+			// },
+			// {
+			// 	provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+			// 	recaptchaParameters: {
+			// 		size: "invisible"
+			// 	},
+			// 	defaultCountry: "IN"
+			// },
+			// {
+			// 	provider: "microsoft.com",
+			// 	loginHintKey: "login_hint"
+			// },
 		],
 		// Terms of service url.
 		tosUrl: "/TOS",
