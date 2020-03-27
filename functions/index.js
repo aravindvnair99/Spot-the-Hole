@@ -3,7 +3,11 @@ const functions = require("firebase-functions"),
 	app = express(),
 	bodyParser = require("body-parser"),
 	admin = require("firebase-admin"),
-	cookieParser = require("cookie-parser");
+	cookieParser = require("cookie-parser"),
+	Busboy = require("busboy"),
+	path = require("path"),
+	os = require("os"),
+	fs = require("fs");
 
 /*=============================================>>>>>
 
@@ -12,7 +16,8 @@ const functions = require("firebase-functions"),
 ===============================================>>>>>*/
 
 admin.initializeApp({
-	credential: admin.credential.applicationDefault()
+	credential: admin.credential.applicationDefault(),
+	storageBucket: process.env.GCLOUD_PROJECT + ".appspot.com"
 });
 app.use(bodyParser.json());
 app.use(
@@ -20,10 +25,80 @@ app.use(
 		extended: true
 	})
 );
+app.use((req, res, next) => {
+	if (
+		req.rawBody === undefined &&
+		req.method === "POST" &&
+		req.headers["content-type"].startsWith("multipart/form-data")
+	) {
+		getRawBody(
+			req,
+			{
+				length: req.headers["content-length"],
+				limit: "10mb",
+				encoding: contentType.parse(req).parameters.charset
+			},
+			(err, string) => {
+				if (err) return next(err);
+				req.rawBody = string;
+				return next();
+			}
+		);
+	} else {
+		return next();
+	}
+});
+
+app.use((req, res, next) => {
+	if (
+		req.method === "POST" &&
+		req.headers["content-type"].startsWith("multipart/form-data")
+	) {
+		const busboy = new Busboy({ headers: req.headers });
+		let fileBuffer = new Buffer("");
+		req.files = {
+			file: []
+		};
+
+		busboy.on("field", (fieldname, value) => {
+			req.body[fieldname] = value;
+		});
+
+		busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
+			var saveTo = path.join(os.tmpdir(), path.basename(fieldname));
+			file.pipe(fs.createWriteStream(saveTo));
+			file.on("data", (data) => {
+				fileBuffer = Buffer.concat([fileBuffer, data]);
+			});
+
+			file.on("end", () => {
+				const file_object = {
+					fieldname,
+					originalname: filename,
+					encoding,
+					mimetype,
+					buffer: fileBuffer
+				};
+				req.files.file.push(file_object);
+			});
+		});
+
+		busboy.on("finish", () => {
+			next();
+		});
+
+		busboy.end(req.rawBody);
+		req.pipe(busboy);
+	} else {
+		next();
+		return;
+	}
+});
 app.use(cookieParser());
 app.set("views", "./views");
 app.set("view engine", "ejs");
-var db = admin.firestore();
+const db = admin.firestore();
+const storage = admin.storage();
 
 /*=============================================>>>>>
 
@@ -43,10 +118,10 @@ function checkCookieMiddleware(req, res, next) {
 		})
 		.catch((error) => {
 			console.log(error);
-			res.redirect("/login");
+			res.redirect("/signOut");
 		});
 }
-function setCookie(idToken, res) {
+function setCookie(idToken, res, isNewUser) {
 	const expiresIn = 60 * 60 * 24 * 5 * 1000;
 	admin
 		.auth()
@@ -63,8 +138,14 @@ function setCookie(idToken, res) {
 					.auth()
 					.verifyIdToken(idToken)
 					.then((decodedClaims) => {
-						res.redirect("/uid");
-						return console.log(decodedClaims);
+						console.log("\n\n\n", isNewUser);
+						if (isNewUser === "true") {
+							res.redirect("/accountTypePicker");
+							return console.log(decodedClaims);
+						} else {
+							res.redirect("/uid");
+							return console.log(decodedClaims);
+						}
 					})
 					.catch((error) => {
 						console.log(error);
@@ -127,7 +208,7 @@ app.get("/login", (req, res) => {
 	}
 });
 app.get("/sessionLogin", (req, res) => {
-	setCookie(req.query.idToken, res);
+	setCookie(req.query.idToken, res, req.query.isNewUser);
 });
 app.get("/signOut", (req, res) => {
 	res.clearCookie("__session");
@@ -191,6 +272,35 @@ app.post("/onUpdateProfile", (req, res) => {
 		.catch((error) => {
 			console.log("Error updating user:", error);
 		});
+});
+app.post("/addPicture", checkCookieMiddleware, (req, res) => {
+	storage.bucket().upload(
+		path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname)),
+		{
+			destination: "userPictures/" + req.files.file[0].originalname,
+			public: true,
+			metadata: {
+				contentType: req.files.file[0].mimetype,
+				cacheControl: "public, max-age=300"
+			}
+		},
+		(err, file) => {
+			if (err) {
+				console.log(err);
+				return;
+			}
+			console.log(file.metadata);
+			var pictureData = {
+				roadName: req.body.roadName,
+				latitude: req.body.latitude,
+				longitude: req.body.longitude,
+				photo: file.metadata.mediaLink,
+				description: req.body.description
+			};
+			db.collection("userPictures").add(pictureData);
+		}
+	);
+	res.redirect("/dashboard");
 });
 
 /*=============================================>>>>>
