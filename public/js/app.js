@@ -11,7 +11,10 @@ function getUiConfig() {
 					.getIdToken()
 					.then(function(idToken) {
 						window.location.href =
-							"/sessionLogin?idToken=" + idToken;
+							"/sessionLogin?idToken=" +
+							idToken +
+							"&isNewUser=" +
+							authResult.additionalUserInfo.isNewUser;
 					})
 					.catch((error) => {
 						alert(error);
