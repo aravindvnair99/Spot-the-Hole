@@ -7,7 +7,8 @@ const functions = require("firebase-functions"),
 	Busboy = require("busboy"),
 	path = require("path"),
 	os = require("os"),
-	fs = require("fs");
+	fs = require("fs"),
+	vader = require("vader-sentiment");
 
 /*=============================================>>>>>
 
@@ -17,12 +18,12 @@ const functions = require("firebase-functions"),
 
 admin.initializeApp({
 	credential: admin.credential.applicationDefault(),
-	storageBucket: process.env.GCLOUD_PROJECT + ".appspot.com"
+	storageBucket: process.env.GCLOUD_PROJECT + ".appspot.com",
 });
 app.use(bodyParser.json());
 app.use(
 	bodyParser.urlencoded({
-		extended: true
+		extended: true,
 	})
 );
 app.use((req, res, next) => {
@@ -36,7 +37,7 @@ app.use((req, res, next) => {
 			{
 				length: req.headers["content-length"],
 				limit: "10mb",
-				encoding: contentType.parse(req).parameters.charset
+				encoding: contentType.parse(req).parameters.charset,
 			},
 			(err, string) => {
 				if (err) return next(err);
@@ -57,7 +58,7 @@ app.use((req, res, next) => {
 		const busboy = new Busboy({ headers: req.headers });
 		let fileBuffer = new Buffer("");
 		req.files = {
-			file: []
+			file: [],
 		};
 
 		busboy.on("field", (fieldname, value) => {
@@ -77,7 +78,7 @@ app.use((req, res, next) => {
 					originalname: filename,
 					encoding,
 					mimetype,
-					buffer: fileBuffer
+					buffer: fileBuffer,
 				};
 				req.files.file.push(file_object);
 			});
@@ -131,7 +132,7 @@ function setCookie(idToken, res, isNewUser) {
 				const options = {
 					maxAge: expiresIn,
 					httpOnly: true,
-					secure: false //should be true in prod
+					secure: false, //should be true in prod
 				};
 				res.cookie("__session", sessionCookie, options);
 				admin
@@ -164,12 +165,25 @@ function setCookie(idToken, res, isNewUser) {
 
 /*=============================================>>>>>
 
+				= Vader =
+
+===============================================>>>>>*/
+
+function vader_analysis(input) {
+	return vader.SentimentIntensityAnalyzer.polarity_scores(input);
+}
+
+/*=============================================>>>>>
+
 				= basic routes =
 
 ===============================================>>>>>*/
 
 app.get("/", (req, res) => {
 	res.render("index");
+});
+app.get("/vader", (req, res) => {
+	res.send(vader_analysis("VADER is very smart, handsome, and funny"));
 });
 app.get("/offline", (req, res) => {
 	res.render("offline");
@@ -263,7 +277,7 @@ app.post("/onUpdateProfile", (req, res) => {
 			phoneNumber: "+91" + req.body.phoneNumber,
 			password: req.body.password,
 			displayName: req.body.firstName + " " + req.body.lastName,
-			photoURL: req.body.photoURL
+			photoURL: req.body.photoURL,
 		})
 		.then((userRecord) => {
 			console.log("Successfully updated user", userRecord.toJSON());
@@ -281,8 +295,8 @@ app.post("/addPicture", checkCookieMiddleware, (req, res) => {
 			public: true,
 			metadata: {
 				contentType: req.files.file[0].mimetype,
-				cacheControl: "public, max-age=300"
-			}
+				cacheControl: "public, max-age=300",
+			},
 		},
 		(err, file) => {
 			if (err) {
@@ -295,7 +309,7 @@ app.post("/addPicture", checkCookieMiddleware, (req, res) => {
 				latitude: req.body.latitude,
 				longitude: req.body.longitude,
 				photo: file.metadata.mediaLink,
-				description: req.body.description
+				description: req.body.description,
 			};
 			db.collection("userPictures").add(pictureData);
 		}
