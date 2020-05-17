@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html class=" ">
-	<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+	<!-- Mirrored from jaybabani.com/zak-html/app/ui-app-editprofile.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Mar 2020 17:15:07 GMT -->
+	<!-- Added by HTTrack --><meta
+		http-equiv="content-type"
+		content="text/html;charset=UTF-8"
+	/><!-- /Added by HTTrack -->
 	<head>
+		<!--
+				 * @Package: Zak mobile App
+				 * @Author: themepassion
+				 * @Version: 1.0
+				-->
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta
 			name="viewport"
 			content="width=device-width, initial-scale=1, maximum-scale=1.0"
 		/>
-		<title>Camera Capture</title>
+		<title>Report</title>
 		<meta content="Zak Mobile App" name="description" />
 		<meta content="themepassion" name="author" />
 
@@ -17,7 +26,70 @@
 			sizes="57x57"
 			href="assets/images/icons/apple-icon-57x57.png"
 		/>
-
+		<link
+			rel="apple-touch-icon"
+			sizes="60x60"
+			href="assets/images/icons/apple-icon-60x60.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="72x72"
+			href="assets/images/icons/apple-icon-72x72.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="76x76"
+			href="assets/images/icons/apple-icon-76x76.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="114x114"
+			href="assets/images/icons/apple-icon-114x114.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="120x120"
+			href="assets/images/icons/apple-icon-120x120.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="144x144"
+			href="assets/images/icons/apple-icon-144x144.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="152x152"
+			href="assets/images/icons/apple-icon-152x152.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="assets/images/icons/apple-icon-180x180.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="192x192"
+			href="assets/images/icons/android-icon-192x192.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+			href="assets/images/icons/favicon-32x32.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="96x96"
+			href="assets/images/icons/favicon-96x96.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="16x16"
+			href="assets/images/icons/favicon-16x16.png"
+		/>
 		<link rel="manifest" href="assets/images/icons/manifest.json" />
 		<meta name="msapplication-TileColor" content="#ffffff" />
 		<meta
@@ -53,6 +125,13 @@
 			media="screen,projection"
 		/>
 
+		<!-- CORE CSS FRAMEWORK - END -->
+
+		<!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - START -->
+		<!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - END -->
+
+		<!-- CORE CSS TEMPLATE - START -->
+
 		<link
 			href="assets/css/style.css"
 			type="text/css"
@@ -60,6 +139,7 @@
 			media="screen,projection"
 			id="main-style"
 		/>
+		<!-- CORE CSS TEMPLATE - END -->
 	</head>
 	<!-- END HEAD -->
 
@@ -914,9 +994,11 @@
 
 		<div class="container">
 			<div class="section">
-				<h5 class="pagetitle">Submit &nbsp; Pothole image</h5>
+				<h5 class="pagetitle">Edit Profile</h5>
+
 				<p>
-					Capture and upload your pothole image for verification.
+					ZAK is premium and multi purpose Mobile UI APP with tons of
+					features and functionalities. Try it now.
 				</p>
 				<div class="divider"></div>
 			</div>
@@ -925,44 +1007,115 @@
 		<div class="container">
 			<div class="section">
 				<form
-					action="/uploadPotholePicture"
+					action="/submitReport"
 					method="post"
-					enctype="multipart/form-data"
+					onsubmit="return validateForm()"
 				>
-					<div class="row">
-						<div class="input-field col s12">
-							<i class="mdi mdi-email-outline prefix"></i>
-							<input
-								id="potholeImage"
-								name="potholeImage"
-								type="file"
-								accept="image/*"
-								capture
-								required
+					<div class="editprof-img">
+						<div class="">
+							<img
+								src="<%- pothole -%>"
+								alt="Pothole"
+								name="image"
 							/>
 						</div>
 					</div>
-
+					<div class="row">
+						<div class="input-field col s12">
+							<i class="mdi mdi-circle-edit-outline prefix"></i>
+							<textarea
+								id="description"
+								name="description"
+								class="materialize-textarea"
+								required
+							></textarea>
+							<label for="description">Brief Description</label>
+						</div>
+					</div>
+					<input
+						type="text"
+						name="imageURL"
+						id="imageURL"
+						value="<%- pothole -%>"
+						hidden
+					/>
+					<input id="latitude" name="latitude" type="text" hidden />
+					<input id="longitude" name="longitude" type="text" hidden/>
 					<div class="row">
 						<div class="col s12">
 							<button
 								type="submit"
 								class="waves-effect waves-light btn-large bg-primary"
 							>
-								Upload
+								Submit
 							</button>
 						</div>
 					</div>
 				</form>
 			</div>
 		</div>
+
 		<%- include('components/footer') -%>
 		<div class="backtotop">
 			<a class="btn-floating btn primary-bg">
 				<i class="mdi mdi-chevron-up"></i>
 			</a>
 		</div>
-		<%- include('components/footer_menu') -%>
-		<%- include('components/scripts') -%>
+		<%- include('components/footer_menu') -%> <%-
+		include('components/scripts') -%>
+		<script>
+			window.onload = getLocation();
+			function validateForm() {
+				if (
+					document.getElementById("latitude").value == null ||
+					document.getElementById("latitude").value == "" ||
+					document.getElementById("longitude").value == null ||
+					document.getElementById("longitude").value == ""
+				) {
+					alert("Please provide location.");
+					return false;
+				}
+			}
+			function getLocation() {
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(
+						showPosition,
+						showError
+					);
+				} else {
+					alert("Geolocation is not supported by this browser.");
+				}
+			}
+
+			function showPosition(position) {
+				document.getElementById("latitude").value =
+					position.coords.latitude;
+				document.getElementById("longitude").value =
+					position.coords.longitude;
+				// var img_url =
+				// 	"https://maps.googleapis.com/maps/api/staticmap?center=" +
+				// 	latlon +
+				// 	"&zoom=14&size=400x300&sensor=false&key=WE_NEED_A_KEY";
+
+				// document.getElementById("mapholder").innerHTML =
+				// 	"<img src='" + img_url + "'>";
+			}
+			function showError(error) {
+				switch (error.code) {
+					case error.PERMISSION_DENIED:
+						alert("User denied the request for Geolocation.");
+						break;
+					case error.POSITION_UNAVAILABLE:
+						alert("Location information is unavailable.");
+						break;
+					case error.TIMEOUT:
+						alert("The request to get user location timed out.");
+						break;
+					case error.UNKNOWN_ERROR:
+						alert("An unknown error occurred.");
+						break;
+				}
+			}
+		</script>
 	</body>
 </html>

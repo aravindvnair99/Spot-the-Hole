@@ -8,7 +8,8 @@ const functions = require("firebase-functions"),
 	path = require("path"),
 	os = require("os"),
 	fs = require("fs"),
-	vader = require("vader-sentiment");
+	vader = require("vader-sentiment"),
+	{ PredictionServiceClient } = require("@google-cloud/automl").v1;
 
 /*=============================================>>>>>
 
@@ -98,6 +99,7 @@ app.use((req, res, next) => {
 app.use(cookieParser());
 app.set("views", "./views");
 app.set("view engine", "ejs");
+const client = new PredictionServiceClient();
 const db = admin.firestore();
 const storage = admin.storage();
 
@@ -165,6 +167,45 @@ function setCookie(idToken, res, isNewUser) {
 
 /*=============================================>>>>>
 
+				= AutoML =
+
+===============================================>>>>>*/
+
+function base64_encode(file) {
+	// read binary data
+	var bitmap = fs.readFileSync(file);
+	// convert binary data to base64 encoded string
+	return new Buffer(bitmap).toString("base64");
+}
+function AutoMLAPI(content) {
+	async function predict() {
+		const request = {
+			name: client.modelPath(
+				"spot-the-hole",
+				"us-central1",
+				"ICN4586489609965273088"
+			),
+			payload: {
+				image: {
+					imageBytes: content,
+				},
+			},
+		};
+		const [response] = await client.predict(request);
+		return response.payload;
+		// for (const annotationPayload of response.payload) {
+		// 	console.log(
+		// 		`Predicted class name: ${annotationPayload.displayName}`
+		// 	);
+		// 	console.log(
+		// 		`Predicted class score: ${annotationPayload.classification.score}`
+		// 	);
+		// }
+	}
+	return predict();
+}
+/*=============================================>>>>>
+
 				= Vader =
 
 ===============================================>>>>>*/
@@ -181,9 +222,6 @@ function vader_analysis(input) {
 
 app.get("/", (req, res) => {
 	res.render("index");
-});
-app.get("/vader", (req, res) => {
-	res.send(vader_analysis("VADER is very smart, handsome, and funny"));
 });
 app.get("/offline", (req, res) => {
 	res.render("offline");
@@ -231,7 +269,6 @@ app.get("/signOut", (req, res) => {
 app.get("/uid", checkCookieMiddleware, (req, res) => {
 	res.send(req.decodedClaims.uid);
 });
-
 app.post("/onLogin", (req, res) => {
 	admin
 		.auth()
@@ -287,36 +324,90 @@ app.post("/onUpdateProfile", (req, res) => {
 			console.log("Error updating user:", error);
 		});
 });
-app.post("/addPicture", checkCookieMiddleware, (req, res) => {
-	storage.bucket().upload(
-		path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname)),
-		{
-			destination: "userPictures/" + req.files.file[0].originalname,
-			public: true,
-			metadata: {
-				contentType: req.files.file[0].mimetype,
-				cacheControl: "public, max-age=300",
-			},
-		},
-		(err, file) => {
-			if (err) {
-				console.log(err);
-				return;
-			}
-			console.log(file.metadata);
-			var pictureData = {
-				roadName: req.body.roadName,
-				latitude: req.body.latitude,
-				longitude: req.body.longitude,
-				photo: file.metadata.mediaLink,
-				description: req.body.description,
-			};
-			db.collection("userPictures").add(pictureData);
-		}
+
+/*=============================================>>>>>
+
+			= AutoML routes =
+
+===============================================>>>>>*/
+
+app.get("/cameraCapture", (req, res) => {
+	res.render("cameraCapture");
+});
+app.get("/cameraCaptureRetry", (req, res) => {
+	res.render("cameraCaptureRetry");
+});
+app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
+	var base64str = base64_encode(
+		path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname))
 	);
-	res.redirect("/dashboard");
+	AutoMLAPI(base64str)
+		.then((prediction) => {
+			console.log(prediction[0]);
+			if (
+				prediction[0].displayName === "pothole" &&
+				prediction[0].classification.score >= 0.93
+			) {
+				storage.bucket().upload(
+					path.join(
+						os.tmpdir(),
+						path.basename(req.files.file[0].fieldname)
+					),
+					{
+						destination:
+							"potholePictures/" +
+							req.decodedClaims.uid +
+							"/" +
+							req.files.file[0].originalname,
+						public: true,
+						metadata: {
+							contentType: req.files.file[0].mimetype,
+							cacheControl: "public, max-age=300",
+						},
+					},
+					(err, file) => {
+						if (err) {
+							console.log(err);
+							return;
+						}
+						console.log(file.metadata);
+						var pictureData = {
+							photo: file.metadata.mediaLink,
+						};
+						string = encodeURIComponent(file.metadata.mediaLink);
+						return res.redirect("/report?image=" + string);
+					}
+				);
+			} else return res.redirect("/cameraCaptureRetry");
+		})
+		.catch((error) => {
+			console.log("Error is:", error);
+		});
 });
 
+/*=============================================>>>>>
+
+				= Report =
+
+===============================================>>>>>*/
+app.get("/report", (req, res) => {
+	console.log("\n\n\n", req.query.image);
+	res.render("report", {
+		pothole: req.query.image,
+	});
+});
+app.post("/submitReport", checkCookieMiddleware, (req, res) => {
+	var obj = {
+		latitude: req.body.latitude,
+		longitude: req.body.longitude,
+		image: req.body.imageURL,
+		description: req.body.description,
+		neg: vader_analysis(req.body.description).neg * 100,
+	};
+	console.log(obj);
+	db.collection("potholes").doc(req.decodedClaims.uid).set(obj);
+	res.redirect("/dashboard");
+});
 /*=============================================>>>>>
 
 				= errors =
@@ -324,10 +415,10 @@ app.post("/addPicture", checkCookieMiddleware, (req, res) => {
 ===============================================>>>>>*/
 
 app.use((req, res, next) => {
-	res.status(404).render("errors/404");
+	res.status(404).render("404");
 });
 app.use((req, res, next) => {
-	res.status(500).render("errors/500");
+	res.status(500).render("500");
 });
 
 /*=============================================>>>>>
