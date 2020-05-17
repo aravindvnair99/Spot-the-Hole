@@ -924,11 +924,11 @@
 
 		<div class="container">
 			<div class="section">
-				<form action="/uploadPotholePicture" method="post">
+				<form action="/uploadPotholePicture" method="post" enctype="multipart/form-data">
 				<div class="row">
 					<div class="input-field col s12">
 						<i class="mdi mdi-email-outline prefix"></i>
-						<input id="imageUpload" type="file" accept="image/*" capture required/>
+						<input id="potholeImage" name="potholeImage" type="file" accept="image/*" capture required/>
 					</div>
 				</div>
 

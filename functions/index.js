@@ -8,7 +8,8 @@ const functions = require("firebase-functions"),
 	path = require("path"),
 	os = require("os"),
 	fs = require("fs"),
-	vader = require("vader-sentiment");
+	vader = require("vader-sentiment"),
+	{ PredictionServiceClient } = require("@google-cloud/automl").v1;
 
 /*=============================================>>>>>
 
@@ -98,6 +99,7 @@ app.use((req, res, next) => {
 app.use(cookieParser());
 app.set("views", "./views");
 app.set("view engine", "ejs");
+const client = new PredictionServiceClient();
 const db = admin.firestore();
 const storage = admin.storage();
 
@@ -165,6 +167,45 @@ function setCookie(idToken, res, isNewUser) {
 
 /*=============================================>>>>>
 
+				= AutoML =
+
+===============================================>>>>>*/
+
+function base64_encode(file) {
+	// read binary data
+	var bitmap = fs.readFileSync(file);
+	// convert binary data to base64 encoded string
+	return new Buffer(bitmap).toString("base64");
+}
+function AutoMLAPI(content) {
+	async function predict() {
+		const request = {
+			name: client.modelPath(
+				"spot-the-hole",
+				"us-central1",
+				"ICN4586489609965273088"
+			),
+			payload: {
+				image: {
+					imageBytes: content,
+				},
+			},
+		};
+		const [response] = await client.predict(request);
+		return response.payload;
+		for (const annotationPayload of response.payload) {
+			console.log(
+				`Predicted class name: ${annotationPayload.displayName}`
+			);
+			console.log(
+				`Predicted class score: ${annotationPayload.classification.score}`
+			);
+		}
+	}
+	predict();
+}
+/*=============================================>>>>>
+
 				= Vader =
 
 ===============================================>>>>>*/
@@ -185,8 +226,8 @@ app.get("/", (req, res) => {
 app.get("/cameraCapture", (req, res) => {
 	res.render("cameraCapture");
 });
-app.get("/geolocationAPI", (req, res) => {
-	res.render("geolocationAPI");
+app.get("/report", (req, res) => {
+	res.render("report");
 });
 app.get("/vader", (req, res) => {
 	res.send(vader_analysis("VADER is very smart, handsome, and funny"));
@@ -293,36 +334,56 @@ app.post("/onUpdateProfile", (req, res) => {
 			console.log("Error updating user:", error);
 		});
 });
-app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
-	storage.bucket().upload(
-		path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname)),
-		{
-			destination:
-				"potholePictures/" +
-				req.decodedClaims.uid +
-				"/" +
-				req.files.file[0].originalname,
-			public: true,
-			metadata: {
-				contentType: req.files.file[0].mimetype,
-				cacheControl: "public, max-age=300",
-			},
-		},
-		(err, file) => {
-			if (err) {
-				console.log(err);
-				return;
-			}
-			console.log(file.metadata);
-			var pictureData = {
-				photo: file.metadata.mediaLink,
-			};
 
-			console.log(response_API);
-			// db.collection("userPictures").add(pictureData);
-		}
+/*=============================================>>>>>
+
+			= AutoML routes =
+
+===============================================>>>>>*/
+
+app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
+	var base64str = base64_encode(
+		path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname))
 	);
-	res.redirect("/dashboard");
+	var tada = AutoMLAPI(base64str);
+	console.log("\n\n\n", tada)
+	// for (const annotationPayload of tada) {
+	// 		console.log(
+	// 			`Predicted class name: ${annotationPayload.displayName}`
+	// 		);
+	// 		console.log(
+	// 			`Predicted class score: ${annotationPayload.classification.score}`
+	// 		);
+	// 	}
+	// storage.bucket().upload(
+	// 	path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname)),
+	// 	{
+	// 		destination:
+	// 			"potholePictures/" +
+	// 			req.decodedClaims.uid +
+	// 			"/" +
+	// 			req.files.file[0].originalname,
+	// 		public: true,
+	// 		metadata: {
+	// 			contentType: req.files.file[0].mimetype,
+	// 			cacheControl: "public, max-age=300",
+	// 		},
+	// 	},
+	// 	(err, file) => {
+	// 		if (err) {
+	// 			console.log(err);
+	// 			return;
+	// 		}
+	// 		console.log(file.metadata);
+	// 		var pictureData = {
+	// 			photo: file.metadata.mediaLink,
+	// 		};
+
+	// 		console.log(response_API);
+	// 		// db.collection("userPictures").add(pictureData);
+	// 	}
+	// );
+	// res.redirect("/dashboard");
 });
 
 /*=============================================>>>>>
