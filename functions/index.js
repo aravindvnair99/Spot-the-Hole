@@ -293,11 +293,15 @@ app.post("/onUpdateProfile", (req, res) => {
 			console.log("Error updating user:", error);
 		});
 });
-app.post("/uploadPicture", checkCookieMiddleware, (req, res) => {
+app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 	storage.bucket().upload(
 		path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname)),
 		{
-			destination: "userPotholePictures/" + req.files.file[0].originalname,
+			destination:
+				"potholePictures/" +
+				req.decodedClaims.uid +
+				"/" +
+				req.files.file[0].originalname,
 			public: true,
 			metadata: {
 				contentType: req.files.file[0].mimetype,
@@ -311,13 +315,11 @@ app.post("/uploadPicture", checkCookieMiddleware, (req, res) => {
 			}
 			console.log(file.metadata);
 			var pictureData = {
-				roadName: req.body.roadName,
-				latitude: req.body.latitude,
-				longitude: req.body.longitude,
 				photo: file.metadata.mediaLink,
-				description: req.body.description,
 			};
-			db.collection("userPictures").add(pictureData);
+
+			console.log(response_API);
+			// db.collection("userPictures").add(pictureData);
 		}
 	);
 	res.redirect("/dashboard");
