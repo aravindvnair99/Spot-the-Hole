@@ -192,7 +192,6 @@ function AutoMLAPI(content) {
 			},
 		};
 		const [response] = await client.predict(request);
-		return response.payload;
 		for (const annotationPayload of response.payload) {
 			console.log(
 				`Predicted class name: ${annotationPayload.displayName}`
@@ -345,8 +344,7 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 	var base64str = base64_encode(
 		path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname))
 	);
-	var tada = AutoMLAPI(base64str);
-	console.log("\n\n\n", tada)
+	AutoMLAPI(base64str).then();
 	// for (const annotationPayload of tada) {
 	// 		console.log(
 	// 			`Predicted class name: ${annotationPayload.displayName}`
