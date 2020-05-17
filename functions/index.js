@@ -224,8 +224,9 @@ app.get("/", (req, res) => {
 	res.render("index");
 });
 app.get("/report", (req, res) => {
-	console.log(req.query.image)
-	res.render("report");
+	res.render("report", {
+		pothole: req.query.image,
+	});
 });
 app.get("/vader", (req, res) => {
 	res.send(vader_analysis("VADER is very smart, handsome, and funny"));
