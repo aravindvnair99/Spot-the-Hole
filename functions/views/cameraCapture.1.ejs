@@ -53,6 +53,8 @@
 			media="screen,projection"
 		/>
 
+
+
 		<link
 			href="assets/css/style.css"
 			type="text/css"
@@ -62,33 +64,33 @@
 		/>
 		<style>
 			.camera-button-group,
-			.play-area {
-				border: 1px solid grey;
-				padding: 1em 1%;
-				margin-bottom: 1em;
-			}
+		.play-area {
+			border: 1px solid grey;
+			padding: 1em 1%;
+			margin-bottom: 1em;
+		}
 
-			.camera-button {
-				padding: 0.5em;
-				margin-right: 1em;
-			}
+		.camera-button {
+			padding: 0.5em;
+			margin-right: 1em;
+		}
 
-			.play-area-sub {
-				width: 47%;
-				padding: 1em 1%;
-				display: inline-block;
-				text-align: center;
-			}
+		.play-area-sub {
+			width: 47%;
+			padding: 1em 1%;
+			display: inline-block;
+			text-align: center;
+		}
 
-			#capture {
-				display: none;
-			}
+		#capture {
+			display: none;
+		}
 
-			#snapshot {
-				display: inline-block;
-				width: 320px;
-				height: 240px;
-			}
+		#snapshot {
+			display: inline-block;
+			width: 320px;
+			height: 240px;
+		}
 		</style>
 	</head>
 	<!-- END HEAD -->
@@ -956,22 +958,63 @@
 
 		<div class="container">
 			<div class="section">
-				<form action="/uploadPicture" method="post">
+				<div class="editprof-img">
+					<div class="img-wrap circle">
+						<img src="assets/images/edit-profile.jpg" alt="" />
+						<i class="mdi mdi-pencil prefix"></i>
+					</div>
+				</div>
+
 				<div class="row">
 					<div class="input-field col s12">
-						<i class="mdi mdi-email-outline prefix"></i>
-						<input id="imageUpload" type="file" accept="image/*" capture required/>
+						<div class="camera-button-group">
+							<button id="btn-start" type="button" class="camera-button">
+								Start Streaming
+							</button>
+							<button id="btn-stop" type="button" class="camera-button">
+								Stop Streaming
+							</button>
+							<button
+								id="btn-capture"
+								type="button"
+								class="camera-button"
+							>
+								Capture Image
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s12">
+						<div class="play-area">
+							<div class="play-area-sub">
+								<h3>The Stream</h3>
+								<video
+									id="stream"
+									width="320"
+									height="240"
+								></video>
+							</div>
+							<div class="play-area-sub">
+								<h3>The Capture</h3>
+								<canvas
+									id="capture"
+									width="320"
+									height="240"
+								></canvas>
+								<div id="snapshot"></div>
+							</div>
+						</div>
 					</div>
 				</div>
 
 				<div class="row">
 					<div class="col s12">
-						<button type="submit" class="waves-effect waves-light btn-large bg-primary"
+						<a class="waves-effect waves-light btn-large bg-primary"
 							>Upload</a
 						>
 					</div>
 				</div>
-				</form>
 			</div>
 		</div>
 

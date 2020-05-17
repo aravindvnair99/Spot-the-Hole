@@ -182,6 +182,12 @@ function vader_analysis(input) {
 app.get("/", (req, res) => {
 	res.render("index");
 });
+app.get("/cameraCapture", (req, res) => {
+	res.render("cameraCapture");
+});
+app.get("/geolocationAPI", (req, res) => {
+	res.render("geolocationAPI");
+});
 app.get("/vader", (req, res) => {
 	res.send(vader_analysis("VADER is very smart, handsome, and funny"));
 });
@@ -287,11 +293,11 @@ app.post("/onUpdateProfile", (req, res) => {
 			console.log("Error updating user:", error);
 		});
 });
-app.post("/addPicture", checkCookieMiddleware, (req, res) => {
+app.post("/uploadPicture", checkCookieMiddleware, (req, res) => {
 	storage.bucket().upload(
 		path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname)),
 		{
-			destination: "userPictures/" + req.files.file[0].originalname,
+			destination: "userPotholePictures/" + req.files.file[0].originalname,
 			public: true,
 			metadata: {
 				contentType: req.files.file[0].mimetype,
