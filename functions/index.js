@@ -223,14 +223,6 @@ function vader_analysis(input) {
 app.get("/", (req, res) => {
 	res.render("index");
 });
-app.get("/report", (req, res) => {
-	res.render("report", {
-		pothole: req.query.image,
-	});
-});
-app.get("/vader", (req, res) => {
-	res.send(vader_analysis("VADER is very smart, handsome, and funny"));
-});
 app.get("/offline", (req, res) => {
 	res.render("offline");
 });
@@ -277,7 +269,6 @@ app.get("/signOut", (req, res) => {
 app.get("/uid", checkCookieMiddleware, (req, res) => {
 	res.send(req.decodedClaims.uid);
 });
-
 app.post("/onLogin", (req, res) => {
 	admin
 		.auth()
@@ -384,9 +375,7 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 							photo: file.metadata.mediaLink,
 						};
 						string = encodeURIComponent(file.metadata.mediaLink);
-						return res.redirect(
-							"/report?image=" + file.metadata.mediaLink
-						);
+						return res.redirect("/report?image=" + string);
 					}
 				);
 			} else return res.redirect("/cameraCaptureRetry");
@@ -396,6 +385,29 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 		});
 });
 
+/*=============================================>>>>>
+
+				= Report =
+
+===============================================>>>>>*/
+app.get("/report", (req, res) => {
+	console.log("\n\n\n", req.query.image);
+	res.render("report", {
+		pothole: req.query.image,
+	});
+});
+app.post("/submitReport", checkCookieMiddleware, (req, res) => {
+	var obj = {
+		latitude: req.body.latitude,
+		longitude: req.body.longitude,
+		image: req.body.imageURL,
+		description: req.body.description,
+		neg: vader_analysis(req.body.description).neg * 100,
+	};
+	console.log(obj);
+	db.collection("potholes").doc(req.decodedClaims.uid).set(obj);
+	res.redirect("/dashboard");
+});
 /*=============================================>>>>>
 
 				= errors =

@@ -1016,30 +1016,7 @@
 							<img
 								src="<%- pothole -%>"
 								alt="Pothole"
-							/>
-						</div>
-					</div>
-					<div class="row">
-						<div class="input-field col s12">
-							<i class="mdi mdi-account-outline prefix"></i>
-							<input
-								id="latitude"
-								type="text"
-								class="validate"
-								required
-								disabled
-							/>
-						</div>
-					</div>
-					<div class="row">
-						<div class="input-field col s12">
-							<i class="mdi mdi-account-outline prefix"></i>
-							<input
-								id="longitude"
-								type="text"
-								class="validate"
-								required
-								disabled
+								name="image"
 							/>
 						</div>
 					</div>
@@ -1047,16 +1024,23 @@
 						<div class="input-field col s12">
 							<i class="mdi mdi-circle-edit-outline prefix"></i>
 							<textarea
-								id="textarea-prefix"
+								id="description"
+								name="description"
 								class="materialize-textarea"
 								required
 							></textarea>
-							<label for="textarea-prefix"
-								>Brief Description</label
-							>
+							<label for="description">Brief Description</label>
 						</div>
 					</div>
-
+					<input
+						type="text"
+						name="imageURL"
+						id="imageURL"
+						value="<%- pothole -%>"
+						hidden
+					/>
+					<input id="latitude" name="latitude" type="text" hidden />
+					<input id="longitude" name="longitude" type="text" hidden/>
 					<div class="row">
 						<div class="col s12">
 							<button
