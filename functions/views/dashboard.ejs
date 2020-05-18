@@ -6,9 +6,8 @@
 	<head>
 		<title>Dashboard</title>
 		<meta content="Spot the Hole Dashboard" name="description" />
-
-		<!-- CORE CSS TEMPLATE - START -->
-
+		<%- include('components/meta') -%>
+		<%- include('components/corecss') -%>
 		<link
 			href="assets/css/style.css"
 			type="text/css"
@@ -45,7 +44,7 @@
 		<nav class="fixedtop topbar navigation" role="navigation">
 			<div class="nav-wrapper container">
 				<a id="logo-container" href="index.html" class="brand-logo"
-					><i class="mdi mdi-ring"></i>ZAK</a
+					><i class="mdi mdi-ring"></i>Spot the Hole</a
 				>
 				<!-- <ul class="right hide-on-med-and-down">
 				<li><a href="#">Navbar Link</a></li>
@@ -95,15 +94,15 @@
 						<a href="#user"
 							><img
 								class="circle"
-								src="assets/images/user-37.jpg"
+								src="<%- user.picture -%>"
 						/></a>
 					</div>
 					<div class="col s9 infoarea">
 						<a href="#name"
-							><span class="name">Cherry Smith</span></a
+							><span class="name"><%- user.name -%></span></a
 						>
 						<a href="#email"
-							><span class="email">cherrysmith@gmail.com</span></a
+							><span class="email"><%- user.email -%></span></a
 						>
 					</div>
 				</div>

@@ -244,6 +244,7 @@ app.get("/dashboard", checkCookieMiddleware, (req, res) => {
 			potholesData = Object.assign({}, potholeData);
 			potholesID = Object.assign({}, potholeID);
 			user = Object.assign({}, req.decodedClaims);
+			console.log("\n\n\n", user);
 			return res.render("dashboard", { user, potholesData, potholesID });
 		})
 		.catch((err) => {
@@ -433,7 +434,11 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 		neg: vader_analysis(req.body.description).neg * 100,
 	};
 	console.log(obj);
-	db.collection("users").doc(req.decodedClaims.uid).collection('potholes').doc().set(obj);
+	db.collection("users")
+		.doc(req.decodedClaims.uid)
+		.collection("potholes")
+		.doc()
+		.set(obj);
 	res.redirect("/dashboard");
 });
 /*=============================================>>>>>
