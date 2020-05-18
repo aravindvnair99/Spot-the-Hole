@@ -914,7 +914,7 @@
 
 		<div class="container">
 			<div class="section">
-				<h5 class="pagetitle">Submit &nbsp; Pothole image</h5>
+				<h5 class="pagetitle">Submit Pothole image</h5>
 				<p>
 					Capture and upload your pothole image for verification.
 				</p>
@@ -937,6 +937,7 @@
 								name="potholeImage"
 								type="file"
 								accept="image/*"
+								class="waves-effect waves-light btn-large bg-primary"
 								capture
 								required
 							/>
@@ -957,12 +958,10 @@
 			</div>
 		</div>
 		<%- include('components/footer') -%>
-		<div class="backtotop">
-			<a class="btn-floating btn primary-bg">
-				<i class="mdi mdi-chevron-up"></i>
-			</a>
-		</div>
+		<%- include('components/backtotop') -%>
 		<%- include('components/footer_menu') -%>
+		<%- include('components/pwa') -%>
+		<%- include('components/corejs') -%>
 		<%- include('components/scripts') -%>
 	</body>
 </html>

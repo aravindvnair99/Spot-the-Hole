@@ -1056,13 +1056,11 @@
 		</div>
 
 		<%- include('components/footer') -%>
-		<div class="backtotop">
-			<a class="btn-floating btn primary-bg">
-				<i class="mdi mdi-chevron-up"></i>
-			</a>
-		</div>
-		<%- include('components/footer_menu') -%> <%-
-		include('components/scripts') -%>
+		<%- include('components/backtotop') -%>
+		<%- include('components/footer_menu') -%>
+		<%- include('components/pwa') -%>
+		<%- include('components/corejs') -%>
+		<%- include('components/scripts') -%>
 		<script>
 			window.onload = getLocation();
 			function validateForm() {

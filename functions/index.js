@@ -143,10 +143,10 @@ function setCookie(idToken, res, isNewUser) {
 					.then((decodedClaims) => {
 						console.log("\n\n\n", isNewUser);
 						if (isNewUser === "true") {
-							res.redirect("/accountTypePicker");
+							res.redirect("/dashboard");
 							return console.log(decodedClaims);
 						} else {
-							res.redirect("/uid");
+							res.redirect("/dashboard");
 							return console.log(decodedClaims);
 						}
 					})
@@ -222,10 +222,34 @@ function vader_analysis(input) {
 
 app.get("/", (req, res) => {
 	if (req.cookies.__session) {
-		res.render("dashboard");
+		res.redirect("/dashboard");
 	} else {
-		res.render("login", { user });
+		res.redirect("/login");
 	}
+});
+app.get("/dashboard", checkCookieMiddleware, (req, res) => {
+	var i = 0,
+		potholeData = new Array(),
+		potholeID = new Array();
+	db.collection("users")
+		.doc(req.decodedClaims.uid)
+		.collection("potholes")
+		.get()
+		.then((querySnapshot) => {
+			querySnapshot.forEach((childSnapshot) => {
+				potholeID[i] = childSnapshot.id;
+				potholeData[i] = childSnapshot.data();
+				i++;
+			});
+			potholesData = Object.assign({}, potholeData);
+			potholesID = Object.assign({}, potholeID);
+			user = Object.assign({}, req.decodedClaims);
+			return res.render("dashboard", { user, potholesData, potholesID });
+		})
+		.catch((err) => {
+			console.log("Error getting potholes", err);
+			res.redirect("/login");
+		});
 });
 app.get("/offline", (req, res) => {
 	res.render("offline");
@@ -335,10 +359,10 @@ app.post("/onUpdateProfile", (req, res) => {
 
 ===============================================>>>>>*/
 
-app.get("/cameraCapture", (req, res) => {
+app.get("/cameraCapture", checkCookieMiddleware, (req, res) => {
 	res.render("cameraCapture");
 });
-app.get("/cameraCaptureRetry", (req, res) => {
+app.get("/cameraCaptureRetry", checkCookieMiddleware, (req, res) => {
 	res.render("cameraCaptureRetry");
 });
 app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
@@ -394,7 +418,7 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 				= Report =
 
 ===============================================>>>>>*/
-app.get("/report", (req, res) => {
+app.get("/report", checkCookieMiddleware, (req, res) => {
 	console.log("\n\n\n", req.query.image);
 	res.render("report", {
 		pothole: req.query.image,
@@ -409,7 +433,7 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 		neg: vader_analysis(req.body.description).neg * 100,
 	};
 	console.log(obj);
-	db.collection("potholes").doc(req.decodedClaims.uid).set(obj);
+	db.collection("users").doc(req.decodedClaims.uid).collection('potholes').doc().set(obj);
 	res.redirect("/dashboard");
 });
 /*=============================================>>>>>
