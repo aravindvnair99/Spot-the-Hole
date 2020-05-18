@@ -221,7 +221,11 @@ function vader_analysis(input) {
 ===============================================>>>>>*/
 
 app.get("/", (req, res) => {
-	res.render("index");
+	if (req.cookies.__session) {
+		res.render("dashboard");
+	} else {
+		res.render("login", { user });
+	}
 });
 app.get("/offline", (req, res) => {
 	res.render("offline");
@@ -254,7 +258,7 @@ app.get("/termsConditions", (req, res) => {
 
 app.get("/login", (req, res) => {
 	if (req.cookies.__session) {
-		res.redirect("/uid");
+		res.render("dashboard");
 	} else {
 		res.render("login");
 	}
