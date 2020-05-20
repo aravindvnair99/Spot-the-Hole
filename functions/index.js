@@ -408,6 +408,7 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 					}
 				);
 			} else return res.redirect("/cameraCaptureRetry");
+			return;
 		})
 		.catch((error) => {
 			console.log("Error is:", error);
