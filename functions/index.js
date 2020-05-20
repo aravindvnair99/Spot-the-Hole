@@ -9,7 +9,10 @@ const functions = require("firebase-functions"),
 	os = require("os"),
 	fs = require("fs"),
 	vader = require("vader-sentiment"),
-	{ PredictionServiceClient } = require("@google-cloud/automl").v1;
+	{
+		PredictionServiceClient
+	} = require("@google-cloud/automl").v1,
+	axios = require('axios');
 
 /*=============================================>>>>>
 
@@ -34,8 +37,7 @@ app.use((req, res, next) => {
 		req.headers["content-type"].startsWith("multipart/form-data")
 	) {
 		getRawBody(
-			req,
-			{
+			req, {
 				length: req.headers["content-length"],
 				limit: "10mb",
 				encoding: contentType.parse(req).parameters.charset,
@@ -56,7 +58,9 @@ app.use((req, res, next) => {
 		req.method === "POST" &&
 		req.headers["content-type"].startsWith("multipart/form-data")
 	) {
-		const busboy = new Busboy({ headers: req.headers });
+		const busboy = new Busboy({
+			headers: req.headers
+		});
 		let fileBuffer = new Buffer("");
 		req.files = {
 			file: [],
@@ -124,11 +128,14 @@ function checkCookieMiddleware(req, res, next) {
 			res.redirect("/signOut");
 		});
 }
+
 function setCookie(idToken, res, isNewUser) {
 	const expiresIn = 60 * 60 * 24 * 5 * 1000;
 	admin
 		.auth()
-		.createSessionCookie(idToken, { expiresIn })
+		.createSessionCookie(idToken, {
+			expiresIn
+		})
 		.then(
 			(sessionCookie) => {
 				const options = {
@@ -177,6 +184,7 @@ function base64_encode(file) {
 	// convert binary data to base64 encoded string
 	return new Buffer(bitmap).toString("base64");
 }
+
 function AutoMLAPI(content) {
 	async function predict() {
 		const request = {
@@ -219,6 +227,29 @@ function vader_analysis(input) {
 				= basic routes =
 
 ===============================================>>>>>*/
+app.get("/geocoding", (req, res) => {
+	axios.post('https://maps.googleapis.com/maps/api/geocode/json', null,{ params: {
+		latlng: '40.714224,-73.961452',
+		key: 'AIzaSyABVaSmbAYEGC1kRnGs5bT82ybevf4_tn4'
+	}
+	})
+	.then(function (response) {
+		output = {
+			globalCode : response.data.plus_code.global_code,
+			subLocality : response.data.results[0].address_components[1].long_name,
+			pincode : response.data.results[0].address_components[6].long_name,
+			road : response.data.results[0].address_components[0].long_name,
+			completeAddress : response.data.results[0].formatted_address,
+			placeId : response.data.results[0].place_id
+		}
+		res.send(output)
+	})
+	.catch(error => {
+		console.log(error.response)
+		res.send("   ")
+	});
+});
+
 
 app.get("/", (req, res) => {
 	if (req.cookies.__session) {
@@ -245,7 +276,11 @@ app.get("/dashboard", checkCookieMiddleware, (req, res) => {
 			potholesID = Object.assign({}, potholeID);
 			user = Object.assign({}, req.decodedClaims);
 			console.log("\n\n\n", user);
-			return res.render("dashboard", { user, potholesData, potholesID });
+			return res.render("dashboard", {
+				user,
+				potholesData,
+				potholesID
+			});
 		})
 		.catch((err) => {
 			console.log("Error getting potholes", err);
@@ -312,11 +347,17 @@ app.post("/onLogin", (req, res) => {
 						userRecord.toJSON()
 					);
 					if (userRecord.phoneNumber && userRecord.emailVerified) {
-						return res.send({ path: "/dashboard" });
+						return res.send({
+							path: "/dashboard"
+						});
 					} else if (!userRecord.emailVerified) {
-						return res.send({ path: "/emailVerification" });
+						return res.send({
+							path: "/emailVerification"
+						});
 					} else {
-						return res.send({ path: "/updateProfile" });
+						return res.send({
+							path: "/updateProfile"
+						});
 					}
 				})
 				.catch((error) => {
@@ -381,10 +422,8 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 					path.join(
 						os.tmpdir(),
 						path.basename(req.files.file[0].fieldname)
-					),
-					{
-						destination:
-							"potholePictures/" +
+					), {
+						destination: "potholePictures/" +
 							req.decodedClaims.uid +
 							"/" +
 							req.files.file[0].originalname,
