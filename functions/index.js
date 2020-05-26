@@ -233,7 +233,7 @@ app.get("/geocoding", (req, res) => {
 		key: 'AIzaSyABVaSmbAYEGC1kRnGs5bT82ybevf4_tn4'
 	}
 	})
-	.then(function (response) {
+	.then((response) => {
 		output = {
 			globalCode : response.data.plus_code.global_code,
 			subLocality : response.data.results[0].address_components[1].long_name,
@@ -242,7 +242,7 @@ app.get("/geocoding", (req, res) => {
 			completeAddress : response.data.results[0].formatted_address,
 			placeId : response.data.results[0].place_id
 		}
-		res.send(output)
+		return res.send(output)
 	})
 	.catch(error => {
 		console.log(error.response)
