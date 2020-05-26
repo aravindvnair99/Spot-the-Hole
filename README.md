@@ -14,15 +14,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 # :family: Team
 
--   **Abhinay Krishna Chitirala** - _Design, UI / UX Prototyping_ - [abhinaychitirala](https://github.com/abhinaychitirala)
--   **Abhishek Venkata Sai Kandikattu** - _Back-end and Big Data Analytics_ - [Abhishek-Sai](https://github.com/Abhishek-Sai)
--   **Aditya Deepak Udapudi** - _Front-end and Big Data Analytics_ - [adityadu-18](https://github.com/adityadu-18)
+-   **Abhinay Krishna Chitirala** - _Logo Design, Tester, UI / UX Prototyping_ - [abhinaychitirala](https://github.com/abhinaychitirala)
+-   **Abhishek Venkata Sai Kandikattu** - _Front-end, Back-end and Testing_ - [Abhishek-Sai](https://github.com/Abhishek-Sai)
+-   **Aditya Deepak Udapudi** - _Testing_ - [adityadu-18](https://github.com/adityadu-18)
 -   **Aravind V. Nair** - _Front-end, Back-end, DevOps and Security_ - [AravindVNair99](https://github.com/AravindVNair99)
--   **Harshita Reddy Edugudi** - _Design, UI / UX Prototyping, Natural Language Processing_ - [harshitaaaaa](https://github.com/harshitaaaaa)
--   **Kaazima Mirza Ifrah** - _Front-end_ - [kaazima](https://github.com/kaazima)
--   **Keerthana Golla Chowdary** - _Computer Vision_ - [keerthanachowdary218](https://github.com/keerthanachowdary218)
--   **Priya Potti** - _Front-end_ - [Priya378](https://github.com/Priya378)
--   **Sriram Nuthi** - _Front-end_ - [Nuthi-Sriram](https://github.com/Nuthi-Sriram)
+-   **Harshita Reddy Edugudi** - _Design, UI / UX Prototyping, Image Processing_ - [harshitaaaaa](https://github.com/harshitaaaaa)
+-   **Keerthana Golla Chowdary** - _Image processing, Testing_ - [keerthanachowdary218](https://github.com/keerthanachowdary218)
 
 See the full list of [contributors](https://github.com/aravindvnair99/Spot-the-Hole/graphs/contributors) who participated in this project and statistics.
 
