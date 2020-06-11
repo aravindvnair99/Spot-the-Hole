@@ -1,3 +1,5 @@
+const { response } = require("express");
+
 const functions = require("firebase-functions"),
 	express = require("express"),
 	app = express(),
@@ -9,10 +11,8 @@ const functions = require("firebase-functions"),
 	os = require("os"),
 	fs = require("fs"),
 	vader = require("vader-sentiment"),
-	{
-		PredictionServiceClient
-	} = require("@google-cloud/automl").v1,
-	axios = require('axios');
+	{ PredictionServiceClient } = require("@google-cloud/automl").v1,
+	axios = require("axios");
 
 /*=============================================>>>>>
 
@@ -37,7 +37,8 @@ app.use((req, res, next) => {
 		req.headers["content-type"].startsWith("multipart/form-data")
 	) {
 		getRawBody(
-			req, {
+			req,
+			{
 				length: req.headers["content-length"],
 				limit: "10mb",
 				encoding: contentType.parse(req).parameters.charset,
@@ -59,7 +60,7 @@ app.use((req, res, next) => {
 		req.headers["content-type"].startsWith("multipart/form-data")
 	) {
 		const busboy = new Busboy({
-			headers: req.headers
+			headers: req.headers,
 		});
 		let fileBuffer = new Buffer("");
 		req.files = {
@@ -134,7 +135,7 @@ function setCookie(idToken, res, isNewUser) {
 	admin
 		.auth()
 		.createSessionCookie(idToken, {
-			expiresIn
+			expiresIn,
 		})
 		.then(
 			(sessionCookie) => {
@@ -224,32 +225,132 @@ function vader_analysis(input) {
 
 /*=============================================>>>>>
 
+				= Other Functions =
+
+===============================================>>>>>*/
+
+function makeID(length) {
+	var result = "";
+	var characters =
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	var charactersLength = characters.length;
+	for (var i = 0; i < length; i++) {
+		result += characters.charAt(
+			Math.floor(Math.random() * charactersLength)
+		);
+	}
+	return result;
+}
+
+/*=============================================>>>>>
+
 				= basic routes =
 
 ===============================================>>>>>*/
 app.get("/geocoding", (req, res) => {
-	axios.post('https://maps.googleapis.com/maps/api/geocode/json', null,{ params: {
-		latlng: '40.714224,-73.961452',
-		key: 'AIzaSyABVaSmbAYEGC1kRnGs5bT82ybevf4_tn4'
-	}
-	})
-	.then((response) => {
-		output = {
-			globalCode : response.data.plus_code.global_code,
-			subLocality : response.data.results[0].address_components[1].long_name,
-			pincode : response.data.results[0].address_components[6].long_name,
-			road : response.data.results[0].address_components[0].long_name,
-			completeAddress : response.data.results[0].formatted_address,
-			placeId : response.data.results[0].place_id
-		}
-		return res.send(output)
-	})
-	.catch(error => {
-		console.log(error.response)
-		res.send("   ")
-	});
+	axios
+		.post("https://maps.googleapis.com/maps/api/geocode/json", null, {
+			params: {
+				latlng: "40.714224,-73.961452",
+				key: "AIzaSyABVaSmbAYEGC1kRnGs5bT82ybevf4_tn4",
+			},
+		})
+		.then((response) => {
+			output = {
+				globalCode: response.data.results[0].plus_code.global_code,
+				completeAddress: response.data.results[0].formatted_address,
+				placeId: response.data.results[0].place_id,
+			};
+			return res.send(output);
+		})
+		.catch((error) => {
+			console.log(error.response);
+			res.send("   ");
+		});
 });
 
+app.get("/trial", (req, res) => {
+	response1 = {
+		results: [
+			{
+				address_components: [
+					{
+						long_name: "1600",
+						short_name: "1600",
+						types: ["street_number"],
+					},
+					{
+						long_name: "Amphitheatre Parkway",
+						short_name: "Amphitheatre Pkwy",
+						types: ["route"],
+					},
+					{
+						long_name: "Mountain View",
+						short_name: "Mountain View",
+						types: ["locality", "political"],
+					},
+					{
+						long_name: "Santa Clara County",
+						short_name: "Santa Clara County",
+						types: ["administrative_area_level_2", "political"],
+					},
+					{
+						long_name: "California",
+						short_name: "CA",
+						types: ["administrative_area_level_1", "political"],
+					},
+					{
+						long_name: "United States",
+						short_name: "US",
+						types: ["country", "political"],
+					},
+					{
+						long_name: "94043",
+						short_name: "94043",
+						types: ["postal_code"],
+					},
+				],
+				formatted_address:
+					"1600 Amphitheatre Pkwy, Mountain View, CA 94043, USA",
+				geometry: {
+					location: {
+						lat: 37.4223081,
+						lng: -122.0846449,
+					},
+					location_type: "ROOFTOP",
+					viewport: {
+						northeast: {
+							lat: 37.4236570802915,
+							lng: -122.0832959197085,
+						},
+						southwest: {
+							lat: 37.4209591197085,
+							lng: -122.0859938802915,
+						},
+					},
+				},
+				place_id: "ChIJtYuu0V25j4ARwu5e4wwRYgE",
+				plus_code: {
+					compound_code: "CWC8+W4 Mountain View, CA, United States",
+					global_code: "849VCWC8+W4",
+				},
+				types: ["street_address"],
+			},
+		],
+		status: "OK",
+	};
+	console.log(response1);
+
+	output = {
+		globalCode: response1.results[0].plus_code.global_code,
+		subLocality: response1.results[0].address_components[1].long_name,
+		pincode: response1.results[0].address_components[6].long_name,
+		road: response1.results[0].address_components[0].long_name,
+		completeAddress: response1.results[0].formatted_address,
+		placeId: response1.results[0].place_id,
+	};
+	return res.send(output);
+});
 
 app.get("/", (req, res) => {
 	if (req.cookies.__session) {
@@ -279,7 +380,36 @@ app.get("/dashboard", checkCookieMiddleware, (req, res) => {
 			return res.render("dashboard", {
 				user,
 				potholesData,
-				potholesID
+				potholesID,
+			});
+		})
+		.catch((err) => {
+			console.log("Error getting potholes", err);
+			res.redirect("/login");
+		});
+});
+app.get("/adminDashboard", checkCookieMiddleware, (req, res) => {
+	var i = 0,
+		potholeData = new Array(),
+		potholeID = new Array();
+	db.collection("users")
+		.doc(req.decodedClaims.uid)
+		.collection("potholes")
+		.get()
+		.then((querySnapshot) => {
+			querySnapshot.forEach((childSnapshot) => {
+				potholeID[i] = childSnapshot.id;
+				potholeData[i] = childSnapshot.data();
+				i++;
+			});
+			potholesData = Object.assign({}, potholeData);
+			potholesID = Object.assign({}, potholeID);
+			user = Object.assign({}, req.decodedClaims);
+			console.log("\n\n\n", user);
+			return res.render("adminDashboard", {
+				user,
+				potholesData,
+				potholesID,
 			});
 		})
 		.catch((err) => {
@@ -348,15 +478,15 @@ app.post("/onLogin", (req, res) => {
 					);
 					if (userRecord.phoneNumber && userRecord.emailVerified) {
 						return res.send({
-							path: "/dashboard"
+							path: "/dashboard",
 						});
 					} else if (!userRecord.emailVerified) {
 						return res.send({
-							path: "/emailVerification"
+							path: "/emailVerification",
 						});
 					} else {
 						return res.send({
-							path: "/updateProfile"
+							path: "/updateProfile",
 						});
 					}
 				})
@@ -422,8 +552,10 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 					path.join(
 						os.tmpdir(),
 						path.basename(req.files.file[0].fieldname)
-					), {
-						destination: "potholePictures/" +
+					),
+					{
+						destination:
+							"potholePictures/" +
 							req.decodedClaims.uid +
 							"/" +
 							req.files.file[0].originalname,
@@ -466,20 +598,42 @@ app.get("/report", checkCookieMiddleware, (req, res) => {
 	});
 });
 app.post("/submitReport", checkCookieMiddleware, (req, res) => {
-	var obj = {
-		latitude: req.body.latitude,
-		longitude: req.body.longitude,
-		image: req.body.imageURL,
-		description: req.body.description,
-		neg: vader_analysis(req.body.description).neg * 100,
-	};
-	console.log(obj);
-	db.collection("users")
-		.doc(req.decodedClaims.uid)
-		.collection("potholes")
-		.doc()
-		.set(obj);
-	res.redirect("/dashboard");
+	axios
+		.post("https://maps.googleapis.com/maps/api/geocode/json", null, {
+			params: {
+				latlng: `${req.body.latitude},${req.body.longitude}`,
+				key: "AIzaSyABVaSmbAYEGC1kRnGs5bT82ybevf4_tn4",
+			},
+		})
+		.then((response) => {
+			obj = {
+				latitude: req.body.latitude,
+				longitude: req.body.longitude,
+				image: req.body.imageURL,
+				description: req.body.description,
+				globalCode: response.data.results[0].plus_code.global_code,
+				completeAddress: response.data.results[0].formatted_address,
+				placeId: response.data.results[0].place_id,
+				neg: vader_analysis(req.body.description).neg * 100,
+			};
+			console.log(obj);
+			var ID = makeID(36);
+			db.collection("users")
+				.doc(req.decodedClaims.uid)
+				.collection("potholes")
+				.doc(ID)
+				.set(obj);
+			db.collection("globalCodes")
+				.doc(obj.globalCode)
+				.collection("potholes")
+				.doc(ID)
+				.set(obj);
+			return res.redirect("/dashboard");
+		})
+		.catch((error) => {
+			console.log(error);
+			res.send("error");
+		});
 });
 /*=============================================>>>>>
 
