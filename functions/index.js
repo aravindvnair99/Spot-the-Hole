@@ -259,7 +259,7 @@ app.get("/geocoding", (req, res) => {
 			output = {
 				globalCode: response.data.results[0].plus_code.global_code,
 				completeAddress: response.data.results[0].formatted_address,
-				placeId: response.data.results[0].place_id,
+				placeID: response.data.results[0].place_id,
 			};
 			return res.send(output);
 		})
@@ -347,7 +347,7 @@ app.get("/trial", (req, res) => {
 		pincode: response1.results[0].address_components[6].long_name,
 		road: response1.results[0].address_components[0].long_name,
 		completeAddress: response1.results[0].formatted_address,
-		placeId: response1.results[0].place_id,
+		placeID: response1.results[0].place_id,
 	};
 	return res.send(output);
 });
@@ -390,10 +390,28 @@ app.get("/dashboard", checkCookieMiddleware, (req, res) => {
 });
 app.get("/adminDashboard", checkCookieMiddleware, (req, res) => {
 	var i = 0,
+		globalCode = new Array();
+	db.collection("globalCodes")
+		.get()
+		.then((snapshot) => {
+			snapshot.forEach((doc) => {
+				globalCode[i] = doc.id;
+				i++;
+			});
+			globalCodes = Object.assign({}, globalCode);
+			console.log(globalCodes);
+			return res.render("adminDashboard", { globalCodes });
+		})
+		.catch((err) => {
+			console.log("Error getting documents", err);
+		});
+});
+app.get("/potholesByLocation", (req, res) => {
+	var i = 0,
 		potholeData = new Array(),
 		potholeID = new Array();
-	db.collection("users")
-		.doc(req.decodedClaims.uid)
+	db.collection("globalCodes")
+		.doc(req.query.globalCode.split(" ").join("+"))
 		.collection("potholes")
 		.get()
 		.then((querySnapshot) => {
@@ -406,7 +424,7 @@ app.get("/adminDashboard", checkCookieMiddleware, (req, res) => {
 			potholesID = Object.assign({}, potholeID);
 			user = Object.assign({}, req.decodedClaims);
 			console.log("\n\n\n", user);
-			return res.render("adminDashboard", {
+			return res.render("potholesByLocation", {
 				user,
 				potholesData,
 				potholesID,
@@ -598,6 +616,8 @@ app.get("/report", checkCookieMiddleware, (req, res) => {
 	});
 });
 app.post("/submitReport", checkCookieMiddleware, (req, res) => {
+	console.log(req.body.latitude);
+	console.log(req.body.longitude);
 	axios
 		.post("https://maps.googleapis.com/maps/api/geocode/json", null, {
 			params: {
@@ -606,28 +626,36 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 			},
 		})
 		.then((response) => {
+			console.log(response);
 			obj = {
 				latitude: req.body.latitude,
 				longitude: req.body.longitude,
 				image: req.body.imageURL,
 				description: req.body.description,
-				globalCode: response.data.results[0].plus_code.global_code,
+				globalCode: response.data.plus_code.global_code,
 				completeAddress: response.data.results[0].formatted_address,
-				placeId: response.data.results[0].place_id,
+				placeID: response.data.results[0].place_id,
 				neg: vader_analysis(req.body.description).neg * 100,
 			};
 			console.log(obj);
 			var ID = makeID(36);
+			db.collection("users").doc(req.decodedClaims.uid).set({
+				uid: req.decodedClaims.uid,
+			});
 			db.collection("users")
 				.doc(req.decodedClaims.uid)
 				.collection("potholes")
 				.doc(ID)
 				.set(obj);
+			db.collection("globalCodes").doc(obj.globalCode).set({
+				completeAddress: obj.completeAddress,
+			});
 			db.collection("globalCodes")
 				.doc(obj.globalCode)
 				.collection("potholes")
 				.doc(ID)
 				.set(obj);
+
 			return res.redirect("/dashboard");
 		})
 		.catch((error) => {

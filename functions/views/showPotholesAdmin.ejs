@@ -1,0 +1,38 @@
+<% for(var i=0;i<Object.keys(potholesData).length;i++) { %>
+	<div class="row">
+		<div class="col s12 pad-0">
+			<h5 class="bot-20 sec-tit">
+				<%= potholesData[i].latitude %>, <%= potholesData[i].longitude
+				%>
+			</h5>
+			<div class="card">
+				<div class="card-image">
+					<img src="<%= potholesData[i].image %>" />
+					<!-- <span class="card-title">Image Card</span> -->
+				</div>
+				<div class="card-content">
+					<br />
+					<p>
+						Negativity rating: <%= potholesData[i].neg %>
+					</p>
+					<br />
+					<p>
+						Location via Place ID: <a href="https://www.google.com/maps/search/?api=1&query=Google&query_place_id=<%= potholesData[i].placeID %>" target="_blank"><%= potholesData[i].placeID %></a>
+					</p>
+					<br />
+					<p>
+						Complete Address: <%= potholesData[i].completeAddress %>
+					</p>
+					<br />
+					<p>
+						Description: <%= potholesData[i].description %>
+					</p>
+				</div>
+				<!-- <div class="card-action">
+								<a href="#">This is a link</a>
+							</div> -->
+			</div>
+		</div>
+	</div>
+	<% }%></Object.keys(potholesData).length;i++)
+>
