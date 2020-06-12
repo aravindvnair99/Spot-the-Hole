@@ -1,0 +1,3 @@
+<% for(var i=0;i<Object.keys(potholesData).length;i++) { %>
+    {location: new google.maps.LatLng(<%= potholesData[i].latitude %>, <%= potholesData[i].longitude %>), weight: <%= potholesData[i].rating %>},
+<% }%>

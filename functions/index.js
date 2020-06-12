@@ -256,12 +256,12 @@ app.get("/geocoding", (req, res) => {
 			},
 		})
 		.then((response) => {
-			output = {
+			obj = {
 				globalCode: response.data.results[0].plus_code.global_code,
 				completeAddress: response.data.results[0].formatted_address,
 				placeID: response.data.results[0].place_id,
 			};
-			return res.send(output);
+			return res.send(obj);
 		})
 		.catch((error) => {
 			console.log(error.response);
@@ -339,17 +339,80 @@ app.get("/trial", (req, res) => {
 		],
 		status: "OK",
 	};
-	console.log(response1);
-
-	output = {
-		globalCode: response1.results[0].plus_code.global_code,
-		subLocality: response1.results[0].address_components[1].long_name,
-		pincode: response1.results[0].address_components[6].long_name,
-		road: response1.results[0].address_components[0].long_name,
-		completeAddress: response1.results[0].formatted_address,
-		placeID: response1.results[0].place_id,
-	};
-	return res.send(output);
+	var obj = {};
+	response1.results[0].address_components.forEach((element) => {
+		if (
+			element.types[0] === "street_address" ||
+			element.types[1] === "street_address"
+		)
+			obj.street_address = element.long_name;
+		else if (element.types[0] === "route" || element.types[1] === "route")
+			obj.route = element.long_name;
+		else if (
+			element.types[0] === "intersection" ||
+			element.types[1] === "intersection"
+		)
+			obj.intersection = element.long_name;
+		else if (
+			element.types[0] === "administrative_area_level_5" ||
+			element.types[1] === "administrative_area_level_5"
+		)
+			obj.administrative_area_level_5 = element.long_name;
+		else if (
+			element.types[0] === "administrative_area_level_4" ||
+			element.types[1] === "administrative_area_level_4"
+		)
+			obj.administrative_area_level_4 = element.long_name;
+		else if (
+			element.types[0] === "administrative_area_level_3" ||
+			element.types[1] === "administrative_area_level_3"
+		)
+			obj.administrative_area_level_3 = element.long_name;
+		else if (
+			element.types[0] === "administrative_area_level_2" ||
+			element.types[1] === "administrative_area_level_2"
+		)
+			obj.administrative_area_level_2 = element.long_name;
+		else if (
+			element.types[0] === "administrative_area_level_1" ||
+			element.types[1] === "administrative_area_level_1"
+		)
+			obj.administrative_area_level_1 = element.long_name;
+		else if (
+			element.types[0] === "locality" ||
+			element.types[1] === "locality"
+		)
+			obj.locality = element.long_name;
+		else if (
+			element.types[0] === "sublocality" ||
+			element.types[1] === "sublocality"
+		)
+			obj.sublocality = element.long_name;
+		else if (
+			element.types[0] === "neighborhood" ||
+			element.types[1] === "neighborhood"
+		)
+			obj.neighborhood = element.long_name;
+		else if (
+			element.types[0] === "premise" ||
+			element.types[1] === "premise"
+		)
+			obj.premise = element.long_name;
+		else if (
+			element.types[0] === "subpremise" ||
+			element.types[1] === "subpremise"
+		)
+			obj.subpremise = element.long_name;
+		else if (
+			element.types[0] === "postal_code" ||
+			element.types[1] === "postal_code"
+		)
+			obj.postal_code = element.long_name;
+	});
+	obj.globalCode = response1.results[0].plus_code.global_code;
+	obj.completeAddress = response1.results[0].formatted_address;
+	obj.placeID = response1.results[0].place_id;
+	return res.send(obj);
 });
 
 app.get("/", (req, res) => {
@@ -406,7 +469,7 @@ app.get("/adminDashboard", checkCookieMiddleware, (req, res) => {
 			console.log("Error getting documents", err);
 		});
 });
-app.get("/potholesByLocation", (req, res) => {
+app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 	var i = 0,
 		potholeData = new Array(),
 		potholeID = new Array();
@@ -424,15 +487,78 @@ app.get("/potholesByLocation", (req, res) => {
 			potholesID = Object.assign({}, potholeID);
 			user = Object.assign({}, req.decodedClaims);
 			console.log("\n\n\n", user);
-			return res.render("potholesByLocation", {
-				user,
-				potholesData,
-				potholesID,
-			});
+			db.collection("globalCodes")
+				.doc(req.query.globalCode.split(" ").join("+"))
+				.get()
+				.then((querySnapshot) => {
+					rating = querySnapshot.data().rating;
+					return res.render("potholesByLocation", {
+						user,
+						potholesData,
+						potholesID,
+						rating,
+					});
+				})
+				.catch((err) => {
+					console.log(`Error getting rating for ${globalCode}`, err);
+				});
+			console.log(rating);
+			return;
 		})
 		.catch((err) => {
 			console.log("Error getting potholes", err);
-			res.redirect("/login");
+		});
+});
+app.get("/heatmap", checkCookieMiddleware, (req, res) => {
+	var i = 0,
+		potholeData = new Array();
+	db.collectionGroup("potholes")
+		.get()
+		.then((querySnapshot) => {
+			querySnapshot.forEach((childSnapshot) => {
+				potholeData[i] = childSnapshot.data();
+				i++;
+			});
+			potholesData = Object.assign({}, potholeData);
+			user = Object.assign({}, req.decodedClaims);
+			console.log("\n\n\n", user);
+			db.collection("globalCodes")
+				.get()
+				.then((snapshot) => {
+					snapshot.forEach((doc) => {
+						potholeData.forEach((element) => {
+							if (element.globalCode === doc.id) {
+								element.rating = doc.data().rating;
+							}
+						});
+					});
+					return res.render("heatmap", {
+						user,
+						potholesData,
+					});
+				})
+				.catch((err) => {
+					console.log(`Error getting rating`, err);
+					res.send("Error occured");
+				});
+			return;
+		})
+		.catch((err) => {
+			console.log("Error getting pothole data", err);
+			res.send("Error occured");
+		});
+});
+app.post("/setRating", checkCookieMiddleware, (req, res) => {
+	db.collection("globalCodes")
+		.doc(req.body.globalCode)
+		.update({ rating: req.body.rating })
+		.then(res.status(200).send("Set"))
+		.catch((err) => {
+			console.log(
+				`Error setting ${req.body.globalCode} to ${req.body.rating}`,
+				err
+			);
+			res.status(500).send("Error");
 		});
 });
 app.get("/offline", (req, res) => {
@@ -466,7 +592,7 @@ app.get("/termsConditions", (req, res) => {
 
 app.get("/login", (req, res) => {
 	if (req.cookies.__session) {
-		res.render("dashboard");
+		res.redirect("/dashboard");
 	} else {
 		res.render("login");
 	}
@@ -593,7 +719,7 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 							photo: file.metadata.mediaLink,
 						};
 						string = encodeURIComponent(file.metadata.mediaLink);
-						return res.redirect("/report?image=" + string);
+						res.redirect("/report?image=" + string);
 					}
 				);
 			} else return res.redirect("/cameraCaptureRetry");
@@ -626,18 +752,100 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 			},
 		})
 		.then((response) => {
-			console.log(response);
-			obj = {
-				latitude: req.body.latitude,
-				longitude: req.body.longitude,
-				image: req.body.imageURL,
-				description: req.body.description,
-				globalCode: response.data.plus_code.global_code,
-				completeAddress: response.data.results[0].formatted_address,
-				placeID: response.data.results[0].place_id,
-				neg: vader_analysis(req.body.description).neg * 100,
-			};
-			console.log(obj);
+			// console.log(response);
+			// obj = {
+			// 	latitude: req.body.latitude,
+			// 	longitude: req.body.longitude,
+			// 	image: req.body.imageURL,
+			// 	description: req.body.description,
+			// 	globalCode: response.data.plus_code.global_code,
+			// 	completeAddress: response.data.results[0].formatted_address,
+			// 	placeID: response.data.results[0].place_id,
+			// 	neg: vader_analysis(req.body.description).neg * 100,
+			// };
+			// console.log(obj);
+			var obj = {};
+			response.data.results[0].address_components.forEach((element) => {
+				if (
+					element.types[0] === "street_address" ||
+					element.types[1] === "street_address"
+				)
+					obj.street_address = element.long_name;
+				else if (
+					element.types[0] === "route" ||
+					element.types[1] === "route"
+				)
+					obj.route = element.long_name;
+				else if (
+					element.types[0] === "intersection" ||
+					element.types[1] === "intersection"
+				)
+					obj.intersection = element.long_name;
+				else if (
+					element.types[0] === "administrative_area_level_5" ||
+					element.types[1] === "administrative_area_level_5"
+				)
+					obj.administrative_area_level_5 = element.long_name;
+				else if (
+					element.types[0] === "administrative_area_level_4" ||
+					element.types[1] === "administrative_area_level_4"
+				)
+					obj.administrative_area_level_4 = element.long_name;
+				else if (
+					element.types[0] === "administrative_area_level_3" ||
+					element.types[1] === "administrative_area_level_3"
+				)
+					obj.administrative_area_level_3 = element.long_name;
+				else if (
+					element.types[0] === "administrative_area_level_2" ||
+					element.types[1] === "administrative_area_level_2"
+				)
+					obj.administrative_area_level_2 = element.long_name;
+				else if (
+					element.types[0] === "administrative_area_level_1" ||
+					element.types[1] === "administrative_area_level_1"
+				)
+					obj.administrative_area_level_1 = element.long_name;
+				else if (
+					element.types[0] === "locality" ||
+					element.types[1] === "locality"
+				)
+					obj.locality = element.long_name;
+				else if (
+					element.types[0] === "sublocality" ||
+					element.types[1] === "sublocality"
+				)
+					obj.sublocality = element.long_name;
+				else if (
+					element.types[0] === "neighborhood" ||
+					element.types[1] === "neighborhood"
+				)
+					obj.neighborhood = element.long_name;
+				else if (
+					element.types[0] === "premise" ||
+					element.types[1] === "premise"
+				)
+					obj.premise = element.long_name;
+				else if (
+					element.types[0] === "subpremise" ||
+					element.types[1] === "subpremise"
+				)
+					obj.subpremise = element.long_name;
+				else if (
+					element.types[0] === "postal_code" ||
+					element.types[1] === "postal_code"
+				)
+					obj.postal_code = element.long_name;
+			});
+			// obj.globalCode = response.data.results[0].plus_code.global_code;
+			obj.completeAddress = response.data.results[0].formatted_address;
+			obj.placeID = response.data.results[0].place_id;
+			obj.latitude = req.body.latitude;
+			obj.longitude = req.body.longitude;
+			obj.image = req.body.imageURL;
+			obj.description = req.body.description;
+			obj.globalCode = response.data.plus_code.global_code;
+			obj.neg = vader_analysis(req.body.description).neg * 100;
 			var ID = makeID(36);
 			db.collection("users").doc(req.decodedClaims.uid).set({
 				uid: req.decodedClaims.uid,
@@ -649,6 +857,7 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 				.set(obj);
 			db.collection("globalCodes").doc(obj.globalCode).set({
 				completeAddress: obj.completeAddress,
+				rating: 50,
 			});
 			db.collection("globalCodes")
 				.doc(obj.globalCode)
