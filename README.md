@@ -1,4 +1,4 @@
-# Spot the Hole
+# Spot the Hole ![Firebase CD](https://github.com/aravindvnair99/Spot-the-Hole/workflows/Firebase%20CD/badge.svg) ![Node CI](https://github.com/aravindvnair99/Spot-the-Hole/workflows/Node%20CI/badge.svg)
 
 Official source code of Spot the Hole PWA which was a project for Smart India Hackathon 2020 and Open Lab project at Amrita School of Engineering, Bengaluru.
 
