@@ -310,8 +310,9 @@ app.get("/adminDashboard", checkCookieMiddleware, (req, res) => {
 				i++;
 			});
 			globalCodes = Object.assign({}, globalCode);
-			console.log(globalCodes);
-			return res.render("adminDashboard", { globalCodes });
+			user = Object.assign({}, req.decodedClaims);
+			console.info("\n\n Accessing admin dashboard:\n\n", user, "\n\n");
+			return res.render("adminDashboard", { user, globalCodes });
 		})
 		.catch((err) => {
 			console.error(
@@ -338,28 +339,33 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 			potholesData = Object.assign({}, potholeData);
 			potholesID = Object.assign({}, potholeID);
 			user = Object.assign({}, req.decodedClaims);
-			console.log("\n\n\n", user);
-			db.collection("globalCodes")
-				.doc(req.query.globalCode.split(" ").join("+"))
-				.get()
-				.then((querySnapshot) => {
-					rating = querySnapshot.data().rating;
-					return res.render("potholesByLocation", {
-						user,
-						potholesData,
-						potholesID,
-						rating,
-					});
-				})
-				.catch((err) => {
-					console.log(`Error getting rating for ${globalCode}`, err);
-				});
-			console.log(rating);
-			return;
+			console.info(
+				"\n\n Accessing potholesByLocation:\n\n",
+				user,
+				"\n\n"
+			);
+			return getRating();
 		})
 		.catch((err) => {
 			console.log("Error getting potholes", err);
 		});
+	function getRating() {
+		db.collection("globalCodes")
+			.doc(req.query.globalCode.split(" ").join("+"))
+			.get()
+			.then((querySnapshot) => {
+				rating = querySnapshot.data().rating;
+				return res.render("potholesByLocation", {
+					user,
+					potholesData,
+					potholesID,
+					rating,
+				});
+			})
+			.catch((err) => {
+				console.log(`Error getting rating for ${globalCode}`, err);
+			});
+	}
 });
 app.get("/heatmap", checkCookieMiddleware, (req, res) => {
 	var i = 0,
@@ -374,31 +380,33 @@ app.get("/heatmap", checkCookieMiddleware, (req, res) => {
 			potholesData = Object.assign({}, potholeData);
 			user = Object.assign({}, req.decodedClaims);
 			console.log("\n\n\n", user);
-			db.collection("globalCodes")
-				.get()
-				.then((snapshot) => {
-					snapshot.forEach((doc) => {
-						potholeData.forEach((element) => {
-							if (element.globalCode === doc.id) {
-								element.rating = doc.data().rating;
-							}
-						});
-					});
-					return res.render("heatmap", {
-						user,
-						potholesData,
-					});
-				})
-				.catch((err) => {
-					console.log(`Error getting rating`, err);
-					res.send("Error occured");
-				});
-			return;
+			return getRating();
 		})
 		.catch((err) => {
 			console.log("Error getting pothole data", err);
 			res.send("Error occured");
 		});
+	function getRating() {
+		db.collection("globalCodes")
+			.get()
+			.then((snapshot) => {
+				snapshot.forEach((doc) => {
+					potholeData.forEach((element) => {
+						if (element.globalCode === doc.id) {
+							element.rating = doc.data().rating;
+						}
+					});
+				});
+				return res.render("heatmap", {
+					user,
+					potholesData,
+				});
+			})
+			.catch((err) => {
+				console.log(`Error getting rating`, err);
+				res.send("Error occured");
+			});
+	}
 });
 app.post("/setRating", checkCookieMiddleware, (req, res) => {
 	db.collection("globalCodes")
@@ -456,46 +464,45 @@ app.get("/signOut", (req, res) => {
 	res.clearCookie("__session");
 	res.redirect("/login");
 });
-app.get("/uid", checkCookieMiddleware, (req, res) => {
-	res.send(req.decodedClaims.uid);
-});
 app.post("/onLogin", (req, res) => {
 	admin
 		.auth()
 		.verifyIdToken(req.body.idToken, true)
 		.then((decodedToken) => {
-			admin
-				.auth()
-				.getUser(decodedToken.uid)
-				.then((userRecord) => {
-					console.log(
-						"Successfully fetched user data:",
-						userRecord.toJSON()
-					);
-					if (userRecord.phoneNumber && userRecord.emailVerified) {
-						return res.send({
-							path: "/dashboard",
-						});
-					} else if (!userRecord.emailVerified) {
-						return res.send({
-							path: "/emailVerification",
-						});
-					} else {
-						return res.send({
-							path: "/updateProfile",
-						});
-					}
-				})
-				.catch((error) => {
-					console.log("Error fetching user data:", error);
-					res.send("/login");
-				});
-			return;
+			return getUser(decodedToken);
 		})
 		.catch((error) => {
 			console.error(error);
 			res.send("/login");
 		});
+	function getUser(decodedToken) {
+		admin
+			.auth()
+			.getUser(decodedToken.uid)
+			.then((userRecord) => {
+				console.log(
+					"Successfully fetched user data:",
+					userRecord.toJSON()
+				);
+				if (userRecord.phoneNumber && userRecord.emailVerified) {
+					return res.send({
+						path: "/dashboard",
+					});
+				} else if (!userRecord.emailVerified) {
+					return res.send({
+						path: "/emailVerification",
+					});
+				} else {
+					return res.send({
+						path: "/updateProfile",
+					});
+				}
+			})
+			.catch((error) => {
+				console.log("Error fetching user data:", error);
+				res.send("/login");
+			});
+	}
 });
 app.get("/emailVerification", (req, res) => {
 	res.render("emailVerification");
@@ -529,14 +536,14 @@ app.post("/onUpdateProfile", (req, res) => {
 
 app.get("/cameraCapture", checkCookieMiddleware, (req, res) => {
 	user = Object.assign({}, req.decodedClaims);
-	console.info("\n\n Accessing cameraCapture:\n\n", user, "\n\n");
+	console.info("\n\nAccessing cameraCapture:\n\n", user, "\n\n");
 	res.render("cameraCapture", {
 		user,
 	});
 });
 app.get("/cameraCaptureRetry", checkCookieMiddleware, (req, res) => {
 	user = Object.assign({}, req.decodedClaims);
-	console.info("\n\n Accessing cameraCaptureRetry:\n\n", user, "\n\n");
+	console.info("\n\nAccessing cameraCaptureRetry:\n\n", user, "\n\n");
 	res.render("cameraCaptureRetry", {
 		user,
 	});
@@ -584,12 +591,14 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 							console.log(err);
 							return;
 						}
-						console.log(file.metadata);
-						var pictureData = {
-							photo: file.metadata.mediaLink,
-						};
-						string = encodeURIComponent(file.metadata.mediaLink);
-						res.redirect("/report?image=" + string);
+						console.log(
+							"\n\nGoogle Cloud Storage metadata:\n\n",
+							file.metadata
+						);
+						res.redirect(
+							"/report?image=" +
+								encodeURIComponent(file.metadata.mediaLink)
+						);
 					}
 				);
 			} else return res.redirect("/cameraCaptureRetry");
@@ -606,14 +615,23 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 
 ===============================================>>>>>*/
 app.get("/report", checkCookieMiddleware, (req, res) => {
-	console.log("\n\n\n", req.query.image);
+	user = Object.assign({}, req.decodedClaims);
+	console.info(
+		"\n\nAccessing report page for :",
+		req.query.image,
+		" by:\n\n",
+		user,
+		"\n\n"
+	);
 	res.render("report", {
 		pothole: req.query.image,
+		user,
 	});
 });
 app.post("/submitReport", checkCookieMiddleware, (req, res) => {
-	console.log(req.body.latitude);
-	console.log(req.body.longitude);
+	console.log(
+		`\n\nLatitude received from user is ${req.body.latitude} and longitude is ${req.body.longitude}\n\n`
+	);
 	axios
 		.post("https://maps.googleapis.com/maps/api/geocode/json", null, {
 			params: {
@@ -623,7 +641,11 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 		})
 		.then((response) => {
 			var obj = {};
-			console.log("\n\n", response.data.results[0]);
+			console.log(
+				"\n\nGoogle Maps Geocoding Response:\n\n",
+				response.data.results[0],
+				"\n\n"
+			);
 			response.data.results[0].address_components.forEach((element) => {
 				if (
 					element.types[0] === "street_address" ||
@@ -696,7 +718,6 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 				)
 					obj.postal_code = element.long_name;
 			});
-			// obj.globalCode = response.data.results[0].plus_code.global_code;
 			obj.completeAddress = response.data.results[0].formatted_address;
 			obj.placeID = response.data.results[0].place_id;
 			obj.latitude = req.body.latitude;
@@ -740,11 +761,5 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 app.use((req, res) => {
 	res.status(404).render("errors/404");
 });
-
-/*=============================================>>>>>
-
-				= DO NOT PUT ANYTHING AFTER THIS =
-
-===============================================>>>>>*/
 
 exports.app = functions.https.onRequest(app);
