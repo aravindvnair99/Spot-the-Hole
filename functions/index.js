@@ -1,5 +1,3 @@
-const { response } = require("express");
-
 const functions = require("firebase-functions"),
 	express = require("express"),
 	app = express(),
@@ -12,6 +10,7 @@ const functions = require("firebase-functions"),
 	fs = require("fs"),
 	vader = require("vader-sentiment"),
 	{ PredictionServiceClient } = require("@google-cloud/automl").v1,
+	morgan = require("morgan"),
 	axios = require("axios");
 
 /*=============================================>>>>>
@@ -24,6 +23,7 @@ admin.initializeApp({
 	credential: admin.credential.applicationDefault(),
 	storageBucket: process.env.GCLOUD_PROJECT + ".appspot.com",
 });
+app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(
 	bodyParser.urlencoded({
@@ -50,7 +50,8 @@ app.use((req, res, next) => {
 			}
 		);
 	} else {
-		return next();
+		next();
+		return;
 	}
 });
 
@@ -121,17 +122,20 @@ function checkCookieMiddleware(req, res, next) {
 		.verifySessionCookie(sessionCookie, true)
 		.then((decodedClaims) => {
 			req.decodedClaims = decodedClaims;
-			next();
-			return;
+			return next();
 		})
 		.catch((error) => {
-			console.log(error);
+			console.error(
+				"\n\nIn checkCookieMiddleware(), catch:\n\n",
+				error,
+				"\n\n"
+			);
 			res.redirect("/signOut");
 		});
 }
 
 function setCookie(idToken, res, isNewUser) {
-	const expiresIn = 60 * 60 * 24 * 5 * 1000;
+	const expiresIn = 60 * 60 * 24 * 7 * 1000;
 	admin
 		.auth()
 		.createSessionCookie(idToken, {
@@ -142,35 +146,76 @@ function setCookie(idToken, res, isNewUser) {
 				const options = {
 					maxAge: expiresIn,
 					httpOnly: true,
-					secure: false, //should be true in prod
+					secure: true,
+					SameSite: "Strict",
 				};
 				res.cookie("__session", sessionCookie, options);
-				admin
-					.auth()
-					.verifyIdToken(idToken)
-					.then((decodedClaims) => {
-						console.log("\n\n\n", isNewUser);
-						if (isNewUser === "true") {
-							res.redirect("/dashboard");
-							return console.log(decodedClaims);
-						} else {
-							res.redirect("/dashboard");
-							return console.log(decodedClaims);
-						}
-					})
-					.catch((error) => {
-						console.log(error);
-					});
-				return;
+				return verifyIdToken();
 			},
 			(error) => {
-				console.log(error);
-				res.status(401).send("UNAUTHORIZED REQUEST!");
+				console.error(
+					"\n\nIn sessionCookie, catch:\n\n",
+					error,
+					"\n\n"
+				);
+				res.status(401).render("errors/401");
 			}
 		)
 		.catch((error) => {
-			console.log(error);
+			console.error(
+				"\n\nIn createSessionCookie(), catch:\n\n",
+				error,
+				"\n\n"
+			);
 		});
+	function verifyIdToken() {
+		admin
+			.auth()
+			.verifyIdToken(idToken)
+			.then((decodedClaims) => {
+				if (isNewUser === "true") {
+					res.redirect("/dashboard");
+					return console.info(
+						"\n\nNew user has been verified with\n\n",
+						decodedClaims,
+						"\n\n"
+					);
+				} else if (isNewUser === "false") {
+					res.redirect("/dashboard");
+					return console.info(
+						"\n\nExisting user has been verified with\n\n",
+						decodedClaims,
+						"\n\n"
+					);
+				} else {
+					return console.error(
+						"\n\nisNewUser param not set for\n\n",
+						decodedClaims,
+						"\n\n"
+					);
+				}
+			})
+			.catch((error) => {
+				console.error(
+					"\n\nIn verifyIdToken(), catch:\n\n",
+					error,
+					"\n\n"
+				);
+			});
+	}
+}
+
+function makeID(length) {
+	var result = "";
+	var characters =
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	var charactersLength = characters.length;
+	for (var i = 0; i < length; i++) {
+		result += characters.charAt(
+			Math.floor(Math.random() * charactersLength)
+		);
+	}
+	return result;
 }
 
 /*=============================================>>>>>
@@ -202,14 +247,6 @@ function AutoMLAPI(content) {
 		};
 		const [response] = await client.predict(request);
 		return response.payload;
-		// for (const annotationPayload of response.payload) {
-		// 	console.log(
-		// 		`Predicted class name: ${annotationPayload.displayName}`
-		// 	);
-		// 	console.log(
-		// 		`Predicted class score: ${annotationPayload.classification.score}`
-		// 	);
-		// }
 	}
 	return predict();
 }
@@ -225,195 +262,9 @@ function vader_analysis(input) {
 
 /*=============================================>>>>>
 
-				= Other Functions =
-
-===============================================>>>>>*/
-
-function makeID(length) {
-	var result = "";
-	var characters =
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	var charactersLength = characters.length;
-	for (var i = 0; i < length; i++) {
-		result += characters.charAt(
-			Math.floor(Math.random() * charactersLength)
-		);
-	}
-	return result;
-}
-
-/*=============================================>>>>>
-
 				= basic routes =
 
 ===============================================>>>>>*/
-app.get("/geocoding", (req, res) => {
-	axios
-		.post("https://maps.googleapis.com/maps/api/geocode/json", null, {
-			params: {
-				latlng: "40.714224,-73.961452",
-				key: "AIzaSyABVaSmbAYEGC1kRnGs5bT82ybevf4_tn4",
-			},
-		})
-		.then((response) => {
-			obj = {
-				globalCode: response.data.results[0].plus_code.global_code,
-				completeAddress: response.data.results[0].formatted_address,
-				placeID: response.data.results[0].place_id,
-			};
-			return res.send(obj);
-		})
-		.catch((error) => {
-			console.log(error.response);
-			res.send("   ");
-		});
-});
-
-app.get("/trial", (req, res) => {
-	response1 = {
-		results: [
-			{
-				address_components: [
-					{
-						long_name: "1600",
-						short_name: "1600",
-						types: ["street_number"],
-					},
-					{
-						long_name: "Amphitheatre Parkway",
-						short_name: "Amphitheatre Pkwy",
-						types: ["route"],
-					},
-					{
-						long_name: "Mountain View",
-						short_name: "Mountain View",
-						types: ["locality", "political"],
-					},
-					{
-						long_name: "Santa Clara County",
-						short_name: "Santa Clara County",
-						types: ["administrative_area_level_2", "political"],
-					},
-					{
-						long_name: "California",
-						short_name: "CA",
-						types: ["administrative_area_level_1", "political"],
-					},
-					{
-						long_name: "United States",
-						short_name: "US",
-						types: ["country", "political"],
-					},
-					{
-						long_name: "94043",
-						short_name: "94043",
-						types: ["postal_code"],
-					},
-				],
-				formatted_address:
-					"1600 Amphitheatre Pkwy, Mountain View, CA 94043, USA",
-				geometry: {
-					location: {
-						lat: 37.4223081,
-						lng: -122.0846449,
-					},
-					location_type: "ROOFTOP",
-					viewport: {
-						northeast: {
-							lat: 37.4236570802915,
-							lng: -122.0832959197085,
-						},
-						southwest: {
-							lat: 37.4209591197085,
-							lng: -122.0859938802915,
-						},
-					},
-				},
-				place_id: "ChIJtYuu0V25j4ARwu5e4wwRYgE",
-				plus_code: {
-					compound_code: "CWC8+W4 Mountain View, CA, United States",
-					global_code: "849VCWC8+W4",
-				},
-				types: ["street_address"],
-			},
-		],
-		status: "OK",
-	};
-	var obj = {};
-	response1.results[0].address_components.forEach((element) => {
-		if (
-			element.types[0] === "street_address" ||
-			element.types[1] === "street_address"
-		)
-			obj.street_address = element.long_name;
-		else if (element.types[0] === "route" || element.types[1] === "route")
-			obj.route = element.long_name;
-		else if (
-			element.types[0] === "intersection" ||
-			element.types[1] === "intersection"
-		)
-			obj.intersection = element.long_name;
-		else if (
-			element.types[0] === "administrative_area_level_5" ||
-			element.types[1] === "administrative_area_level_5"
-		)
-			obj.administrative_area_level_5 = element.long_name;
-		else if (
-			element.types[0] === "administrative_area_level_4" ||
-			element.types[1] === "administrative_area_level_4"
-		)
-			obj.administrative_area_level_4 = element.long_name;
-		else if (
-			element.types[0] === "administrative_area_level_3" ||
-			element.types[1] === "administrative_area_level_3"
-		)
-			obj.administrative_area_level_3 = element.long_name;
-		else if (
-			element.types[0] === "administrative_area_level_2" ||
-			element.types[1] === "administrative_area_level_2"
-		)
-			obj.administrative_area_level_2 = element.long_name;
-		else if (
-			element.types[0] === "administrative_area_level_1" ||
-			element.types[1] === "administrative_area_level_1"
-		)
-			obj.administrative_area_level_1 = element.long_name;
-		else if (
-			element.types[0] === "locality" ||
-			element.types[1] === "locality"
-		)
-			obj.locality = element.long_name;
-		else if (
-			element.types[0] === "sublocality" ||
-			element.types[1] === "sublocality"
-		)
-			obj.sublocality = element.long_name;
-		else if (
-			element.types[0] === "neighborhood" ||
-			element.types[1] === "neighborhood"
-		)
-			obj.neighborhood = element.long_name;
-		else if (
-			element.types[0] === "premise" ||
-			element.types[1] === "premise"
-		)
-			obj.premise = element.long_name;
-		else if (
-			element.types[0] === "subpremise" ||
-			element.types[1] === "subpremise"
-		)
-			obj.subpremise = element.long_name;
-		else if (
-			element.types[0] === "postal_code" ||
-			element.types[1] === "postal_code"
-		)
-			obj.postal_code = element.long_name;
-	});
-	obj.globalCode = response1.results[0].plus_code.global_code;
-	obj.completeAddress = response1.results[0].formatted_address;
-	obj.placeID = response1.results[0].place_id;
-	return res.send(obj);
-});
 
 app.get("/", (req, res) => {
 	if (req.cookies.__session) {
@@ -439,7 +290,7 @@ app.get("/dashboard", checkCookieMiddleware, (req, res) => {
 			potholesData = Object.assign({}, potholeData);
 			potholesID = Object.assign({}, potholeID);
 			user = Object.assign({}, req.decodedClaims);
-			console.log("\n\n\n", user);
+			console.info("\n\n Accessing dashboard:\n\n", user, "\n\n");
 			return res.render("dashboard", {
 				user,
 				potholesData,
@@ -447,7 +298,11 @@ app.get("/dashboard", checkCookieMiddleware, (req, res) => {
 			});
 		})
 		.catch((err) => {
-			console.log("Error getting potholes", err);
+			console.error(
+				"\n\nDashboard - error getting potholes:\n\n",
+				err,
+				"\n\n"
+			);
 			res.redirect("/login");
 		});
 });
@@ -466,7 +321,11 @@ app.get("/adminDashboard", checkCookieMiddleware, (req, res) => {
 			return res.render("adminDashboard", { globalCodes });
 		})
 		.catch((err) => {
-			console.log("Error getting documents", err);
+			console.error(
+				"\n\nAdmin Dashboard - error getting globalCodes:\n\n",
+				err,
+				"\n\n"
+			);
 		});
 });
 app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
@@ -641,7 +500,7 @@ app.post("/onLogin", (req, res) => {
 			return;
 		})
 		.catch((error) => {
-			console.log(error);
+			console.error(error);
 			res.send("/login");
 		});
 });
@@ -676,7 +535,11 @@ app.post("/onUpdateProfile", (req, res) => {
 ===============================================>>>>>*/
 
 app.get("/cameraCapture", checkCookieMiddleware, (req, res) => {
-	res.render("cameraCapture");
+	user = Object.assign({}, req.decodedClaims);
+	console.info("\n\n Accessing cameraCapture:\n\n", user, "\n\n");
+	res.render("cameraCapture", {
+		user,
+	});
 });
 app.get("/cameraCaptureRetry", checkCookieMiddleware, (req, res) => {
 	res.render("cameraCaptureRetry");
@@ -687,7 +550,11 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 	);
 	AutoMLAPI(base64str)
 		.then((prediction) => {
-			console.log(prediction[0]);
+			console.info(
+				"\n\nPrediction result is:\n\n",
+				prediction[0],
+				"\n\n"
+			);
 			if (
 				prediction[0].displayName === "pothole" &&
 				prediction[0].classification.score >= 0.93
@@ -723,7 +590,7 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 					}
 				);
 			} else return res.redirect("/cameraCaptureRetry");
-			return;
+			return null;
 		})
 		.catch((error) => {
 			console.log("Error is:", error);
@@ -748,23 +615,12 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 		.post("https://maps.googleapis.com/maps/api/geocode/json", null, {
 			params: {
 				latlng: `${req.body.latitude},${req.body.longitude}`,
-				key: "AIzaSyABVaSmbAYEGC1kRnGs5bT82ybevf4_tn4",
+				key: "AIzaSyB1x605iH6saTC_1U8L1VMwdWbNsEIIZj8",
 			},
 		})
 		.then((response) => {
-			// console.log(response);
-			// obj = {
-			// 	latitude: req.body.latitude,
-			// 	longitude: req.body.longitude,
-			// 	image: req.body.imageURL,
-			// 	description: req.body.description,
-			// 	globalCode: response.data.plus_code.global_code,
-			// 	completeAddress: response.data.results[0].formatted_address,
-			// 	placeID: response.data.results[0].place_id,
-			// 	neg: vader_analysis(req.body.description).neg * 100,
-			// };
-			// console.log(obj);
 			var obj = {};
+			console.log("\n\n", response.data.results[0]);
 			response.data.results[0].address_components.forEach((element) => {
 				if (
 					element.types[0] === "street_address" ||
@@ -868,7 +724,7 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 			return res.redirect("/dashboard");
 		})
 		.catch((error) => {
-			console.log(error);
+			console.error(error);
 			res.send("error");
 		});
 });
@@ -878,11 +734,8 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 
 ===============================================>>>>>*/
 
-app.use((req, res, next) => {
-	res.status(404).render("404");
-});
-app.use((req, res, next) => {
-	res.status(500).render("500");
+app.use((req, res) => {
+	res.status(404).render("errors/404");
 });
 
 /*=============================================>>>>>
