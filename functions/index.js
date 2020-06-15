@@ -63,7 +63,7 @@ app.use((req, res, next) => {
 		const busboy = new Busboy({
 			headers: req.headers,
 		});
-		let fileBuffer = new Buffer("");
+		let fileBuffer = Buffer.from("");
 		req.files = {
 			file: [],
 		};
@@ -223,13 +223,6 @@ function makeID(length) {
 				= AutoML =
 
 ===============================================>>>>>*/
-
-function base64_encode(file) {
-	// read binary data
-	var bitmap = fs.readFileSync(file);
-	// convert binary data to base64 encoded string
-	return new Buffer(bitmap).toString("base64");
-}
 
 function AutoMLAPI(content) {
 	async function predict() {
@@ -542,13 +535,23 @@ app.get("/cameraCapture", checkCookieMiddleware, (req, res) => {
 	});
 });
 app.get("/cameraCaptureRetry", checkCookieMiddleware, (req, res) => {
-	res.render("cameraCaptureRetry");
+	user = Object.assign({}, req.decodedClaims);
+	console.info("\n\n Accessing cameraCaptureRetry:\n\n", user, "\n\n");
+	res.render("cameraCaptureRetry", {
+		user,
+	});
 });
 app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
-	var base64str = base64_encode(
-		path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname))
-	);
-	AutoMLAPI(base64str)
+	AutoMLAPI(
+		fs
+			.readFileSync(
+				path.join(
+					os.tmpdir(),
+					path.basename(req.files.file[0].fieldname)
+				)
+			)
+			.toString("base64")
+	)
 		.then((prediction) => {
 			console.info(
 				"\n\nPrediction result is:\n\n",
