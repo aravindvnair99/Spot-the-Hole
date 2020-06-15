@@ -1,22 +1,24 @@
 <% for(var i=0;i<Object.keys(potholesData).length;i++) { %>
-    <div class="row">
-					<div class="col s12 pad-0">
-						<h5 class="bot-20 sec-tit"><%= potholesData[i].latitude %>, <%= potholesData[i].longitude %></h5>
-						<div class="card">
-							<div class="card-image">
-								<img src="<%= potholesData[i].image %>" />
-								<!-- <span class="card-title">Image Card</span> -->
-							</div>
-							<div class="card-content">
-								<p>
-									<%= potholesData[i].description %>
-								</p>
-							</div>
-							<!-- <div class="card-action">
+	<div class="row">
+		<div class="col s12 pad-0">
+			<h5 class="bot-20 sec-tit">
+				<%= potholesData[i].latitude %>, <%= potholesData[i].longitude
+				%>
+			</h5>
+			<div class="card">
+				<div class="card-image">
+					<img src="<%= potholesData[i].image %>" />
+					<!-- <span class="card-title">Image Card</span> -->
+				</div>
+				<div class="card-content">
+					<p>
+						<%= potholesData[i].description %>
+					</p>
+				</div>
+				<!-- <div class="card-action">
 								<a href="#">This is a link</a>
 							</div> -->
-						</div>
-					</div>
-				</div>
-	<% }%></Object.keys(potholesData).length;i++)
->
+			</div>
+		</div>
+	</div>
+	<% }%>

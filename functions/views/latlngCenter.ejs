@@ -1,8 +1,6 @@
-<% var sumLat = 0; %>
-<% var sumLng = 0; %>
-<%_ for(var i=0;i<Object.keys(potholesData).length;i++) { _%>
-    <%_ sumLat += parseFloat(potholesData[i].latitude) _%>
-    <%_ sumLng += parseFloat(potholesData[i].longitude) _%>
-<%_ } _%>
-var latAvg = <%= sumLat/Object.keys(potholesData).length %>;
-var lngAvg = <%= sumLng/Object.keys(potholesData).length %>;
+<% var sumLat = 0; %> <% var sumLng = 0; %> <%_ for(var
+i=0;i<Object.keys(potholesData).length;i++) { _%>
+	<%_ sumLat += parseFloat(potholesData[i].latitude) _%> <%_ sumLng +=
+	parseFloat(potholesData[i].longitude) _%> <%_ } _%> var latAvg = <%=
+	sumLat/Object.keys(potholesData).length %>; var lngAvg = <%=
+	sumLng/Object.keys(potholesData).length %>;

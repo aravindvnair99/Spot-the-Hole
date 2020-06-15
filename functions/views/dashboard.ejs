@@ -3,8 +3,7 @@
 	<head>
 		<title>Dashboard</title>
 		<meta content="Spot the Hole Dashboard" name="description" />
-		<%- include('components/meta') -%>
-		<%- include('components/corecss') -%>
+		<%- include('components/meta') -%> <%- include('components/corecss') -%>
 	</head>
 	<body
 		class="html"
@@ -70,9 +69,7 @@
 			</div> -->
 					<div class="col s3 imgarea">
 						<a href="#user"
-							><img
-								class="circle"
-								src="<%- user.picture -%>"
+							><img class="circle" src="<%- user.picture -%>"
 						/></a>
 					</div>
 					<div class="col s9 infoarea">
@@ -149,7 +146,6 @@
 							</a>
 						</div>
 					</li>
-					</li>
 
 					<!-- MAIN MENU - END -->
 
@@ -175,11 +171,9 @@
 			</div>
 		</div>
 
-<%- include('components/footer') -%>
-		<%- include('components/backtotop') -%>
-		<%- include('components/footer_menu') -%>
-		<%- include('components/pwa') -%>
-		<%- include('components/corejs') -%>
+		<%- include('components/footer') -%> <%- include('components/backtotop')
+		-%> <%- include('components/footer_menu') -%> <%-
+		include('components/pwabuilder-sw-register') -%> <%- include('components/corejs') -%>
 		<script type="text/javascript">
 			$(document).ready(function () {
 				$(".tabs").tabs();

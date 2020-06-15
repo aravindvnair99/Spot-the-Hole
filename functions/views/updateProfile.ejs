@@ -15,7 +15,7 @@
 		<script src="/__/firebase/init.js"></script>
 		<script>
 			function initApp() {
-				firebase.auth().onAuthStateChanged(function(user) {
+				firebase.auth().onAuthStateChanged(function (user) {
 					if (user) {
 						document.getElementById("uid").value = user.uid;
 						document.getElementById(
@@ -36,8 +36,8 @@
 					cacheControl: "max-age=604800",
 					customMetadata: {
 						dateCreated: file.lastModified,
-						originalName: file.name
-					}
+						originalName: file.name,
+					},
 				};
 				firebase
 					.storage()
@@ -145,7 +145,11 @@
 					style="text-align: center;"
 				>
 					<h2
-						style="font-family: bree serif;padding-bottom: 20px;letter-spacing: 0.5px;"
+						style="
+							font-family: bree serif;
+							padding-bottom: 20px;
+							letter-spacing: 0.5px;
+						"
 					>
 						Update Profile
 					</h2>
@@ -171,7 +175,11 @@
 						<div class="form-group">
 							<label for="firstName">First Name:</label>
 							<input
-								style="color: #ffdc73;background-color: black;border-color: #ffdc73;"
+								style="
+									color: #ffdc73;
+									background-color: black;
+									border-color: #ffdc73;
+								"
 								class="form-control"
 								id="firstName"
 								name="firstName"
@@ -182,7 +190,11 @@
 						<div class="form-group">
 							<label for="lastName">Last Name:</label>
 							<input
-								style="color: #ffdc73;background-color: black;border-color: #ffdc73;"
+								style="
+									color: #ffdc73;
+									background-color: black;
+									border-color: #ffdc73;
+								"
 								class="form-control"
 								id="lastName"
 								name="lastName"
@@ -193,7 +205,11 @@
 						<div class="form-group">
 							<label for="profilePicture">Profile Picture:</label>
 							<input
-								style="color: #ffdc73;background-color: black;border-color: #ffdc73;"
+								style="
+									color: #ffdc73;
+									background-color: black;
+									border-color: #ffdc73;
+								"
 								class="form-control"
 								id="profilePicture"
 								name="profilePicture"
@@ -207,7 +223,11 @@
 						<div class="form-group">
 							<label for="password">New Password:</label>
 							<input
-								style="color: #ffdc73;background-color: black;border-color: #ffdc73;"
+								style="
+									color: #ffdc73;
+									background-color: black;
+									border-color: #ffdc73;
+								"
 								type="password"
 								class="form-control"
 								id="password"
@@ -222,7 +242,11 @@
 								>Confirm New Password:</label
 							>
 							<input
-								style="color: #ffdc73;background-color: black;border-color: #ffdc73;"
+								style="
+									color: #ffdc73;
+									background-color: black;
+									border-color: #ffdc73;
+								"
 								type="password"
 								class="form-control"
 								name="confirmPassword"
@@ -235,7 +259,11 @@
 						<div class="form-group">
 							<label for="phoneNumber">Mobile Number:</label>
 							<input
-								style="color: #ffdc73;background-color: black;border-color: #ffdc73;"
+								style="
+									color: #ffdc73;
+									background-color: black;
+									border-color: #ffdc73;
+								"
 								type="tel"
 								class="form-control"
 								name="phoneNumber"
@@ -250,7 +278,7 @@
 								type="submit"
 								id="submit"
 								class="btn"
-								style="color: black; background-color: #ffdc73"
+								style="color: black; background-color: #ffdc73;"
 								disabled
 							>
 								Update Profile
