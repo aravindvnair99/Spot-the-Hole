@@ -31,32 +31,38 @@ function getUiConfig() {
 				authMethod: "https://accounts.google.com",
 				clientId:
 					"696028587080-0ephe2a3koj349dgais95f8nssdelffd.apps.googleusercontent.com",
+				scopes: [
+					"https://www.googleapis.com/auth/user.phonenumbers.read",
+				],
 			},
 			// {
 			// 	provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-			// 	scopes: ["public_profile", "email"]
+			// 	scopes: ["public_profile", "email"],
 			// },
 			// firebase.auth.TwitterAuthProvider.PROVIDER_ID,
 			// {
 			// 	provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
 			// 	// Whether the display name should be displayed in Sign Up page.
 			// 	requireDisplayName: true,
-			// 	signInMethod: "password"
+			// 	signInMethod: "password",
 			// },
 			// {
 			// 	provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
 			// 	recaptchaParameters: {
-			// 		size: "invisible"
+			// 		size: "invisible",
 			// 	},
-			// 	defaultCountry: "IN"
+			// 	defaultCountry: "IN",
 			// },
 			// {
 			// 	provider: "microsoft.com",
-			// 	loginHintKey: "login_hint"
+			// 	loginHintKey: "login_hint",
+			// },
+			// {
+			// 	provider: "yahoo.com",
 			// },
 		],
 		// Terms of service url.
-		tosUrl: "/TOS",
+		tosUrl: "/ToS",
 		// Privacy policy url.
 		privacyPolicyUrl: "/privacyPolicy",
 		credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO,
