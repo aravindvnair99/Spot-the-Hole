@@ -2,8 +2,8 @@
 	<div class="row">
 		<div class="col s12 pad-0">
 			<h5 class="bot-20 sec-tit">
-				<%= potholesData[i].latitude %>, <%= potholesData[i].longitude
-				%>
+				<%= potholesData[i].premise %> <%= potholesData[i].sublocality
+				%> (<%= potholesData[i].globalCode %>)
 			</h5>
 			<div class="card">
 				<div class="card-image">
@@ -11,6 +11,9 @@
 					<!-- <span class="card-title">Image Card</span> -->
 				</div>
 				<div class="card-content">
+					<p>
+						Description: <%= potholesData[i].description %>
+					</p>
 					<br />
 					<p>
 						Negativity rating: <%= potholesData[i].neg %>
@@ -26,11 +29,23 @@
 					</p>
 					<br />
 					<p>
-						Complete Address: <%= potholesData[i].completeAddress %>
+						Latitude: <%= potholesData[i].latitude %> , Longitude:
+						<%= potholesData[i].longitude %> , Postal Code: <%=
+						potholesData[i].postal_code %>
 					</p>
 					<br />
 					<p>
-						Description: <%= potholesData[i].description %>
+						Administrative Area Level 1: <%=
+						potholesData[i].administrative_area_level_1 %>
+					</p>
+					<br />
+					<p>
+						Administrative Area Level 2: <%=
+						potholesData[i].administrative_area_level_2 %>
+					</p>
+					<br />
+					<p>
+						Complete Address: <%= potholesData[i].completeAddress %>
 					</p>
 				</div>
 				<!-- <div class="card-action">

@@ -1,8 +1,17 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Dashboard</title>
-		<meta content="Spot the Hole Dashboard" name="description" />
+		<title>Dashboard | Spot the Hole</title>
+		<meta property="og:title" content="Dashboard | Spot the Hole" />
+		<meta name="description" content="Your contributions" />
+		<meta
+			property="og:description"
+			content="Your contributions"
+		/>
+		<meta
+			property="og:url"
+			content="https://spot-the-hole.web.app/dashboard"
+		/>
 		<%- include('components/meta') -%> <%- include('components/corecss') -%>
 	</head>
 	<body
@@ -23,157 +32,27 @@
 				<div id="preloader"></div>
 			</div>
 		</div>
-
-		<!-- START navigation -->
-		<nav class="fixedtop topbar navigation" role="navigation">
-			<div class="nav-wrapper container">
-				<a id="logo-container" href="index.html" class="brand-logo"
-					><i class="mdi mdi-ring"></i>Spot the Hole</a
-				>
-				<!-- <ul class="right hide-on-med-and-down">
-				<li><a href="#">Navbar Link</a></li>
-			</ul> -->
-
-				<!-- <ul id="nav-mobile" class="sidenav">
-				<li><a href="#">Navbar Link</a></li>
-			</ul> -->
-				<a
-					href="#"
-					data-target=""
-					class="waves-effect waves-circle navicon back-button htmlmode show-on-large"
-					><i class="mdi mdi-chevron-left" data-page=""></i
-				></a>
-
-				<a
-					href="#"
-					data-target="slide-nav"
-					class="waves-effect waves-circle navicon sidenav-trigger show-on-large"
-					><i class="mdi mdi-menu"></i
-				></a>
-
-				<a
-					href="#"
-					data-target=""
-					class="waves-effect waves-circle navicon right nav-site-mode show-on-large"
-					><i class="mdi mdi-invert-colors mdi-transition1"></i
-				></a>
-				<!-- <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a> -->
-			</div>
-		</nav>
-		<ul id="slide-nav" class="sidenav sidemenu">
-			<li class="menu-close"><i class="mdi mdi-close"></i></li>
-			<li class="user-wrap">
-				<div class="user-view row">
-					<!-- <div class="background">
-				<img src="/images/office.jpg">
-			</div> -->
-					<div class="col s3 imgarea">
-						<a href="#user"
-							><img class="circle" src="<%- user.picture -%>"
-						/></a>
-					</div>
-					<div class="col s9 infoarea">
-						<a href="#name"
-							><span class="name"><%- user.name -%></span></a
-						>
-						<a href="#email"
-							><span class="email"><%- user.email -%></span></a
-						>
-					</div>
-				</div>
-			</li>
-
-			<li class="menulinks">
-				<ul class="collapsible">
-					<!-- SIDEBAR - START -->
-
-					<!-- MAIN MENU - START -->
-
-					<li class="sh-wrap">
-						<div class="subheader">Navigation</div>
-					</li>
-					<li class="lvl1">
-						<div class="waves-effect">
-							<a href="ui-pages-home.html">
-								<i class="mdi mdi-home-outline"></i>
-								<span class="title">New Complain</span>
-							</a>
-						</div>
-					</li>
-					<!-- MAIN MENU - END -->
-
-					<!--  SIDEBAR - END -->
-				</ul>
-			</li>
-			<li class="copy-spacer"></li>
-			<li class="copy-wrap">
-				<div class="copyright">&copy; Spot the Hole Team</div>
-			</li>
-		</ul>
-
-		<!-- END navigation -->
-
-		<ul id="slide-settings" class="sidenav sidesettings right fixed">
-			<li class="menulinks">
-				<ul class="collapsible">
-					<!-- SIDEBAR - START -->
-
-					<!-- MAIN MENU - START -->
-
-					<li class="sh-wrap"><div class="subheader">Themes</div></li>
-
-					<li class="lvl1 site_mode">
-						<div
-							class="waves-effect appsettings active"
-							data-type="site_mode"
-							data-value="light"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-intermediate"></i>
-								<span class="title">Light Mode</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 site_mode">
-						<div
-							class="waves-effect appsettings"
-							data-type="site_mode"
-							data-value="dark"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-blank-outline"></i>
-								<span class="title">Dark Mode</span>
-							</a>
-						</div>
-					</li>
-
-					<!-- MAIN MENU - END -->
-
-					<!--  SIDEBAR - END -->
-				</ul>
-			</li>
-		</ul>
-
+		<%- include('components/headerMenu') -%> <%-
+		include('components/sideMenu') -%> <%-
+		include('components/customisation') -%>
 		<div class="container">
 			<div class="section">
 				<h5 class="pagetitle">Dashboard</h5>
-
 				<p>
-					List of potholes reported by you.
+					Your contributions
 				</p>
 				<div class="divider"></div>
 			</div>
 		</div>
-
 		<div class="container">
 			<div class="section">
 				<%- include('showPotholes') %>
 			</div>
 		</div>
-
 		<%- include('components/footer') -%> <%- include('components/backtotop')
-		-%> <%- include('components/footer_menu') -%> <%-
-		include('components/pwabuilder-sw-register') -%> <%- include('components/corejs') -%>
+		-%> <%- include('components/footerMenu') -%> <%-
+		include('components/pwabuilder-sw-register') -%> <%-
+		include('components/corejs') -%>
 		<script type="text/javascript">
 			$(document).ready(function () {
 				$(".tabs").tabs();
