@@ -5,11 +5,14 @@ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
 function getUiConfig() {
 	return {
 		callbacks: {
-			// Called when the user has been successfully signed in.
-			signInSuccessWithAuthResult: function(authResult) {
+			signInSuccessWithAuthResult: (authResult) => {
+				document.getElementById("is-new-user").textContent = authResult
+					.additionalUserInfo.isNewUser
+					? "Hey there new user! We are preparing your dashboard!"
+					: "Hey there! Welcome back! Loading your dashboard!";
 				authResult.user
 					.getIdToken()
-					.then(function(idToken) {
+					.then((idToken) => {
 						window.location.href =
 							"/sessionLogin?idToken=" +
 							idToken +
@@ -19,31 +22,16 @@ function getUiConfig() {
 					.catch((error) => {
 						alert(error);
 					});
-				// if (authResult.user) {
-				// 	handleSignedInUser(authResult.user);
-				// }
-				// if (authResult.additionalUserInfo) {
-				// 	document.getElementById(
-				// 		"is-new-user"
-				// 	).textContent = authResult.additionalUserInfo.isNewUser
-				// 		? "New User"
-				// 		: "Existing User";
-				// }
-				// Do not redirect.
-				// return false;
-			}
+			},
 		},
 		signInFlow: "popup",
 		signInOptions: [
-			// TODO(developer): Remove the providers you don't need for your app.
 			{
 				provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-				// Required to enable this provider in One-Tap Sign-up.
 				authMethod: "https://accounts.google.com",
-				// Required to enable ID token credentials for this provider.
 				clientId:
-					"696028587080-0ephe2a3koj349dgais95f8nssdelffd.apps.googleusercontent.com"
-			}
+					"696028587080-0ephe2a3koj349dgais95f8nssdelffd.apps.googleusercontent.com",
+			},
 			// {
 			// 	provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID,
 			// 	scopes: ["public_profile", "email"]
@@ -71,7 +59,7 @@ function getUiConfig() {
 		tosUrl: "/TOS",
 		// Privacy policy url.
 		privacyPolicyUrl: "/privacyPolicy",
-		credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO
+		credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO,
 	};
 }
 // Initialize the FirebaseUI Widget using Firebase.
@@ -81,7 +69,7 @@ ui.disableAutoSignIn();
  * Displays the UI for a signed in user.
  * @param {!firebase.User} user
  */
-var handleSignedInUser = function(user) {
+var handleSignedInUser = (user) => {
 	document.getElementById("user-signed-in").style.display = "block";
 	document.getElementById("user-signed-out").style.display = "none";
 	document.getElementById("name").textContent = user.displayName;
@@ -110,53 +98,15 @@ var handleSignedInUser = function(user) {
 /**
  * Displays the UI for a signed out user.
  */
-var handleSignedOutUser = function() {
+var handleSignedOutUser = () => {
 	document.getElementById("user-signed-in").style.display = "none";
 	document.getElementById("user-signed-out").style.display = "block";
 	ui.start("#firebaseui-container", getUiConfig());
 };
 // Listen to change in auth state so it displays the correct UI for when
 // the user is signed in or not.
-firebase.auth().onAuthStateChanged(function(user) {
+firebase.auth().onAuthStateChanged((user) => {
 	document.getElementById("loading").style.display = "none";
 	document.getElementById("loaded").style.display = "block";
 	user ? handleSignedInUser(user) : handleSignedOutUser();
 });
-/**
- * Deletes the user's account.
- */
-var deleteAccount = function() {
-	firebase
-		.auth()
-		.currentUser.delete()
-		.catch(function(error) {
-			if (error.code == "auth/requires-recent-login") {
-				firebase
-					.auth()
-					.signOut()
-					.then(function() {
-						// The timeout allows the message to be displayed after the UI has
-						// changed to the signed out state.
-						setTimeout(function() {
-							alert(
-								"Please sign in again to delete your account."
-							);
-						}, 1);
-					});
-			}
-		});
-};
-/**
- * Initializes the app.
- */
-var initApp = function() {
-	document.getElementById("sign-out").addEventListener("click", function() {
-		firebase.auth().signOut();
-	});
-	document
-		.getElementById("delete-account")
-		.addEventListener("click", function() {
-			deleteAccount();
-		});
-};
-window.addEventListener("load", initApp);
