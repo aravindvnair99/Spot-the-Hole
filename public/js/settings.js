@@ -1,7 +1,7 @@
 $(document).ready(function(){
-	     
+
         var defaultval = {
-          theme: "deep-purple", 
+          theme: "deep-purple",
           header: "light",
           header_align: "center",
           menu: "light",
@@ -38,9 +38,9 @@ $(document).ready(function(){
 
           if(type == "theme"){
             if(value != "" && value != defaultval[type]){
-              $("link#main-style").attr("href","assets/css/style-"+value+".css");
+              $("link#main-style").attr("href","/css/style-"+value+".css");
             } else {
-              $("link#main-style").attr("href","assets/css/style.css");
+              $("link#main-style").attr("href","/css/style.css");
             }
           } else {
 
@@ -95,15 +95,15 @@ $(document).ready(function(){
     }
 
     function settings_session(){
-  
-        var type = "aa"; 
+
+        var type = "aa";
         sess = "";
         $(".sidesettings .appsettings.active").each(function( index ) {
             sess += $(this).attr("data-type") + ":";
-            sess += $(this).attr("data-value") + "|";            
+            sess += $(this).attr("data-value") + "|";
         });
 
-        $.post("common/settings_session.php", 
+        $.post("common/settings_session.php",
           {
             sess:sess
           },
