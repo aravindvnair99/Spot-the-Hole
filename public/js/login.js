@@ -31,9 +31,9 @@ function getUiConfig() {
 				authMethod: "https://accounts.google.com",
 				clientId:
 					"696028587080-0ephe2a3koj349dgais95f8nssdelffd.apps.googleusercontent.com",
-				scopes: [
-					"https://www.googleapis.com/auth/user.phonenumbers.read",
-				],
+				// scopes: [
+				// 	"https://www.googleapis.com/auth/user.phonenumbers.read",
+				// ],
 			},
 			// {
 			// 	provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID,
