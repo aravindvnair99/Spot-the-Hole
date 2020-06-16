@@ -94,31 +94,31 @@
 
 		<%- include('components/footer') -%> <%- include('components/backtotop')
 		-%> <%- include('components/footerMenu') -%> <%-
-		include('components/pwa') -%> <%- include('components/corejs') -%>
+		include('components/pwabuilder-sw-register') -%> <%-
+		include('components/corejs') -%>
 		<script type="text/javascript">
 			$(document).ready(function () {
 				$(".tabs").tabs();
 			});
 		</script>
-		<%- include('components/scripts') -%>
 		<script
 			async
 			defer
 			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBLjzX1FhtZzLzCKIa5kRvyi7Qpaz_yze4&libraries=visualization&callback=initMap"
 		></script>
 		<script>
-			         var map, heatmap;
-			         <%- include('latlngCenter') -%>
+			var map, heatmap;
+			<%- include('latlngCenter') -%>
 			function initMap() {
 			  map = new google.maps.Map(document.getElementById('map'), {
-			    zoom: 13,
-			    center: {lat: latAvg, lng: lngAvg},
-			    mapTypeId: 'satellite'
+				zoom: 13,
+				center: {lat: latAvg, lng: lngAvg},
+				mapTypeId: 'satellite'
 			  });
 
 			  heatmap = new google.maps.visualization.HeatmapLayer({
-			    data: getPoints(),
-			    map: map
+				data: getPoints(),
+				map: map
 			  });
 			}
 
@@ -128,20 +128,20 @@
 
 			function changeGradient() {
 			  var gradient = [
-			    'rgba(0, 255, 255, 0)',
-			    'rgba(0, 255, 255, 1)',
-			    'rgba(0, 191, 255, 1)',
-			    'rgba(0, 127, 255, 1)',
-			    'rgba(0, 63, 255, 1)',
-			    'rgba(0, 0, 255, 1)',
-			    'rgba(0, 0, 223, 1)',
-			    'rgba(0, 0, 191, 1)',
-			    'rgba(0, 0, 159, 1)',
-			    'rgba(0, 0, 127, 1)',
-			    'rgba(63, 0, 91, 1)',
-			    'rgba(127, 0, 63, 1)',
-			    'rgba(191, 0, 31, 1)',
-			    'rgba(255, 0, 0, 1)'
+				'rgba(0, 255, 255, 0)',
+				'rgba(0, 255, 255, 1)',
+				'rgba(0, 191, 255, 1)',
+				'rgba(0, 127, 255, 1)',
+				'rgba(0, 63, 255, 1)',
+				'rgba(0, 0, 255, 1)',
+				'rgba(0, 0, 223, 1)',
+				'rgba(0, 0, 191, 1)',
+				'rgba(0, 0, 159, 1)',
+				'rgba(0, 0, 127, 1)',
+				'rgba(63, 0, 91, 1)',
+				'rgba(127, 0, 63, 1)',
+				'rgba(191, 0, 31, 1)',
+				'rgba(255, 0, 0, 1)'
 			  ]
 			  heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
 			}
@@ -155,7 +155,7 @@
 			}
 			function getPoints() {
 			  return [
-			      <%- include('latlng') -%>
+				  <%- include('latlng') -%>
 			];
 			}
 		</script>
