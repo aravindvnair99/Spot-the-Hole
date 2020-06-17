@@ -11,46 +11,17 @@
 		/>
 		<%- include('components/meta') -%> <%- include('components/corecss') -%>
 		<style>
-			/* Always set the map height explicitly to define the size of the div
- * element that contains the map. */
-			#map {
-				height: 100%;
-			}
-			/* Optional: Makes the sample page fill the window. */
 			html,
 			body {
 				height: 100%;
 				margin: 0;
 				padding: 0;
 			}
-			#floating-panel {
-				position: absolute;
-				top: 10px;
-				left: 25%;
-				z-index: 5;
-				background-color: #fff;
-				padding: 5px;
-				border: 1px solid #999;
-				text-align: center;
-				font-family: "Roboto", "sans-serif";
-				line-height: 30px;
-				padding-left: 10px;
-			}
-			#floating-panel {
-				background-color: #fff;
-				border: 1px solid #999;
-				left: 25%;
-				padding: 5px;
-				position: absolute;
-				top: 10px;
-				z-index: 5;
+			#mapPlaceholder {
+				height: 70vh;
 			}
 		</style>
 	</head>
-	<!-- END HEAD -->
-
-	<!-- BEGIN BODY -->
-
 	<body
 		class="html"
 		data-header="light"
@@ -75,47 +46,130 @@
 		<div class="container">
 			<div class="section">
 				<h5 class="pagetitle">Pothole Heat Map</h5>
-				<p>
-					View the spread of potholes
-				</p>
+				<p>View the spread of potholes</p>
 				<div class="divider"></div>
 			</div>
 		</div>
-		<div id="floating-panel">
-			<button onclick="toggleHeatmap()">Toggle Heatmap</button>
-			<button onclick="changeGradient()">Change gradient</button>
-			<button onclick="changeRadius()">Change radius</button>
-			<button onclick="changeOpacity()">Change opacity</button>
-		</div>
-		<div id="map"></div>
 		<div class="container">
-			<div class="section"></div>
-		</div>
+			<div class="section">
+				<div class="row">
+					<div class="col s12 pad-0">
+						<h5 class="bot-20 sec-tit">A look around you</h5>
+					</div>
+					<div class="hide-on-med-and-up">
+						<div class="row">
+							<div class="col s6">
+								<button
+									type="button"
+									class="btn waves-effect waves-light bg-primary"
+									onclick="toggleHeatmap()"
+								>
+									Heatmap
+									<i class="mdi mdi-map-marker-radius"></i>
+								</button>
+							</div>
+							<div class="col s6">
+								<button
+									type="button"
+									class="btn waves-effect waves-light bg-primary"
+									onclick="changeGradient()"
+								>
+									Gradient
+									<i class="mdi mdi-gradient"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="hide-on-med-and-up">
+						<div class="row">
+							<div class="col s6">
+								<button
+									type="button"
+									class="btn waves-effect waves-light bg-primary"
+									onclick="changeRadius()"
+								>
+									Radius
+									<i class="mdi mdi-map-marker-radius"></i>
+								</button>
+							</div>
+							<div class="col s6">
+								<button
+									type="button"
+									class="btn waves-effect waves-light bg-primary"
+									onclick="changeOpacity()"
+								>
+									Opacity
+									<i class="mdi mdi-opacity"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="hide-on-small-only">
+						<div class="row">
+							<div class="col s3">
+								<button
+									type="button"
+									class="btn waves-effect waves-light bg-primary"
+									onclick="toggleHeatmap()"
+								>
+									Heatmap
+									<i class="mdi mdi-map-marker-radius"></i>
+								</button>
+							</div>
+							<div class="col s3">
+								<button
+									type="button"
+									class="btn waves-effect waves-light bg-primary"
+									onclick="changeGradient()"
+								>
+									Gradient
+									<i class="mdi mdi-gradient"></i>
+								</button>
+							</div>
+							<div class="col s3">
+								<button
+									type="button"
+									class="btn waves-effect waves-light bg-primary"
+									onclick="changeRadius()"
+								>
+									Radius
+									<i class="mdi mdi-map-marker-radius"></i>
+								</button>
+							</div>
+							<div class="col s3">
+								<button
+									type="button"
+									class="btn waves-effect waves-light bg-primary"
+									onclick="changeOpacity()"
+								>
+									Opacity
+									<i class="mdi mdi-opacity"></i>
+								</button>
+							</div>
+						</div>
+					</div>
 
+					<div id="mapPlaceholder"></div>
+				</div>
+			</div>
+		</div>
 		<%- include('components/footer') -%> <%- include('components/backtotop')
 		-%> <%- include('components/footerMenu') -%> <%-
 		include('components/pwabuilder-sw-register') -%> <%-
 		include('components/corejs') -%>
-		<script type="text/javascript">
-			$(document).ready(function () {
-				$(".tabs").tabs();
-			});
-		</script>
 		<script
 			async
-			defer
 			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBLjzX1FhtZzLzCKIa5kRvyi7Qpaz_yze4&libraries=visualization&callback=initMap"
 		></script>
 		<script>
 			var map, heatmap;
 			<%- include('latlngCenter') -%>
 			function initMap() {
-			  map = new google.maps.Map(document.getElementById('map'), {
-				zoom: 13,
+			  map = new google.maps.Map(document.getElementById('mapPlaceholder'), {
+				zoom: 6,
 				center: {lat: latAvg, lng: lngAvg},
 				mapTypeId: 'satellite'
 			  });
-
 			  heatmap = new google.maps.visualization.HeatmapLayer({
 				data: getPoints(),
 				map: map
