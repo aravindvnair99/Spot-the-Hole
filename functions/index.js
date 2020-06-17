@@ -299,7 +299,7 @@ app.get("/dashboard", checkCookieMiddleware, (req, res) => {
 			res.redirect("/login");
 		});
 });
-app.get("/adminDashboard", checkCookieMiddleware, (req, res) => {
+app.get("/locations", checkCookieMiddleware, (req, res) => {
 	var i = 0,
 		globalCode = new Array();
 	db.collection("globalCodes")
@@ -311,12 +311,12 @@ app.get("/adminDashboard", checkCookieMiddleware, (req, res) => {
 			});
 			globalCodes = Object.assign({}, globalCode);
 			user = Object.assign({}, req.decodedClaims);
-			console.info("\n\n Accessing admin dashboard:\n\n", user, "\n\n");
-			return res.render("adminDashboard", { user, globalCodes });
+			console.info("\n\n Accessing locations:\n\n", user, "\n\n");
+			return res.render("locations", { user, globalCodes });
 		})
 		.catch((err) => {
 			console.error(
-				"\n\nAdmin Dashboard - error getting globalCodes:\n\n",
+				"\n\nLocations - error getting globalCodes:\n\n",
 				err,
 				"\n\n"
 			);
@@ -758,13 +758,6 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 
 ===============================================>>>>>*/
 
-app.get("/locations", checkCookieMiddleware, (req, res) => {
-	user = Object.assign({}, req.decodedClaims);
-	console.info("\n\nAccessing potholes:\n\n", user, "\n\n");
-	res.render("comingSoon", {
-		user,
-	});
-});
 app.get("/notifications", checkCookieMiddleware, (req, res) => {
 	user = Object.assign({}, req.decodedClaims);
 	console.info("\n\nAccessing notifications:\n\n", user, "\n\n");
