@@ -754,6 +754,27 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 });
 /*=============================================>>>>>
 
+				= Coming Soon =
+
+===============================================>>>>>*/
+
+app.get("/locations", checkCookieMiddleware, (req, res) => {
+	user = Object.assign({}, req.decodedClaims);
+	console.info("\n\nAccessing potholes:\n\n", user, "\n\n");
+	res.render("comingSoon", {
+		user,
+	});
+});
+app.get("/notifications", checkCookieMiddleware, (req, res) => {
+	user = Object.assign({}, req.decodedClaims);
+	console.info("\n\nAccessing notifications:\n\n", user, "\n\n");
+	res.render("comingSoon", {
+		user,
+	});
+});
+
+/*=============================================>>>>>
+
 				= errors =
 
 ===============================================>>>>>*/
