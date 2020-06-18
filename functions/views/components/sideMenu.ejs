@@ -6,7 +6,7 @@
 				<img src="/images/office.jpg">
 			</div> -->
 			<div class="col s3 imgarea">
-				<a href="#user"
+				<a href="/profile"
 					><img
 						class="circle"
 						src="<%- user.picture -%>"
@@ -14,8 +14,10 @@
 				/></a>
 			</div>
 			<div class="col s9 infoarea">
-				<a href="#name"><span class="name"><%- user.name -%></span></a>
-				<a href="#email"
+				<a href="/profile"
+					><span class="name"><%- user.name -%></span></a
+				>
+				<a href="/profile"
 					><span class="email"><%- user.email -%></span></a
 				>
 			</div>
@@ -26,6 +28,14 @@
 		<ul class="collapsible">
 			<li class="sh-wrap">
 				<div class="subheader">Navigation</div>
+			</li>
+			<li class="lvl1">
+				<div class="waves-effect">
+					<a href="/profile">
+						<i class="mdi mdi-account-edit"></i>
+						<span class="title">Edit Profile</span>
+					</a>
+				</div>
 			</li>
 			<li class="lvl1">
 				<div class="waves-effect">
@@ -45,74 +55,7 @@
 						>
 					</a>
 				</div>
-			</li>
-			<li class="lvl1">
-				<div class="waves-effect">
-					<a href="sub-uielements.html">
-						<i class="mdi mdi-laptop"></i>
-						<span class="title">UI Elements</span>
-					</a>
-				</div>
-			</li>
-			<li class="lvl1">
-				<div class="waves-effect">
-					<a href="sub-utilities-components.html">
-						<i class="mdi mdi-flask-outline"></i>
-						<span class="title">Components</span>
-					</a>
-				</div>
-			</li>
-			<li class="lvl1">
-				<div class="waves-effect">
-					<a href="sub-forms.html">
-						<i class="mdi mdi-textbox"></i>
-						<span class="title">Forms</span>
-					</a>
-				</div>
-			</li>
-			<li class="lvl1">
-				<div class="waves-effect">
-					<a href="sub-charts.html">
-						<i class="mdi mdi-chart-line"></i>
-						<span class="title">Charts</span
-						><span class="badge blue-grey lighten-3 badge-rounded"
-							>HOT</span
-						>
-					</a>
-				</div>
-			</li>
-			<li class="lvl1">
-				<div class="waves-effect">
-					<a href="sub-pages.html">
-						<i class="mdi mdi-shape-outline"></i>
-						<span class="title">Pages</span>
-					</a>
-				</div>
-			</li>
-			<li class="lvl1">
-				<div class="waves-effect">
-					<a href="sub-access.html">
-						<i class="mdi mdi-access-point"></i>
-						<span class="title">Site Access</span>
-					</a>
-				</div>
-			</li>
-			<li class="lvl1">
-				<div class="waves-effect">
-					<a href="sub-portfolio.html">
-						<i class="mdi mdi-grid-large"></i>
-						<span class="title">Portfolio</span>
-					</a>
-				</div>
-			</li>
-			<li class="lvl1">
-				<div class="waves-effect">
-					<a href="sub-blogs.html">
-						<i class="mdi mdi-square-edit-outline"></i>
-						<span class="title">Blogs</span>
-					</a>
-				</div>
-			</li>
+			</li> -->
 			<li class="sep-wrap"><div class="divider"></div></li>
 			<li class="sh-wrap">
 				<div class="subheader">Reach Us</div>
@@ -152,7 +95,7 @@
 						><span class="title">Settings</span>
 					</a>
 				</div>
-			</li> -->
+			</li>
 		</ul>
 	</li>
 	<li class="copy-spacer"></li>
