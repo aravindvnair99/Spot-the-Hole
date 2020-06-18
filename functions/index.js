@@ -463,7 +463,11 @@ app.post("/setRating", checkCookieMiddleware, (req, res) => {
 		});
 });
 app.get("/offline", (req, res) => {
-	res.render("offline");
+	user = Object.assign({}, req.decodedClaims);
+	console.info("\n\n Accessing profile:\n\n", JSON.stringify(user), "\n\n");
+	return res.render("offline", {
+		user,
+	});
 });
 
 /*=============================================>>>>>
