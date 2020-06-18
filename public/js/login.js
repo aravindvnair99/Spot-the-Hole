@@ -62,7 +62,7 @@ function getUiConfig() {
 			// },
 		],
 		// Terms of service url.
-		tosUrl: "/ToS",
+		tosUrl: "/termsConditions",
 		// Privacy policy url.
 		privacyPolicyUrl: "/privacyPolicy",
 		credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO,
