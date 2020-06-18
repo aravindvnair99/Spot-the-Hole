@@ -266,6 +266,43 @@ app.get("/", (req, res) => {
 		res.redirect("/login");
 	}
 });
+app.get("/profile", checkCookieMiddleware, (req, res) => {
+	var i = 0,
+		potholeData = new Array(),
+		potholeID = new Array();
+	db.collection("users")
+		.doc(req.decodedClaims.uid)
+		.collection("potholes")
+		.get()
+		.then((querySnapshot) => {
+			querySnapshot.forEach((childSnapshot) => {
+				potholeID[i] = childSnapshot.id;
+				potholeData[i] = childSnapshot.data();
+				i++;
+			});
+			potholesData = Object.assign({}, potholeData);
+			potholesID = Object.assign({}, potholeID);
+			user = Object.assign({}, req.decodedClaims);
+			console.info(
+				"\n\n Accessing profile:\n\n",
+				JSON.stringify(user),
+				"\n\n"
+			);
+			return res.render("profile", {
+				user,
+				potholesData,
+				potholesID,
+			});
+		})
+		.catch((err) => {
+			console.error(
+				"\n\nDashboard - error getting potholes:\n\n",
+				err,
+				"\n\n"
+			);
+			res.redirect("/login");
+		});
+});
 app.get("/dashboard", checkCookieMiddleware, (req, res) => {
 	var i = 0,
 		potholeData = new Array(),
@@ -283,7 +320,11 @@ app.get("/dashboard", checkCookieMiddleware, (req, res) => {
 			potholesData = Object.assign({}, potholeData);
 			potholesID = Object.assign({}, potholeID);
 			user = Object.assign({}, req.decodedClaims);
-			console.info("\n\n Accessing dashboard:\n\n", user, "\n\n");
+			console.info(
+				"\n\n Accessing dashboard:\n\n",
+				JSON.stringify(user),
+				"\n\n"
+			);
 			return res.render("dashboard", {
 				user,
 				potholesData,
