@@ -6,20 +6,15 @@
 				<img src="bg.jpg" alt="Background image">
 			</div> -->
 			<div class="col s3 imgarea">
-				<a href="/profile"
-					><img
-						class="circle"
-						src="<%- user.picture -%>"
-						alt="Profile Picture"
-				/></a>
+				<img
+					class="circle"
+					src="<%- user.picture -%>"
+					alt="Profile Picture"
+				/>
 			</div>
 			<div class="col s9 infoarea">
-				<a href="/profile"
-					><span class="name"><%- user.name -%></span></a
-				>
-				<a href="/profile"
-					><span class="email"><%- user.email -%></span></a
-				>
+				<span class="name"><%- user.name -%></span>
+				<span class="email"><%- user.email -%></span>
 			</div>
 		</div>
 	</li>
@@ -29,14 +24,14 @@
 			<li class="sh-wrap">
 				<div class="subheader">Navigation</div>
 			</li>
-			<li class="lvl1">
+			<!-- <li class="lvl1">
 				<div class="waves-effect">
 					<a href="/profile">
 						<i class="mdi mdi-account-edit"></i>
 						<span class="title">Edit Profile</span>
 					</a>
 				</div>
-			</li>
+			</li> -->
 			<li class="lvl1">
 				<div class="waves-effect">
 					<a href="/signOut">
@@ -92,7 +87,7 @@
 						data-target="slide-settings"
 						class="sidenav-trigger"
 						><i class="mdi mdi-settings-outline"></i
-						><span class="title">Settings</span>
+						><span class="title">Customise</span>
 					</a>
 				</div>
 			</li>
