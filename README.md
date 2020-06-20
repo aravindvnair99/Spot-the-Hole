@@ -1,6 +1,12 @@
 # Spot the Hole ![Firebase CD](https://github.com/aravindvnair99/Spot-the-Hole/workflows/Firebase%20CD/badge.svg) ![Node CI](https://github.com/aravindvnair99/Spot-the-Hole/workflows/Node%20CI/badge.svg)
 
-Official source code of Spot the Hole PWA which was a project for Smart India Hackathon 2020 and Open Lab project at Amrita School of Engineering, Bengaluru.
+Official source code of Spot the Hole PWA which was a project for Open Lab at Amrita School of Engineering, Bengaluru.
+
+Potholes are the biggest problem faced by everyone today. Driving down these roads is a nightmare. Repaving the roads would be a big investment in many ways, not only would it improve the towns look, but it would also make it safer for the community members to drive on the roads. Now the problem lies in the fact that concerned departments are not able to coordinate to resolve the issue and citizens also find it hard to file a complaint.
+
+Fundamentally there is a disconnection between civil agencies, people, and elected representatives. Our aim is to build a web-based dynamic reporting system which will facilitate the flow of information among all concerned stakeholders. It also provides better governance by more involvement of the public.
+
+Read more in the [report here](Report.pdf)
 
 # :octocat: How to contribute?
 
@@ -14,12 +20,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 # :family: Team
 
--   **Abhinay Krishna Chitirala** - _Logo Design, Tester, UI / UX Prototyping_ - [abhinaychitirala](https://github.com/abhinaychitirala)
+-   **Abhinay Krishna Chitirala** - _Logo and Graphics Designing_ - [abhinaychitirala](https://github.com/abhinaychitirala)
 -   **Abhishek Venkata Sai Kandikattu** - _Front-end, Back-end and Testing_ - [Abhishek-Sai](https://github.com/Abhishek-Sai)
 -   **Aditya Deepak Udapudi** - _Testing_ - [adityadu-18](https://github.com/adityadu-18)
 -   **Aravind V. Nair** - _Front-end, Back-end, DevOps and Security_ - [AravindVNair99](https://github.com/AravindVNair99)
--   **Harshita Reddy Edugudi** - _Design, UI / UX Prototyping, Image Processing_ - [harshitaaaaa](https://github.com/harshitaaaaa)
--   **Keerthana Golla Chowdary** - _Image processing, Testing_ - [keerthanachowdary218](https://github.com/keerthanachowdary218)
+-   **Harshita Reddy Edugudi** - _UI / UX Prototyping, Image Processing_ - [harshitaaaaa](https://github.com/harshitaaaaa)
+-   **Kaazima Mirza Ifrah** - _Testing_ - [kaazima](https://github.com/kaazima)
+-   **Keerthana Golla Chowdary** - _Image processing_ - [keerthanachowdary218](https://github.com/keerthanachowdary218)
+-   **Priya Potti** - _Testing_ - [Priya378](https://github.com/Priya378)
 
 See the full list of [contributors](https://github.com/aravindvnair99/Spot-the-Hole/graphs/contributors) who participated in this project and statistics.
 
