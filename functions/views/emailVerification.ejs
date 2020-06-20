@@ -21,20 +21,20 @@
 							.currentUser.sendEmailVerification()
 							.then(() => {
 								firebase.auth().signOut();
-								showSnackbar(
+								alert(
 									"Email verification sent. Check email to verify account."
 								);
 								document.getElementById("message").innerHTML =
 									"Email verification sent. Check email to verify account.";
 							})
 							.catch((error) => {
-								showSnackbar(error.message);
+								alert(error.message);
 							});
 					} else {
 						firebase.auth().signOut();
 						document.getElementById("message").innerHTML =
 							"Already verified. Login to continue.";
-						showSnackbar("Already verified. Login to continue.");
+						alert("Already verified. Login to continue.");
 					}
 				}
 			});
@@ -47,7 +47,6 @@
 		</style>
 	</head>
 	<body>
-		<%- include('snackbar') -%>
 		<div class="container p-3">
 			<div class="row justify-content-center">
 				<div class="col-lg-3">

@@ -4,14 +4,8 @@
 		<title>Login | Spot the Hole</title>
 		<meta property="og:title" content="Login | Spot the Hole" />
 		<meta name="description" content="Pothole reporting system" />
-		<meta
-			property="og:description"
-			content="Pothole reporting system"
-		/>
-		<meta
-			property="og:url"
-			content="https://spot-the-hole.web.app/login"
-		/>
+		<meta property="og:description" content="Pothole reporting system" />
+		<meta property="og:url" content="https://spot-the-hole.web.app/login" />
 		<%- include('components/meta') -%>
 		<script src="/__/firebase/7.15.3/firebase-app.js"></script>
 		<script src="/__/firebase/7.15.3/firebase-auth.js"></script>
@@ -31,7 +25,6 @@
 	</head>
 	<body>
 		<div id="container">
-			<%- include('snackbar') -%>
 			<img
 				class="img-fluid"
 				src="/img/logos/logoRect.png"
@@ -66,6 +59,6 @@
 		</div>
 		<script src="/js/login.js"></script>
 		<script src="/js/manup.min.js"></script>
-		<%- include('components/pwabuilder-sw-register') -%>
+		<%- include('components/pwa') -%>
 	</body>
 </html>

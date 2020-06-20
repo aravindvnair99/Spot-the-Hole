@@ -115,7 +115,8 @@
 							<button
 								type="button"
 								class="btn waves-effect waves-light bg-primary"
-								onclick="toggleHeatmap()" style="width: 100%;"
+								onclick="toggleHeatmap()"
+								style="width: 100%;"
 							>
 								Heatmap
 								<i class="mdi mdi-map-marker-radius"></i>
@@ -125,7 +126,8 @@
 							<button
 								type="button"
 								class="btn waves-effect waves-light bg-primary"
-								onclick="changeGradient()" style="width: 100%;"
+								onclick="changeGradient()"
+								style="width: 100%;"
 							>
 								Gradient
 								<i class="mdi mdi-gradient"></i>
@@ -135,7 +137,8 @@
 							<button
 								type="button"
 								class="btn waves-effect waves-light bg-primary"
-								onclick="changeRadius()" style="width: 100%;"
+								onclick="changeRadius()"
+								style="width: 100%;"
 							>
 								Radius
 								<i class="mdi mdi-map-marker-radius"></i>
@@ -145,7 +148,8 @@
 							<button
 								type="button"
 								class="btn waves-effect waves-light bg-primary"
-								onclick="changeOpacity()" style="width: 100%;"
+								onclick="changeOpacity()"
+								style="width: 100%;"
 							>
 								Opacity
 								<i class="mdi mdi-opacity"></i>
@@ -158,8 +162,7 @@
 		</div>
 		<%- include('components/footer') -%> <%- include('components/backtotop')
 		-%> <%- include('components/footerMenu') -%> <%-
-		include('components/pwabuilder-sw-register') -%> <%-
-		include('components/corejs') -%>
+		include('components/pwa') -%> <%- include('components/corejs') -%>
 		<script
 			async
 			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBLjzX1FhtZzLzCKIa5kRvyi7Qpaz_yze4&libraries=visualization&callback=initMap"

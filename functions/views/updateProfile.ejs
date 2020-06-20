@@ -21,10 +21,10 @@
 						document.getElementById(
 							"profilePicture"
 						).disabled = false;
-						showSnackbar("Fill details to proceed");
+						alert("Fill details to proceed");
 					} else {
 						window.location = "/login";
-						showSnackbar("Login to continue");
+						alert("Login to continue");
 					}
 				});
 			}
@@ -48,7 +48,7 @@
 					)
 					.put(file, metadata)
 					.then((snapshot) => {
-						showSnackbar(
+						alert(
 							"Uploaded " + snapshot.totalBytes / 1024 + " KB."
 						);
 						snapshot.ref.getDownloadURL().then((url) => {
@@ -56,7 +56,7 @@
 						});
 					})
 					.catch((error) => {
-						showSnackbar("Upload failed: " + error);
+						alert("Upload failed: " + error);
 					});
 				document.getElementById("submit").disabled = false;
 			}
@@ -125,7 +125,6 @@
 		</style>
 	</head>
 	<body>
-		<%- include('snackbar') -%>
 		<div class="container p-3">
 			<div class="row justify-content-center">
 				<div class="col-lg-3">
