@@ -1,4 +1,4 @@
-$(document).ready(() => {
+$(document).ready(function () {
 	function getCookie(cname) {
 		var name = cname + "=";
 		var decodedCookie = decodeURIComponent(document.cookie);
@@ -32,7 +32,7 @@ $(document).ready(() => {
 	site_mode_settings(defaultval);
 
 	// on click any link apply settings
-	$(document).on("click", ".appsettings", (e) => {
+	$(document).on("click", ".appsettings", function (e) {
 		e.preventDefault();
 
 		var type = $(this).attr("data-type");
@@ -88,7 +88,7 @@ $(document).ready(() => {
 	});
 
 	// on click any link apply settings
-	$(document).on("click", ".nav-site-mode", (e) => {
+	$(document).on("click", ".nav-site-mode", function (e) {
 		e.preventDefault();
 		var active = $(".appsettings[data-type='site_mode'].active");
 		var mode = active.attr("data-value");
@@ -116,7 +116,7 @@ $(document).ready(() => {
 	});
 
 	function site_mode_settings(obj) {
-		$.each(obj, (type, value) => {
+		$.each(obj, function (type, value) {
 			//console.log( type + ": " + value );
 			$(".appsettings[data-type='" + type + "']").removeClass("active");
 			$(
@@ -131,7 +131,7 @@ $(document).ready(() => {
 	}
 
 	function settings_session() {
-		$(".sidesettings .appsettings.active").each(() => {
+		$(".sidesettings .appsettings.active").each(function (index) {
 			document.cookie = `${$(this).attr("data-type")}=${$(this).attr(
 				"data-value"
 			)}`;
