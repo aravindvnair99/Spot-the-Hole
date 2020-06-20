@@ -384,7 +384,7 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 			user = Object.assign({}, req.decodedClaims);
 			console.info(
 				"\n\n Accessing potholesByLocation:\n\n",
-				user,
+				JSON.stringify(user),
 				"\n\n"
 			);
 			return getRating();
@@ -430,7 +430,11 @@ app.get("/heatmap", checkCookieMiddleware, (req, res) => {
 			});
 			potholesData = Object.assign({}, potholeData);
 			user = Object.assign({}, req.decodedClaims);
-			console.info("\n\n Accessing heatmap:\n\n", user, "\n\n");
+			console.info(
+				"\n\n Accessing heatmap:\n\n",
+				JSON.stringify(user),
+				"\n\n"
+			);
 			return getRating();
 		})
 		.catch((err) => {
@@ -620,6 +624,12 @@ app.get("/cameraCaptureRetry", checkCookieMiddleware, (req, res) => {
 	});
 });
 app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
+	user = Object.assign({}, req.decodedClaims);
+	console.info(
+		"\n\nAccessing uploadPotholePicture:\n\n",
+		JSON.stringify(user),
+		"\n\n"
+	);
 	AutoMLAPI(
 		fs
 			.readFileSync(
@@ -652,16 +662,18 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 							"/" +
 							req.files.file[0].originalname,
 						public: true,
+						gzip: true,
+						resumable: false,
 						metadata: {
 							contentType: req.files.file[0].mimetype,
-							cacheControl: "public, max-age=300",
+							cacheControl: "public, max-age=604800",
 						},
 					},
 					(err, file) => {
 						if (err) {
 							console.error(
 								"\n\nuploadPotholePicture Google Cloud Storage error:\n\n",
-								error,
+								err,
 								"\n\n"
 							);
 							return;
@@ -698,7 +710,7 @@ app.get("/report", checkCookieMiddleware, (req, res) => {
 		"\n\nAccessing report page for :",
 		req.query.image,
 		" by:\n\n",
-		user,
+		JSON.stringify(user),
 		"\n\n"
 	);
 	res.render("report", {
