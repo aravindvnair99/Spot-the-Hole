@@ -257,12 +257,8 @@ app.get("/", (req, res) => {
 		res.redirect("/login");
 	}
 });
-app.get("/comingSoon", checkCookieMiddleware, (req, res) => {
-	user = Object.assign({}, req.decodedClaims);
-	console.info("\n\nAccessing comingSoon:\n\n", JSON.stringify(user), "\n\n");
-	res.render("comingSoon", {
-		user,
-	});
+app.get("/comingSoon", (req, res) => {
+	res.render("comingSoon");
 });
 app.get("/profile", checkCookieMiddleware, (req, res) => {
 	var i = 0,
@@ -852,15 +848,7 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 ===============================================>>>>>*/
 
 app.get("/notifications", checkCookieMiddleware, (req, res) => {
-	user = Object.assign({}, req.decodedClaims);
-	console.info(
-		"\n\nAccessing notifications:\n\n",
-		JSON.stringify(user),
-		"\n\n"
-	);
-	res.render("comingSoon", {
-		user,
-	});
+	res.status(302).redirect("/comingSoon");
 });
 
 /*=============================================>>>>>
