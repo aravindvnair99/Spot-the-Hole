@@ -494,17 +494,14 @@ app.get("/offline", (req, res) => {
 
 ===============================================>>>>>*/
 
-app.get("/EULA", (req, res) => {
-	res.render("legal/EULA");
-});
-app.get("/disclaimer", (req, res) => {
-	res.render("legal/disclaimer");
+app.get("/FAQ", (req, res) => {
+	res.render("legal/FAQ");
 });
 app.get("/privacyPolicy", (req, res) => {
-	res.render("legal/privacyPolicy");
+	res.status(302).redirect("/FAQ");
 });
 app.get("/termsConditions", (req, res) => {
-	res.render("legal/termsConditions");
+	res.status(302).redirect("/FAQ");
 });
 
 /*=============================================>>>>>

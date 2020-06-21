@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>FAQ | Spot the Hole</title>
+		<meta property="og:title" content="FAQ | Spot the Hole" />
+		<meta
+			name="description"
+			content="We have the answers you are looking for!"
+		/>
+		<meta
+			property="og:description"
+			content="We have the answers you are looking for!"
+		/>
+		<meta property="og:url" content="https://spot-the-hole.web.app/FAQ" />
+		<%- include('../components/meta') -%> <%-
+		include('../components/corecss') -%>
+	</head>
+	<body
+		class="html"
+		data-header="light"
+		data-footer="dark"
+		data-header_align="center"
+		data-menu_type="left"
+		data-menu="light"
+		data-menu_icons="on"
+		data-footer_type="left"
+		data-site_mode="light"
+		data-footer_menu="show"
+		data-footer_menu_style="light"
+	>
+		<div class="preloader-background">
+			<div class="preloader-wrapper">
+				<div id="preloader"></div>
+			</div>
+		</div>
+		<%- include('../components/headerMenu') -%> <%-
+		include('../components/customisation') -%>
+		<div class="container">
+			<div class="section">
+				<h5 class="pagetitle">FAQ</h5>
+				<p>
+					Have questions? We have the answers you are looking for.
+				</p>
+				<div class="divider"></div>
+			</div>
+		</div>
+		<div class="container">
+			<div class="section">
+				<ul class="collapsible expandable popout">
+					<li class="active">
+						<div class="collapsible-header">
+							How to setup new account?
+						</div>
+						<div class="collapsible-body">
+							<span>
+								Simple! Sign in with Google with the click of a
+								button and the rest is taken care of. Nothing to
+								worry!
+							</span>
+						</div>
+					</li>
+					<li class="active">
+						<div class="collapsible-header">
+							What happens to my image?
+						</div>
+						<div class="collapsible-body">
+							<span>
+								The image uploaded will be validated by an
+								AutoML deployment running in Google Cloud
+								Platform. This system helps to verify if the
+								picture is a valid image of pothole and helps to
+								keep away unwanted reports. Rear camera access
+								is required.
+							</span>
+						</div>
+					</li>
+					<li>
+						<div class="collapsible-header">
+							What information is collected?
+						</div>
+						<div class="collapsible-body">
+							<span>
+								Analytics is collected via Google Analytics.
+								Apart from that, the image you upload is
+								validated and saved if valid. Location and
+								description for the same is also saved under
+								your user account.
+							</span>
+						</div>
+					</li>
+					<li>
+						<div class="collapsible-header">
+							What happens to my description?
+						</div>
+						<div class="collapsible-body">
+							<span>
+								Sentiment analysis is carried out on the
+								description and saved under your user profile
+								for the corresponding image.
+							</span>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<%- include('../components/footer') -%> <%-
+		include('../components/backtotop') -%> <%-
+		include('../components/footerMenu') -%> <%- include('../components/pwa')
+		-%> <%- include('../components/corejs') -%>
+		<script type="text/javascript">
+			if ($(".collapsible").length) {
+				$(".collapsible").collapsible();
+			}
+			if ($(".collapsible.expandable").length) {
+				$(".collapsible.expandable").collapsible({
+					accordion: false,
+				});
+			}
+		</script>
+	</body>
+</html>
