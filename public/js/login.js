@@ -6,10 +6,16 @@ function getUiConfig() {
 	return {
 		callbacks: {
 			signInSuccessWithAuthResult: (authResult) => {
-				document.getElementById("is-new-user").textContent = authResult
-					.additionalUserInfo.isNewUser
-					? "Hey there new user! We are preparing your dashboard!"
-					: "Hey there! Welcome back! Loading your dashboard!";
+				if (authResult.additionalUserInfo.isNewUser) {
+					firebase.analytics().logEvent("sign_up");
+					document.getElementById("is-new-user").textContent =
+						"Hey there new user! We are preparing your dashboard!";
+				} else if (!authResult.additionalUserInfo.isNewUser) {
+					firebase.analytics().logEvent("login");
+					document.getElementById("is-new-user").textContent =
+						"Hey there! Welcome back! Loading your dashboard!";
+				}
+				firebase.analytics().setUserId(authResult.user.uid);
 				authResult.user
 					.getIdToken()
 					.then((idToken) => {
