@@ -1,4 +1,4 @@
-# Spot the Hole ![Firebase CD](https://github.com/aravindvnair99/Spot-the-Hole/workflows/Firebase%20CD/badge.svg) ![Node CI](https://github.com/aravindvnair99/Spot-the-Hole/workflows/Node%20CI/badge.svg) [![GitHub license](https://img.shields.io/github/license/aravindvnair99/Spot-the-Hole)](https://github.com/aravindvnair99/Spot-the-Hole/blob/master/LICENSE)
+# Spot the Hole ![](https://komarev.com/ghpvc/?username=AravindVNair99&label=Views) ![Firebase CD](https://github.com/aravindvnair99/Spot-the-Hole/workflows/Firebase%20CD/badge.svg) ![Node CI](https://github.com/aravindvnair99/Spot-the-Hole/workflows/Node%20CI/badge.svg) [![GitHub license](https://img.shields.io/github/license/aravindvnair99/Spot-the-Hole)](https://github.com/aravindvnair99/Spot-the-Hole/blob/master/LICENSE)
 
 Official source code of Spot the Hole PWA which was a project for Open Lab at Amrita School of Engineering, Bengaluru.
 
