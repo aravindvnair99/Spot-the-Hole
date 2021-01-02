@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Potholes by Location | Spot the Hole</title>
+		<meta
+			property="og:title"
+			content="Potholes by Location | Spot the Hole"
+		/>
+		<meta name="description" content="View potholes by geocode" />
+		<meta property="og:description" content="View potholes by geocode" />
+		<meta
+			property="og:url"
+			content="https://spot-the-hole.web.app/potholesByLocation"
+		/>
+		<%- include('components/meta') -%> <%- include('components/corecss') -%>
+		<script src="/js/nouislider.min.js" type="text/javascript"></script>
+		<link
+			href="/css/nouislider.css"
+			rel="stylesheet"
+			type="text/css"
+			media="screen"
+		/>
+	</head>
+	<body
+		class="html"
+		data-header="light"
+		data-footer="dark"
+		data-header_align="center"
+		data-menu_type="left"
+		data-menu="light"
+		data-menu_icons="on"
+		data-footer_type="left"
+		data-site_mode="light"
+		data-footer_menu="show"
+		data-footer_menu_style="light"
+	>
+		<div class="preloader-background">
+			<div class="preloader-wrapper">
+				<div id="preloader"></div>
+			</div>
+		</div>
+		<%- include('components/headerMenu') -%> <%-
+		include('components/sideMenu') -%> <%-
+		include('components/customisation') -%>
+		<div class="container">
+			<div class="section">
+				<h5 class="pagetitle">
+					Potholes at <%= potholesData[0].sublocality %> (<%=
+					potholesData[0].globalCode %>)
+				</h5>
+				<p>
+					List of potholes reported.
+				</p>
+				<p>Severity rating: <span id="ratingPlaceholder"></span></p>
+				<div id="ratingSlider"></div>
+				<div class="divider"></div>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="section">
+				<%- include('showPotholesAdmin') %>
+			</div>
+		</div>
+
+		<%- include('components/footer') -%> <%- include('components/backtotop')
+		-%> <%- include('components/footerMenu') -%> <%-
+		include('components/pwa') -%> <%- include('components/corejs') -%>
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$(".tabs").tabs();
+			});
+		</script>
+		<script>
+			var slider = document.getElementById("ratingSlider");
+			noUiSlider.create(slider, {
+				start: [<%- rating -%>],
+				connect: true,
+				step: 1,
+				orientation: "horizontal",
+				range: {
+					min: 0,
+					max: 100,
+				},
+				format: wNumb({
+					decimals: 0,
+				}),
+			});
+			document.getElementById('ratingPlaceholder').innerText = slider.noUiSlider.get()
+			slider.noUiSlider.on("change", function (values, handle) {
+				var payload = {
+					rating: slider.noUiSlider.get(),
+					globalCode: window.location.search.replace(
+						"?globalCode=",
+						""
+					),
+				};
+				fetch("/setRating", {
+					method: "POST",
+					body: new URLSearchParams($.param(payload)),
+				})
+					.then(function (response) {
+						if (response.status !== 200) {
+							alert(
+								"Looks like there was a problem. Status Code: " +
+									response.status
+							);
+							return;
+						}
+						if (response.status == 200) {
+							document.getElementById('ratingPlaceholder').innerText = slider.noUiSlider.get()
+						}
+					})
+					.catch(function (err) {
+						alert("Fetch Error :-S", err);
+					});
+			});
+		</script>
+	</body>
+</html>

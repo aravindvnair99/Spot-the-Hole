@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Profile | Spot the Hole</title>
+		<meta property="og:title" content="Profile | Spot the Hole" />
+		<meta name="description" content="Your details" />
+		<meta property="og:description" content="Your details" />
+		<meta
+			property="og:url"
+			content="https://spot-the-hole.web.app/profile"
+		/>
+		<%- include('components/meta') -%> <%- include('components/corecss') -%>
+	</head>
+	<body
+		class="html"
+		data-header="light"
+		data-footer="dark"
+		data-header_align="center"
+		data-menu_type="left"
+		data-menu="light"
+		data-menu_icons="on"
+		data-footer_type="left"
+		data-site_mode="light"
+		data-footer_menu="show"
+		data-footer_menu_style="light"
+	>
+		<div class="preloader-background">
+			<div class="preloader-wrapper">
+				<div id="preloader"></div>
+			</div>
+		</div>
+		<%- include('components/headerMenu') -%> <%-
+		include('components/sideMenu') -%> <%-
+		include('components/customisation') -%>
+		<div class="container">
+			<div class="section">
+				<h5 class="pagetitle">Edit Profile</h5>
+				<p>
+					You have reported <%= Object.keys(potholesData).length %>
+					potholes!
+				</p>
+				<div class="divider"></div>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="section">
+				<div class="editprof-img">
+					<div class="img-wrap circle">
+						<img src="<%- user.picture -%>" alt="" />
+						<i class="mdi mdi-pencil prefix"></i>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="input-field col s12">
+						<i class="mdi mdi-account-outline prefix"></i>
+						<input
+							id="first_name"
+							type="text"
+							class="validate"
+							value="<%- user.name -%>"
+						/>
+						<label for="displayName">Name</label>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="input-field col s12">
+						<i class="mdi mdi-email-outline prefix"></i>
+						<input
+							id="email"
+							type="email"
+							class="validate"
+							value="<%- user.email -%>"
+						/>
+						<label for="email">Email</label>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="input-field col s12">
+						<i class="mdi mdi-cellphone prefix"></i>
+						<input
+							id="mobno"
+							type="text"
+							class="validate"
+							value="<%- user.mobile -%>"
+						/>
+						<label for="mobno">Mobile No.</label>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="input-field col s12">
+						<i class="mdi mdi-lock-outline prefix"></i>
+						<input id="password" type="password" class="validate" />
+						<label for="password">Password</label>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="input-field col s12">
+						<i class="mdi mdi-lock-outline prefix"></i>
+						<input
+							id="cpassword"
+							type="password"
+							class="validate"
+						/>
+						<label for="cpassword">Confirm Password</label>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="input-field col s12">
+						<i class="mdi mdi-calendar prefix"></i>
+						<input
+							type="text"
+							id="datepicker-input2"
+							class="datepicker datepicker2"
+						/>
+						<label for="datepicker-input2">Birth Date</label>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="input-field col s12">
+						<i class="mdi mdi-circle-edit-outline prefix"></i>
+						<textarea
+							id="textarea-prefix"
+							class="materialize-textarea"
+						></textarea>
+						<label for="textarea-prefix">Bio</label>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col s12">
+						<a class="waves-effect waves-light btn-large bg-primary"
+							>Save Profile</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+		<%- include('components/footer') -%> <%- include('components/backtotop')
+		-%> <%- include('components/footerMenu') -%> <%-
+		include('components/pwa') -%> <%- include('components/corejs') -%>
+		<script type="text/javascript">
+			$(".datepicker.datepicker2").datepicker({
+				format: "dddd, dd mmmm yyyy",
+				autoClose: true,
+			});
+		</script>
+	</body>
+</html>

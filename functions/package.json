@@ -1,6 +1,6 @@
 {
 	"name": "spot-the-hole",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"description": "Spot the Hole PWA",
 	"keywords": [
 		"PWA",
@@ -19,10 +19,6 @@
 		{
 			"name": "Aravind V Nair",
 			"url": "https://github.com/AravindVNair99"
-		},
-		{
-			"name": "Sriram Nuthi",
-			"url": "https://github.com/Nuthi-Sriram"
 		}
 	],
 	"license": "MIT",
@@ -39,22 +35,24 @@
 		"logs": "firebase functions:log"
 	},
 	"engines": {
-		"node": "8"
+		"node": "10"
 	},
 	"dependencies": {
-		"@google-cloud/automl": "^2.0.0",
+		"@google-cloud/automl": "^2.1.0",
+		"axios": "^0.19.2",
 		"busboy": "^0.3.1",
 		"cookie-parser": "^1.4.5",
-		"ejs": "^3.1.2",
+		"ejs": "^3.1.3",
 		"express": "^4.17.1",
 		"firebase-admin": "^8.12.1",
-		"firebase-functions": "^3.6.1",
+		"firebase-functions": "^3.7.0",
+		"morgan": "^1.10.0",
 		"vader-sentiment": "^1.1.3"
 	},
 	"devDependencies": {
-		"eslint": "^6.8.0",
+		"eslint": "^7.3.0",
 		"eslint-plugin-promise": "^4.2.1",
-		"firebase-functions-test": "^0.1.7"
+		"firebase-functions-test": "^0.2.1"
 	},
 	"private": true
 }

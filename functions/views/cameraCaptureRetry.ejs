@@ -1,70 +1,25 @@
 <!DOCTYPE html>
-<html class=" ">
-	<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Retry Camera Capture | Spot the Hole</title>
 		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1, maximum-scale=1.0"
+			property="og:title"
+			content="Retry Camera Capture | Spot the Hole"
 		/>
-		<title>Camera Capture</title>
-		<meta content="Zak Mobile App" name="description" />
-		<meta content="themepassion" name="author" />
-
-		<!-- App Icons -->
-		<link
-			rel="apple-touch-icon"
-			sizes="57x57"
-			href="assets/images/icons/apple-icon-57x57.png"
-		/>
-
-		<link rel="manifest" href="assets/images/icons/manifest.json" />
-		<meta name="msapplication-TileColor" content="#ffffff" />
 		<meta
-			name="msapplication-TileImage"
-			content="assets/images/icons/ms-icon-144x144.png"
+			name="description"
+			content="Re-upload a picture for verification"
 		/>
-		<meta name="theme-color" content="#ffffff" />
-
-		<!-- CORE CSS FRAMEWORK - START -->
-		<link
-			href="assets/css/preloader.css"
-			type="text/css"
-			rel="stylesheet"
-			media="screen,projection"
+		<meta
+			property="og:description"
+			content="Re-upload a picture for verification"
 		/>
-
-		<link
-			href="assets/css/materialize.min.css"
-			type="text/css"
-			rel="stylesheet"
-			media="screen,projection"
+		<meta
+			property="og:url"
+			content="https://spot-the-hole.web.app/cameraCaptureRetry"
 		/>
-		<link
-			href="assets/fonts/mdi/materialdesignicons.min.css"
-			type="text/css"
-			rel="stylesheet"
-			media="screen,projection"
-		/>
-		<link
-			href="assets/plugins/perfect-scrollbar/perfect-scrollbar.css"
-			type="text/css"
-			rel="stylesheet"
-			media="screen,projection"
-		/>
-
-		<link
-			href="assets/css/style.css"
-			type="text/css"
-			rel="stylesheet"
-			media="screen,projection"
-			id="main-style"
-		/>
+		<%- include('components/meta') -%> <%- include('components/corecss') -%>
 	</head>
-	<!-- END HEAD -->
-
-	<!-- BEGIN BODY -->
-
 	<body
 		class="html"
 		data-header="light"
@@ -83,845 +38,18 @@
 				<div id="preloader"></div>
 			</div>
 		</div>
-
-		<!-- START navigation -->
-		<nav class="fixedtop topbar navigation" role="navigation">
-			<div class="nav-wrapper container">
-				<a id="logo-container" href="index.html" class="brand-logo"
-					><i class="mdi mdi-ring"></i>ZAK</a
-				>
-				<!-- <ul class="right hide-on-med-and-down">
-				<li><a href="#">Navbar Link</a></li>
-			</ul> -->
-
-				<!-- <ul id="nav-mobile" class="sidenav">
-				<li><a href="#">Navbar Link</a></li>
-			</ul> -->
-				<a
-					href="#"
-					data-target=""
-					class="waves-effect waves-circle navicon back-button htmlmode show-on-large"
-					><i class="mdi mdi-chevron-left" data-page=""></i
-				></a>
-
-				<a
-					href="#"
-					data-target="slide-nav"
-					class="waves-effect waves-circle navicon sidenav-trigger show-on-large"
-					><i class="mdi mdi-menu"></i
-				></a>
-
-				<a
-					href="#"
-					data-target="slide-settings"
-					class="waves-effect waves-circle navicon right sidenav-trigger show-on-large pulse"
-					><i class="mdi mdi-tune"></i
-				></a>
-
-				<a
-					href="#"
-					data-target=""
-					class="waves-effect waves-circle navicon right nav-site-mode show-on-large"
-					><i class="mdi mdi-invert-colors mdi-transition1"></i
-				></a>
-				<!-- <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a> -->
-			</div>
-		</nav>
-		<ul id="slide-nav" class="sidenav sidemenu">
-			<li class="menu-close"><i class="mdi mdi-close"></i></li>
-			<li class="user-wrap">
-				<div class="user-view row">
-					<!-- <div class="background">
-				<img src="assets/images/office.jpg">
-			</div> -->
-					<div class="col s3 imgarea">
-						<a href="#user"
-							><img
-								class="circle"
-								src="assets/images/user-37.jpg"
-								alt="user"
-						/></a>
-					</div>
-					<div class="col s9 infoarea">
-						<a href="#name"
-							><span class="name">Cherry Smith</span></a
-						>
-						<a href="#email"
-							><span class="email">cherrysmith@gmail.com</span></a
-						>
-					</div>
-				</div>
-			</li>
-
-			<li class="menulinks">
-				<ul class="collapsible">
-					<!-- SIDEBAR - START -->
-
-					<!-- MAIN MENU - START -->
-
-					<li class="sh-wrap">
-						<div class="subheader">Navigation</div>
-					</li>
-					<li class="lvl1">
-						<div class="waves-effect">
-							<a href="ui-pages-home.html">
-								<i class="mdi mdi-home-outline"></i>
-								<span class="title">Welcome</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1">
-						<div class="waves-effect">
-							<a href="sub-apps.html">
-								<i class="mdi mdi-open-in-app"></i>
-								<span class="title">APPS</span
-								><span
-									class="badge blue-grey lighten-3 badge-rounded"
-									>NEW</span
-								>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1">
-						<div class="waves-effect">
-							<a href="sub-uielements.html">
-								<i class="mdi mdi-laptop"></i>
-								<span class="title">UI Elements</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1">
-						<div class="waves-effect">
-							<a href="sub-utilities-components.html">
-								<i class="mdi mdi-flask-outline"></i>
-								<span class="title">Components</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1">
-						<div class="waves-effect">
-							<a href="sub-forms.html">
-								<i class="mdi mdi-textbox"></i>
-								<span class="title">Forms</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1">
-						<div class="waves-effect">
-							<a href="sub-charts.html">
-								<i class="mdi mdi-chart-line"></i>
-								<span class="title">Charts</span
-								><span
-									class="badge blue-grey lighten-3 badge-rounded"
-									>HOT</span
-								>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1">
-						<div class="waves-effect">
-							<a href="sub-pages.html">
-								<i class="mdi mdi-shape-outline"></i>
-								<span class="title">Pages</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1">
-						<div class="waves-effect">
-							<a href="sub-access.html">
-								<i class="mdi mdi-access-point"></i>
-								<span class="title">Site Access</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1">
-						<div class="waves-effect">
-							<a href="sub-portfolio.html">
-								<i class="mdi mdi-grid-large"></i>
-								<span class="title">Portfolio</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1">
-						<div class="waves-effect">
-							<a href="sub-blogs.html">
-								<i class="mdi mdi-square-edit-outline"></i>
-								<span class="title">Blogs</span>
-							</a>
-						</div>
-					</li>
-					<li class="sep-wrap"><div class="divider"></div></li>
-					<li class="sh-wrap">
-						<div class="subheader">Reach Us</div>
-					</li>
-					<li class="lvl1">
-						<div class="waves-effect">
-							<a href="tel:+1 234 567 890">
-								<i class="mdi mdi-cellphone-basic"></i>
-								<span class="title">Phone</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1">
-						<div class="waves-effect">
-							<a href="mailto:email@example.com">
-								<i class="mdi mdi-email-outline"></i>
-								<span class="title">Email</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1">
-						<div class="waves-effect">
-							<a href="sms:+1 234 567 890">
-								<i class="mdi mdi-message-text-outline"></i>
-								<span class="title">Message</span>
-							</a>
-						</div>
-					</li>
-					<li class="sep-wrap"><div class="divider"></div></li>
-					<li class="lvl1">
-						<div class="waves-effect">
-							<a
-								href="#"
-								data-target="slide-settings"
-								class="sidenav-trigger"
-								><i class="mdi mdi-settings-outline"></i
-								><span class="title">Settings</span>
-							</a>
-						</div>
-					</li>
-
-					<!-- MAIN MENU - END -->
-
-					<!--  SIDEBAR - END -->
-				</ul>
-			</li>
-			<li class="copy-spacer"></li>
-			<li class="copy-wrap">
-				<div class="copyright">&copy; Copyright @ themepassion</div>
-			</li>
-		</ul>
-
-		<!-- END navigation -->
-
-		<ul id="slide-settings" class="sidenav sidesettings right fixed">
-			<li class="menulinks">
-				<ul class="collapsible">
-					<!-- SIDEBAR - START -->
-
-					<!-- MAIN MENU - START -->
-
-					<li class="sh-wrap"><div class="subheader">Themes</div></li>
-					<li class="lvl1 theme">
-						<div
-							class="waves-effect appsettings"
-							data-type="theme"
-							data-value="red"
-						>
-							<a href="#!">
-								<i
-									class="mdi mdi-checkbox-intermediate red-text text-lighten-2"
-								></i>
-								<span class="title">Red</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 theme">
-						<div
-							class="waves-effect appsettings"
-							data-type="theme"
-							data-value="orange"
-						>
-							<a href="#!">
-								<i
-									class="mdi mdi-checkbox-blank-outline deep-orange-text text-lighten-2"
-								></i>
-								<span class="title">Orange</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 theme">
-						<div
-							class="waves-effect appsettings"
-							data-type="theme"
-							data-value="blue"
-						>
-							<a href="#!">
-								<i
-									class="mdi mdi-checkbox-blank-outline blue-text text-lighten-2"
-								></i>
-								<span class="title">Blue</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 theme">
-						<div
-							class="waves-effect appsettings"
-							data-type="theme"
-							data-value="green"
-						>
-							<a href="#!">
-								<i
-									class="mdi mdi-checkbox-blank-outline green-text text-lighten-2"
-								></i>
-								<span class="title">Green</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 theme">
-						<div
-							class="waves-effect appsettings active"
-							data-type="theme"
-							data-value="deep-purple"
-						>
-							<a href="#!">
-								<i
-									class="mdi mdi-checkbox-blank-outline deep-purple-text text-lighten-2"
-								></i>
-								<span class="title">Purple</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 theme">
-						<div
-							class="waves-effect appsettings"
-							data-type="theme"
-							data-value="amber"
-						>
-							<a href="#!">
-								<i
-									class="mdi mdi-checkbox-blank-outline amber-text"
-								></i>
-								<span class="title">Yellow</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 theme">
-						<div
-							class="waves-effect appsettings"
-							data-type="theme"
-							data-value="teal"
-						>
-							<a href="#!">
-								<i
-									class="mdi mdi-checkbox-blank-outline teal-text text-lighten-2"
-								></i>
-								<span class="title">Teal</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 theme">
-						<div
-							class="waves-effect appsettings"
-							data-type="theme"
-							data-value="pink"
-						>
-							<a href="#!">
-								<i
-									class="mdi mdi-checkbox-blank-outline pink-text text-lighten-2"
-								></i>
-								<span class="title">Pink</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 theme">
-						<div
-							class="waves-effect appsettings"
-							data-type="theme"
-							data-value="indigo"
-						>
-							<a href="#!">
-								<i
-									class="mdi mdi-checkbox-blank-outline indigo-text text-lighten-2"
-								></i>
-								<span class="title">Indigo</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 theme">
-						<div
-							class="waves-effect appsettings"
-							data-type="theme"
-							data-value="blue-grey"
-						>
-							<a href="#!">
-								<i
-									class="mdi mdi-checkbox-blank-outline blue-grey-text text-lighten-2"
-								></i>
-								<span class="title">Blue Grey</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 theme">
-						<div
-							class="waves-effect appsettings"
-							data-type="theme"
-							data-value="brown"
-						>
-							<a href="#!">
-								<i
-									class="mdi mdi-checkbox-blank-outline brown-text text-lighten-2"
-								></i>
-								<span class="title">Brown</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 theme">
-						<div
-							class="waves-effect appsettings"
-							data-type="theme"
-							data-value="cyan"
-						>
-							<a href="#!">
-								<i
-									class="mdi mdi-checkbox-blank-outline cyan-text text-lighten-2"
-								></i>
-								<span class="title">Cyan</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 theme">
-						<div
-							class="waves-effect appsettings"
-							data-type="theme"
-							data-value="light-green"
-						>
-							<a href="#!">
-								<i
-									class="mdi mdi-checkbox-blank-outline light-green-text text-lighten-2"
-								></i>
-								<span class="title">Light Green</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 theme">
-						<div
-							class="waves-effect appsettings"
-							data-type="theme"
-							data-value="purple"
-						>
-							<a href="#!">
-								<i
-									class="mdi mdi-checkbox-blank-outline purple-text text-lighten-2"
-								></i>
-								<span class="title">Violet</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 theme">
-						<div
-							class="waves-effect appsettings"
-							data-type="theme"
-							data-value="grey"
-						>
-							<a href="#!">
-								<i
-									class="mdi mdi-checkbox-blank-outline grey-text text-darken-2"
-								></i>
-								<span class="title">Black</span>
-							</a>
-						</div>
-					</li>
-					<li class="sep-wrap"><div class="divider"></div></li>
-					<li class="sh-wrap">
-						<div class="subheader">Site Mode</div>
-					</li>
-					<li class="lvl1 site_mode">
-						<div
-							class="waves-effect appsettings active"
-							data-type="site_mode"
-							data-value="light"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-intermediate"></i>
-								<span class="title">Light Mode</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 site_mode">
-						<div
-							class="waves-effect appsettings"
-							data-type="site_mode"
-							data-value="dark"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-blank-outline"></i>
-								<span class="title">Dark Mode</span>
-							</a>
-						</div>
-					</li>
-					<li class="sep-wrap"><div class="divider"></div></li>
-					<li class="sh-wrap">
-						<div class="subheader">Header Style</div>
-					</li>
-					<li class="lvl1 header">
-						<div
-							class="waves-effect appsettings active"
-							data-type="header"
-							data-value="light"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-intermediate"></i>
-								<span class="title">Light Header</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 header">
-						<div
-							class="waves-effect appsettings"
-							data-type="header"
-							data-value="dark"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-blank-outline"></i>
-								<span class="title">Dark Header</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 header">
-						<div
-							class="waves-effect appsettings"
-							data-type="header"
-							data-value="colored"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-blank-outline"></i>
-								<span class="title">Colored Header</span>
-							</a>
-						</div>
-					</li>
-					<li class="sep-wrap"><div class="divider"></div></li>
-					<li class="sh-wrap">
-						<div class="subheader">Header Alignment</div>
-					</li>
-					<li class="lvl1 header_align">
-						<div
-							class="waves-effect appsettings"
-							data-type="header_align"
-							data-value="left"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-intermediate"></i>
-								<span class="title">Left Align Header</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 header_align">
-						<div
-							class="waves-effect appsettings active"
-							data-type="header_align"
-							data-value="center"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-blank-outline"></i>
-								<span class="title">Center Align Header</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 header_align">
-						<div
-							class="waves-effect appsettings"
-							data-type="header_align"
-							data-value="right"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-blank-outline"></i>
-								<span class="title">Right Align Header</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 header_align">
-						<div
-							class="waves-effect appsettings"
-							data-type="header_align"
-							data-value="app"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-blank-outline"></i>
-								<span class="title"
-									>App Based Align Header</span
-								>
-							</a>
-						</div>
-					</li>
-					<li class="sep-wrap"><div class="divider"></div></li>
-					<li class="sh-wrap">
-						<div class="subheader">Menu Style</div>
-					</li>
-					<li class="lvl1 menu">
-						<div
-							class="waves-effect appsettings active"
-							data-type="menu"
-							data-value="light"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-intermediate"></i>
-								<span class="title">Light Menu</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 menu">
-						<div
-							class="waves-effect appsettings"
-							data-type="menu"
-							data-value="dark"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-blank-outline"></i>
-								<span class="title">Dark Menu</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 menu">
-						<div
-							class="waves-effect appsettings"
-							data-type="menu"
-							data-value="colored"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-blank-outline"></i>
-								<span class="title">Colored Menu</span>
-							</a>
-						</div>
-					</li>
-					<li class="sep-wrap"><div class="divider"></div></li>
-					<li class="sh-wrap">
-						<div class="subheader">Menu Type</div>
-					</li>
-					<li class="lvl1 menu_type">
-						<div
-							class="waves-effect appsettings active"
-							data-type="menu_type"
-							data-value="left"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-intermediate"></i>
-								<span class="title">Left Menu</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 menu_type">
-						<div
-							class="waves-effect appsettings"
-							data-type="menu_type"
-							data-value="center"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-blank-outline"></i>
-								<span class="title">Centered Menu</span>
-							</a>
-						</div>
-					</li>
-					<li class="sep-wrap"><div class="divider"></div></li>
-					<li class="sh-wrap">
-						<div class="subheader">Menu Icons</div>
-					</li>
-					<li class="lvl1 menu_icons">
-						<div
-							class="waves-effect appsettings active"
-							data-type="menu_icons"
-							data-value="on"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-intermediate"></i>
-								<span class="title">Menu Icons Show</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 menu_icons">
-						<div
-							class="waves-effect appsettings"
-							data-type="menu_icons"
-							data-value="off"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-blank-outline"></i>
-								<span class="title">Menu Icons Hide</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 menu_icons">
-						<div
-							class="waves-effect appsettings"
-							data-type="menu_icons"
-							data-value="colored"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-blank-outline"></i>
-								<span class="title">Menu Icons Colored</span>
-							</a>
-						</div>
-					</li>
-					<li class="sep-wrap"><div class="divider"></div></li>
-					<li class="sh-wrap">
-						<div class="subheader">Page Footer Style</div>
-					</li>
-					<li class="lvl1 footer">
-						<div
-							class="waves-effect appsettings"
-							data-type="footer"
-							data-value="light"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-intermediate"></i>
-								<span class="title">Light Footer</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 footer">
-						<div
-							class="waves-effect appsettings active"
-							data-type="footer"
-							data-value="dark"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-blank-outline"></i>
-								<span class="title">Dark Footer</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 footer">
-						<div
-							class="waves-effect appsettings"
-							data-type="footer"
-							data-value="colored"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-blank-outline"></i>
-								<span class="title">Colored Footer</span>
-							</a>
-						</div>
-					</li>
-					<li class="sep-wrap"><div class="divider"></div></li>
-					<li class="sh-wrap">
-						<div class="subheader">Page Footer Type</div>
-					</li>
-					<li class="lvl1 footer_type">
-						<div
-							class="waves-effect appsettings"
-							data-type="footer_type"
-							data-value="minimal"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-intermediate"></i>
-								<span class="title">Minimal Footer</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 footer_type">
-						<div
-							class="waves-effect appsettings active"
-							data-type="footer_type"
-							data-value="left"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-blank-outline"></i>
-								<span class="title">Left Aligned Footer</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 footer_type">
-						<div
-							class="waves-effect appsettings"
-							data-type="footer_type"
-							data-value="center"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-blank-outline"></i>
-								<span class="title">Centered Footer</span>
-							</a>
-						</div>
-					</li>
-					<li class="sep-wrap"><div class="divider"></div></li>
-					<li class="sh-wrap">
-						<div class="subheader">Fixed Footer Menu</div>
-					</li>
-					<li class="lvl1 footer_menu">
-						<div
-							class="waves-effect appsettings active"
-							data-type="footer_menu"
-							data-value="show"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-intermediate"></i>
-								<span class="title"
-									>Show Fixed Footer Menu</span
-								>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 footer_menu">
-						<div
-							class="waves-effect appsettings"
-							data-type="footer_menu"
-							data-value="hide"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-blank-outline"></i>
-								<span class="title"
-									>Hide Fixed Footer Menu</span
-								>
-							</a>
-						</div>
-					</li>
-					<li class="sep-wrap"><div class="divider"></div></li>
-					<li class="sh-wrap">
-						<div class="subheader">Fixed Footer Menu Style</div>
-					</li>
-					<li class="lvl1 footer_menu_style">
-						<div
-							class="waves-effect appsettings active"
-							data-type="footer_menu_style"
-							data-value="light"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-intermediate"></i>
-								<span class="title">Light Fixed Menu</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 footer_menu_style">
-						<div
-							class="waves-effect appsettings"
-							data-type="footer_menu_style"
-							data-value="dark"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-blank-outline"></i>
-								<span class="title">Dark Fixed Menu</span>
-							</a>
-						</div>
-					</li>
-					<li class="lvl1 footer_menu_style">
-						<div
-							class="waves-effect appsettings"
-							data-type="footer_menu_style"
-							data-value="colored"
-						>
-							<a href="#!">
-								<i class="mdi mdi-checkbox-blank-outline"></i>
-								<span class="title">Colored Fixed Menu</span>
-							</a>
-						</div>
-					</li>
-
-					<!-- MAIN MENU - END -->
-
-					<!--  SIDEBAR - END -->
-				</ul>
-			</li>
-		</ul>
-
+		<%- include('components/headerMenu') -%> <%-
+		include('components/sideMenu') -%> <%-
+		include('components/customisation') -%>
 		<div class="container">
 			<div class="section">
-				<h5 class="pagetitle">Submit &nbsp; Pothole image</h5>
+				<h5 class="pagetitle">Retry Camera Capture</h5>
 				<p>
-					Capture and upload your pothole image for verification.
+					Validation failed! Recapture and upload your pothole image
+					for verification.
 				</p>
-				<div class="divider"></div>
 			</div>
 		</div>
-
 		<div class="container">
 			<div class="section">
 				<form
@@ -930,39 +58,61 @@
 					enctype="multipart/form-data"
 				>
 					<div class="row">
-						<div class="input-field col s12">
-							<i class="mdi mdi-email-outline prefix"></i>
+						<div class="input-field col s12 pad-0 center">
 							<input
 								id="potholeImage"
 								name="potholeImage"
 								type="file"
 								accept="image/*"
+								class="waves-effect waves-light btn-large bg-primary"
 								capture
 								required
 							/>
 						</div>
 					</div>
-
 					<div class="row">
-						<div class="col s12">
+						<div class="col s12 center">
 							<button
 								type="submit"
-								class="waves-effect waves-light btn-large bg-primary"
+								class="btn-large waves-effect waves-light bg-primary"
 							>
 								Upload
+								<i class="mdi mdi-cloud-upload right"></i>
 							</button>
 						</div>
 					</div>
 				</form>
+				<div class="divider"></div>
 			</div>
 		</div>
-		<%- include('components/footer') -%>
-		<div class="backtotop">
-			<a class="btn-floating btn primary-bg">
-				<i class="mdi mdi-chevron-up"></i>
-			</a>
+		<div class="container">
+			<div class="section">
+				<h5 class="pagetitle">FAQ</h5>
+				<p>
+					Have questions? We have the answers you are looking for.
+				</p>
+			</div>
+			<div class="section">
+				<h5 class="pagetitle">What happens to my image?</h5>
+				<p>
+					The image uploaded will be validated by an AutoML deployment
+					running in Google Cloud Platform. This system helps to
+					verify if the picture is a valid image of pothole and helps
+					to keep away unwanted reports. Rear camera access is
+					required.
+				</p>
+				<div class="divider"></div>
+			</div>
+			<div class="section">
+				<h5 class="pagetitle">What information is collected?</h5>
+				<p>
+					Only the picture you upload is collected in this page. Rear
+					camera access is required for that.
+				</p>
+			</div>
 		</div>
-		<%- include('components/footer_menu') -%>
-		<%- include('components/scripts') -%>
+		<%- include('components/footer') -%> <%- include('components/backtotop')
+		-%> <%- include('components/footerMenu') -%> <%-
+		include('components/pwa') -%> <%- include('components/corejs') -%>
 	</body>
 </html>

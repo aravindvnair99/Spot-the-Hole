@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Pothole Heat Map | Spot the Hole</title>
+		<meta property="og:title" content="Pothole Heat Map | Spot the Hole" />
+		<meta name="description" content="View the spread of potholes" />
+		<meta property="og:description" content="View the spread of potholes" />
+		<meta
+			property="og:url"
+			content="https://spot-the-hole.web.app/heatmap"
+		/>
+		<%- include('components/meta') -%> <%- include('components/corecss') -%>
+		<style>
+			html,
+			body {
+				height: 100%;
+				margin: 0;
+				padding: 0;
+			}
+			#mapPlaceholder {
+				height: 70vh;
+			}
+		</style>
+	</head>
+	<body
+		class="html"
+		data-header="light"
+		data-footer="dark"
+		data-header_align="center"
+		data-menu_type="left"
+		data-menu="light"
+		data-menu_icons="on"
+		data-footer_type="left"
+		data-site_mode="light"
+		data-footer_menu="show"
+		data-footer_menu_style="light"
+	>
+		<div class="preloader-background">
+			<div class="preloader-wrapper">
+				<div id="preloader"></div>
+			</div>
+		</div>
+		<%- include('components/headerMenu') -%> <%-
+		include('components/sideMenu') -%> <%-
+		include('components/customisation') -%>
+		<div class="container">
+			<div class="section">
+				<h5 class="pagetitle">Pothole Heat Map</h5>
+				<p>View the spread of potholes</p>
+				<div class="divider"></div>
+			</div>
+		</div>
+		<div class="container">
+			<div class="section">
+				<div class="row">
+					<div class="col s12 pad-0">
+						<h5 class="bot-20 sec-tit">A look around you</h5>
+					</div>
+				</div>
+				<div class="hide-on-med-and-up">
+					<div class="row">
+						<div class="col s6">
+							<button
+								type="button"
+								class="btn waves-effect waves-light bg-primary"
+								onclick="toggleHeatmap()"
+								style="width: 100%;"
+							>
+								Heatmap
+								<i class="mdi mdi-map-marker-radius"></i>
+							</button>
+						</div>
+						<div class="col s6">
+							<button
+								type="button"
+								class="btn waves-effect waves-light bg-primary"
+								onclick="changeGradient()"
+								style="width: 100%;"
+							>
+								Gradient
+								<i class="mdi mdi-gradient"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="hide-on-med-and-up">
+					<div class="row">
+						<div class="col s6">
+							<button
+								type="button"
+								class="btn waves-effect waves-light bg-primary"
+								onclick="changeRadius()"
+								style="width: 100%;"
+							>
+								Radius
+								<i class="mdi mdi-map-marker-radius"></i>
+							</button>
+						</div>
+						<div class="col s6">
+							<button
+								type="button"
+								class="btn waves-effect waves-light bg-primary"
+								onclick="changeOpacity()"
+								style="width: 100%;"
+							>
+								Opacity
+								<i class="mdi mdi-opacity"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="hide-on-small-only">
+					<div class="row">
+						<div class="col s3">
+							<button
+								type="button"
+								class="btn waves-effect waves-light bg-primary"
+								onclick="toggleHeatmap()"
+								style="width: 100%;"
+							>
+								Heatmap
+								<i class="mdi mdi-map-marker-radius"></i>
+							</button>
+						</div>
+						<div class="col s3">
+							<button
+								type="button"
+								class="btn waves-effect waves-light bg-primary"
+								onclick="changeGradient()"
+								style="width: 100%;"
+							>
+								Gradient
+								<i class="mdi mdi-gradient"></i>
+							</button>
+						</div>
+						<div class="col s3">
+							<button
+								type="button"
+								class="btn waves-effect waves-light bg-primary"
+								onclick="changeRadius()"
+								style="width: 100%;"
+							>
+								Radius
+								<i class="mdi mdi-map-marker-radius"></i>
+							</button>
+						</div>
+						<div class="col s3">
+							<button
+								type="button"
+								class="btn waves-effect waves-light bg-primary"
+								onclick="changeOpacity()"
+								style="width: 100%;"
+							>
+								Opacity
+								<i class="mdi mdi-opacity"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div id="mapPlaceholder"></div>
+			</div>
+		</div>
+		<%- include('components/footer') -%> <%- include('components/backtotop')
+		-%> <%- include('components/footerMenu') -%> <%-
+		include('components/pwa') -%> <%- include('components/corejs') -%>
+		<script
+			async
+			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBLjzX1FhtZzLzCKIa5kRvyi7Qpaz_yze4&libraries=visualization&callback=initMap"
+		></script>
+		<script>
+			var map, heatmap;
+			<%- include('latlngCenter') -%>
+			function initMap() {
+			  map = new google.maps.Map(document.getElementById('mapPlaceholder'), {
+				zoom: 6,
+				center: {lat: latAvg, lng: lngAvg},
+				mapTypeId: 'satellite'
+			  });
+			  heatmap = new google.maps.visualization.HeatmapLayer({
+				data: getPoints(),
+				map: map
+			  });
+			}
+
+			function toggleHeatmap() {
+			  heatmap.setMap(heatmap.getMap() ? null : map);
+			}
+
+			function changeGradient() {
+			  var gradient = [
+				'rgba(0, 255, 255, 0)',
+				'rgba(0, 255, 255, 1)',
+				'rgba(0, 191, 255, 1)',
+				'rgba(0, 127, 255, 1)',
+				'rgba(0, 63, 255, 1)',
+				'rgba(0, 0, 255, 1)',
+				'rgba(0, 0, 223, 1)',
+				'rgba(0, 0, 191, 1)',
+				'rgba(0, 0, 159, 1)',
+				'rgba(0, 0, 127, 1)',
+				'rgba(63, 0, 91, 1)',
+				'rgba(127, 0, 63, 1)',
+				'rgba(191, 0, 31, 1)',
+				'rgba(255, 0, 0, 1)'
+			  ]
+			  heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
+			}
+
+			function changeRadius() {
+			  heatmap.set('radius', heatmap.get('radius') ? null : 20);
+			}
+
+			function changeOpacity() {
+			  heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
+			}
+			function getPoints() {
+			  return [
+				  <%- include('latlng') -%>
+			];
+			}
+		</script>
+	</body>
+</html>

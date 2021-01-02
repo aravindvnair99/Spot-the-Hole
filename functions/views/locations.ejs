@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Locations | Spot the Hole</title>
+		<meta property="og:title" content="Locations | Spot the Hole" />
+		<meta name="description" content="View location of potholes" />
+		<meta property="og:description" content="View location of potholes" />
+		<meta
+			property="og:url"
+			content="https://spot-the-hole.web.app/locations"
+		/>
+		<%- include('components/meta') -%> <%- include('components/corecss') -%>
+	</head>
+
+	<body
+		class="html"
+		data-header="light"
+		data-footer="dark"
+		data-header_align="center"
+		data-menu_type="left"
+		data-menu="light"
+		data-menu_icons="on"
+		data-footer_type="left"
+		data-site_mode="light"
+		data-footer_menu="show"
+		data-footer_menu_style="light"
+	>
+		<div class="preloader-background">
+			<div class="preloader-wrapper">
+				<div id="preloader"></div>
+			</div>
+		</div>
+		<%- include('components/headerMenu') -%> <%-
+		include('components/sideMenu') -%> <%-
+		include('components/customisation') -%>
+		<div class="container">
+			<div class="section">
+				<h5 class="pagetitle">Locations</h5>
+				<p>
+					View location of potholes
+				</p>
+				<div class="divider"></div>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="section">
+				<ul class="subpages collection">
+					<%- include('showGlobalCodes') -%>
+				</ul>
+			</div>
+		</div>
+
+		<%- include('components/footer') -%> <%- include('components/backtotop')
+		-%> <%- include('components/footerMenu') -%> <%-
+		include('components/pwa') -%> <%- include('components/corejs') -%>
+	</body>
+</html>

@@ -1,0 +1,114 @@
+<ul id="slide-nav" class="sidenav sidemenu">
+	<li class="menu-close"><i class="mdi mdi-close"></i></li>
+	<li class="user-wrap">
+		<div class="user-view row">
+			<!-- <div class="background">
+				<img src="bg.jpg" alt="Background image">
+			</div> -->
+			<div class="col s3 imgarea">
+				<img
+					class="circle"
+					src="<%- user.picture -%>"
+					alt="Profile Picture"
+				/>
+			</div>
+			<div class="col s9 infoarea">
+				<span class="name"><%- user.name -%></span>
+				<span class="email"><%- user.email -%></span>
+			</div>
+		</div>
+	</li>
+
+	<li class="menulinks">
+		<ul class="collapsible">
+			<li class="sh-wrap">
+				<div class="subheader">Navigation</div>
+			</li>
+			<!-- <li class="lvl1">
+				<div class="waves-effect">
+					<a href="/profile">
+						<i class="mdi mdi-account-edit"></i>
+						<span class="title">Edit Profile</span>
+					</a>
+				</div>
+			</li> -->
+			<li class="lvl1">
+				<div class="waves-effect">
+					<a href="/FAQ">
+						<i class="mdi mdi-comment-question"></i>
+						<span class="title">FAQ</span>
+					</a>
+				</div>
+			</li>
+			<li class="lvl1">
+				<div class="waves-effect">
+					<a href="/signOut">
+						<i class="mdi mdi-lock"></i>
+						<span class="title">Sign Out</span>
+					</a>
+				</div>
+			</li>
+			<!-- <li class="lvl1">
+				<div class="waves-effect">
+					<a href="sub-apps.html">
+						<i class="mdi mdi-open-in-app"></i>
+						<span class="title">APPS</span
+						><span class="badge blue-grey lighten-3 badge-rounded"
+							>NEW</span
+						>
+					</a>
+				</div>
+			</li> -->
+			<li class="sep-wrap"><div class="divider"></div></li>
+			<li class="sh-wrap">
+				<div class="subheader">Reach Us</div>
+			</li>
+			<li class="lvl1">
+				<div class="waves-effect">
+					<a href="tel:+1 234 567 890">
+						<i class="mdi mdi-phone"></i>
+						<span class="title">Phone</span>
+					</a>
+				</div>
+			</li>
+			<li class="lvl1">
+				<div class="waves-effect">
+					<a href="mailto:email@example.com">
+						<i class="mdi mdi-email"></i>
+						<span class="title">Email</span>
+					</a>
+				</div>
+			</li>
+			<li class="lvl1">
+				<div class="waves-effect">
+					<a href="sms:+1 234 567 890">
+						<i class="mdi mdi-message-text"></i>
+						<span class="title">Message</span>
+					</a>
+				</div>
+			</li>
+			<li class="sep-wrap"><div class="divider"></div></li>
+			<li class="lvl1">
+				<div class="waves-effect">
+					<a
+						href="#"
+						data-target="slide-settings"
+						class="sidenav-trigger"
+						><i class="mdi mdi-settings"></i
+						><span class="title">Customise</span>
+					</a>
+				</div>
+			</li>
+		</ul>
+	</li>
+	<li class="copy-spacer"></li>
+	<li class="copy-wrap">
+		<div class="copyright">
+			Copyright &copy;
+			<script>
+				document.write(new Date().getFullYear());
+			</script>
+			Spot the Hole
+		</div>
+	</li>
+</ul>
