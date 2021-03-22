@@ -35,7 +35,7 @@
 		"logs": "firebase functions:log"
 	},
 	"engines": {
-		"node": "10"
+		"node": "12"
 	},
 	"dependencies": {
 		"@google-cloud/automl": "^2.4.1",
