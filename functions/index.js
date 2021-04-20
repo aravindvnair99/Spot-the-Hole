@@ -597,7 +597,9 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 		JSON.stringify(user),
 		"\n\n"
 	);
-
+	console.log(
+		path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname))
+	);
 	pred(req, res).catch((error) => {
 		if (error.code === 9) {
 			res.status(503).render("errors/modelNotDeployed");
@@ -674,18 +676,12 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 });
 
 async function pred(req, res) {
-	console.log(req);
-	const modelUrl = "./model.json";
+	console.log(req.files.file[0].fieldname);
+	const modelUrl =
+		"https://raw.githubusercontent.com/aravindvnair99/Spot-the-Hole/tfjs-automl/functions/tf_js-pothole_classification_edge/model.json";
 	const model = await automl.loadImageClassification(modelUrl);
 	const decodedImage = decodeImage(
-		fs
-			.readFileSync(
-				path.join(
-					os.tmpdir(),
-					path.basename(req.files.file[0].fieldname)
-				)
-			)
-			.toString("base64")
+		path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname))
 	);
 	const options = {centerCrop: true};
 	const predictions = await model.classify(decodedImage, options);
