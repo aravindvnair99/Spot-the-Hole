@@ -1,4 +1,3 @@
-
 const functions = require("firebase-functions"),
 	express = require("express"),
 	app = express(),
@@ -10,12 +9,11 @@ const functions = require("firebase-functions"),
 	os = require("os"),
 	fs = require("fs"),
 	vader = require("vader-sentiment"),
-	{ PredictionServiceClient } = require("@google-cloud/automl").v1,
+	{PredictionServiceClient} = require("@google-cloud/automl").v1,
 	morgan = require("morgan"),
 	axios = require("axios"),
-	tf = require('@tensorflow/tfjs'),
-	automl = require('@tensorflow/tfjs-automl');
-;
+	tf = require("@tensorflow/tfjs"),
+	automl = require("@tensorflow/tfjs-automl");
 /*=============================================>>>>>
 
 				= init and config =
@@ -223,32 +221,6 @@ function makeID(length) {
 
 /*=============================================>>>>>
 
-				= AutoML =
-
-===============================================>>>>>*/
-
-function AutoMLAPI(content) {
-	async function predict() {
-		const request = {
-			name: client.modelPath(
-				"spot-the-hole",
-				"us-central1",
-				"ICN4586489609965273088"
-			),
-			payload: {
-				image: {
-					imageBytes: content,
-				},
-			},
-		};
-		const [response] = await client.predict(request);
-		return response.payload;
-	}
-	return predict();
-}
-
-/*=============================================>>>>>
-
 				= basic routes =
 
 ===============================================>>>>>*/
@@ -354,7 +326,7 @@ app.get("/locations", checkCookieMiddleware, (req, res) => {
 				JSON.stringify(user),
 				"\n\n"
 			);
-			return res.render("locations", { user, globalCodes });
+			return res.render("locations", {user, globalCodes});
 		})
 		.catch((err) => {
 			console.error(
@@ -473,7 +445,7 @@ app.get("/heatmap", checkCookieMiddleware, (req, res) => {
 app.post("/setRating", checkCookieMiddleware, (req, res) => {
 	db.collection("globalCodes")
 		.doc(req.body.globalCode)
-		.update({ rating: req.body.rating })
+		.update({rating: req.body.rating})
 		.then(res.status(200).send("Set"))
 		.catch((err) => {
 			console.error(
@@ -627,7 +599,7 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 		"\n\n"
 	);
 
-	pred(req,res).catch((error) => {
+	pred(req, res).catch((error) => {
 		if (error.code === 9) {
 			res.status(503).render("errors/modelNotDeployed");
 		}
@@ -700,28 +672,26 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 			}
 			console.error("\n\nuploadPotholePicture error:\n\n", error, "\n\n");
 		});*/
-
 });
 
-async function pred(req,res)
-{
+async function pred(req, res) {
 	console.log(req);
 	const modelUrl = "./model.json";
 	const model = await automl.loadImageClassification(modelUrl);
-	const decodedImage = decodeImage(fs
-	.readFileSync(
-		path.join(
-			os.tmpdir(),
-			path.basename(req.files.file[0].fieldname)
-		)
-	)
-	.toString("base64"));
+	const decodedImage = decodeImage(
+		fs
+			.readFileSync(
+				path.join(
+					os.tmpdir(),
+					path.basename(req.files.file[0].fieldname)
+				)
+			)
+			.toString("base64")
+	);
 	const options = {centerCrop: true};
 	const predictions = await model.classify(decodedImage, options);
 	console.log(predictions);
 }
-
-
 
 /*=============================================>>>>>
 
