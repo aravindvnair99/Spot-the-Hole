@@ -1,3 +1,4 @@
+
 const functions = require("firebase-functions"),
 	express = require("express"),
 	app = express(),
@@ -11,8 +12,10 @@ const functions = require("firebase-functions"),
 	vader = require("vader-sentiment"),
 	{ PredictionServiceClient } = require("@google-cloud/automl").v1,
 	morgan = require("morgan"),
-	axios = require("axios");
-
+	axios = require("axios"),
+	tf = require('@tensorflow/tfjs'),
+	automl = require('@tensorflow/tfjs-automl');
+;
 /*=============================================>>>>>
 
 				= init and config =
@@ -623,7 +626,14 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 		JSON.stringify(user),
 		"\n\n"
 	);
-	AutoMLAPI(
+
+	pred(req,res).catch((error) => {
+		if (error.code === 9) {
+			res.status(503).render("errors/modelNotDeployed");
+		}
+		console.error("\n\nuploadPotholePicture error:\n\n", error, "\n\n");
+	});
+	/*AutoMLAPI(
 		fs
 			.readFileSync(
 				path.join(
@@ -689,8 +699,29 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 				res.status(503).render("errors/modelNotDeployed");
 			}
 			console.error("\n\nuploadPotholePicture error:\n\n", error, "\n\n");
-		});
+		});*/
+
 });
+
+async function pred(req,res)
+{
+	console.log(req);
+	const modelUrl = "./model.json";
+	const model = await automl.loadImageClassification(modelUrl);
+	const decodedImage = decodeImage(fs
+	.readFileSync(
+		path.join(
+			os.tmpdir(),
+			path.basename(req.files.file[0].fieldname)
+		)
+	)
+	.toString("base64"));
+	const options = {centerCrop: true};
+	const predictions = await model.classify(decodedImage, options);
+	console.log(predictions);
+}
+
+
 
 /*=============================================>>>>>
 
