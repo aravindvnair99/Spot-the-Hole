@@ -1,7 +1,6 @@
 const functions = require("firebase-functions"),
 	express = require("express"),
 	app = express(),
-	bodyParser = require("body-parser"),
 	admin = require("firebase-admin"),
 	cookieParser = require("cookie-parser"),
 	Busboy = require("busboy"),
@@ -25,9 +24,9 @@ admin.initializeApp({
 	storageBucket: process.env.GCLOUD_PROJECT + ".appspot.com",
 });
 app.use(morgan("dev"));
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(
-	bodyParser.urlencoded({
+	express.urlencoded({
 		extended: true,
 	})
 );
