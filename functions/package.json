@@ -1,7 +1,7 @@
 {
 	"name": "spot-the-hole",
 	"version": "1.0.0",
-	"description": "Spot the Hole PWA",
+	"description": "Fully autonomous and intelligent platform to detect, monitor and manage potholes issues. An end-to-end system with a PWA front-end for users to report potholes and government authorities to track and manage them.",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/aravindvnair99/Spot-the-Hole.git"
