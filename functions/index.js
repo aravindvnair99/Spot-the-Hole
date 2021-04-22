@@ -1,3 +1,6 @@
+const { rejects } = require("assert");
+const { Console } = require("console");
+
 const functions = require("firebase-functions"),
 	express = require("express"),
 	app = express(),
@@ -12,6 +15,9 @@ const functions = require("firebase-functions"),
 	morgan = require("morgan"),
 	axios = require("axios"),
 	tf = require("@tensorflow/tfjs"),
+	Canvas = require("canvas"),
+	atob = require("atob"),
+	jpeg = require("jpeg-js"),
 	automl = require("@tensorflow/tfjs-automl");
 /*=============================================>>>>>
 
@@ -598,14 +604,23 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 		"\n\n"
 	);
 	console.log(
-		path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname))
+		path.join(os.tmpdir(), path.basename(""+req.files.file[0].originalname))
 	);
-	pred(req, res).catch((error) => {
+
+	 pred(req, res).catch((error) => {
 		if (error.code === 9) {
 			res.status(503).render("errors/modelNotDeployed");
 		}
 		console.error("\n\nuploadPotholePicture error:\n\n", error, "\n\n");
 	});
+	var x = pred(req,res).then(function(result){
+		console.log("XXXXXXXXXXXXXXXXXXXXXXX"+result);
+		if(result>0.85)
+		res.redirect("/Dashboard");
+		else
+		res.redirect("/cameraCaptureRetry");
+	});
+	
 	/*AutoMLAPI(
 		fs
 			.readFileSync(
@@ -676,18 +691,57 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 });
 
 async function pred(req, res) {
+
 	console.log(req.files.file[0].fieldname);
 	const modelUrl =
 		"https://raw.githubusercontent.com/aravindvnair99/Spot-the-Hole/tfjs-automl/functions/tf_js-pothole_classification_edge/model.json";
 	const model = await automl.loadImageClassification(modelUrl);
-	const decodedImage = decodeImage(
-		path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname))
-	);
-	const options = {centerCrop: true};
-	const predictions = await model.classify(decodedImage, options);
-	console.log(predictions);
+	const Buffer = await fs.readFileSync(path.join(os.tmpdir(),path.basename(req.files.file[0].fieldname)));
+    const pixels = jpeg.decode(Buffer, true)
+	const image = pixels;
+	const input = imageToInput(image, 3);
+ 	const predictions = await model.classify(input);
+
+  console.log('classification results:', predictions)
+  
+	console.log(predictions[0]['prob']);
+	var promise = new Promise(function(resolve, reject) {
+		resolve(predictions[0]['prob']);
+	  });
+	
+	  return promise;
+  
+
+  
 }
 
+const readImage = path => {
+	const buf = fs.readFileSync(path)
+	const pixels = jpeg.decode(buf, true)
+	return pixels
+  }
+
+  const imageByteArray = (image, numChannels) => {
+	const pixels = image.data
+	const numPixels = image.width * image.height;
+	const values = new Int32Array(numPixels * numChannels);
+  
+	for (let i = 0; i < numPixels; i++) {
+	  for (let channel = 0; channel < numChannels; ++channel) {
+		values[i * numChannels + channel] = pixels[i * 4 + channel];
+	  }
+	}
+  
+	return values
+  }
+
+  const imageToInput = (image, numChannels) => {
+	const values = imageByteArray(image, numChannels)
+	const outShape = [image.height, image.width, numChannels];
+	const input = tf.tensor3d(values, outShape, 'int32');
+  
+	return input
+  }
 /*=============================================>>>>>
 
 				= Report =
