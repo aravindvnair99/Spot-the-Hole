@@ -334,6 +334,55 @@ app.get("/dashboard", checkCookieMiddleware, (req, res) => {
 			res.redirect("/login");
 		});
 });
+
+
+
+
+app.get("/index", checkCookieMiddleware, (req, res) => {
+	var i = 0,
+		potholeData = new Array(),
+		potholeID = new Array();
+	db.collection("users")
+		.doc(req.decodedClaims.uid)
+		.collection("potholes")
+		.get()
+		.then((querySnapshot) => {
+			querySnapshot.forEach((childSnapshot) => {
+				potholeID[i] = childSnapshot.id;
+				potholeData[i] = childSnapshot.data();
+				i++;
+			});
+			potholesData = Object.assign({}, potholeData);
+			potholesID = Object.assign({}, potholeID);
+			user = Object.assign({}, req.decodedClaims);
+			console.info(
+				"\n\n Accessing index:\n\n",
+				JSON.stringify(user),
+				"\n\n"
+			);
+			return res.render("index", {
+				user,
+				potholesData,
+				potholesID,
+			});
+		})
+		.catch((err) => {
+			console.error(
+				"\n\index - error getting potholes:\n\n",
+				err,
+				"\n\n"
+			);
+			res.redirect("/login");
+		});
+});
+
+
+
+
+
+
+
+
 app.get("/locations", checkCookieMiddleware, (req, res) => {
 	var i = 0,
 		globalCode = new Array();

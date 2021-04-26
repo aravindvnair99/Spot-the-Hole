@@ -1,1 +1,69 @@
-Advent of Spot the Hole
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Dashboard | Spot the Hole</title>
+		<meta property="og:title" content="Dashboard | Spot the Hole" />
+		<meta name="description" content="Your contributions" />
+		<meta property="og:description" content="Your contributions" />
+		<meta
+			property="og:url"
+			content="https://spot-the-hole.web.app/dashboard"
+		/>
+		<%- include('components/meta') -%> <%- include('components/corecss') -%>
+		<link
+			href="/css/customforcss.css"
+			rel="stylesheet"
+			type="text/css"
+			media="screen"
+		/>
+	</head>
+	<body
+		class="html"
+		data-header="light"
+		data-footer="dark"
+		data-header_align="center"
+		data-menu_type="left"
+		data-menu="light"
+		data-menu_icons="on"
+		data-footer_type="left"
+		data-site_mode="light"
+		data-footer_menu="show"
+		data-footer_menu_style="light"
+	>
+		<div class="preloader-background">
+			<div class="preloader-wrapper">
+				<div id="preloader"></div>
+			</div>
+		</div>
+		
+			<div class="section">
+				<h5 class="pagetitle">Dashboard</h5>
+				<p>
+					You have reported NO
+					potholes!
+				</p>
+				<div class="divider"></div>
+			</div>
+		</div>
+
+		<section class="tm-site-header tm-flex-center tm-mb-50 tm-border-rounded" id="pot-cont">
+			<h1 class="mainhead" >
+				SPOT <span class="thespan">THE</span> HOLE
+			</h1> 
+		</section>
+
+
+		<div class="container">
+			<div class="section">
+			BLEH
+			</div>
+		</div>
+		<%-
+		include('components/pwa') -%> <%- include('components/corejs') -%>
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$(".tabs").tabs();
+			});
+		</script>
+	</body>
+</html>
