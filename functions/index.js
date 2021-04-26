@@ -15,7 +15,7 @@ const functions = require("firebase-functions"),
 	morgan = require("morgan"),
 	axios = require("axios"),
 	tf = require("@tensorflow/tfjs"),
-	tfnode = require("@tensorflow/tfjs-node"),	
+	tfnode = require("@tensorflow/tfjs-node"),
 	Canvas = require("canvas"),
 	atob = require("atob"),
 	jpeg = require("jpeg-js"),
@@ -699,8 +699,8 @@ async function pred(req, res) {
 	const model = await automl.loadImageClassification(modelUrl);
 	const Buffer = await fs.readFileSync(path.join(os.tmpdir(),path.basename(req.files.file[0].fieldname)),"");
    // const pixels = jpeg.decode(Buffer, true)
-//	const image = pixels;
-//	const input = imageToInput(image, 3);
+	//const image = pixels;
+	//const input = imageToInput(image, 3);
 	const decodedImage = tfnode.node.decodeImage(Buffer, 3);
  	const predictions = await model.classify(decodedImage);
   	console.log('classification results:', predictions)
