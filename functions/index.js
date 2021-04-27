@@ -226,7 +226,7 @@ app.get("/", (req, res) => {
 	if (req.cookies.__session) {
 		res.redirect("/dashboard");
 	} else {
-		res.redirect("/login");
+		res.render("index");
 	}
 });
 app.get("/comingSoon", (req, res) => {
