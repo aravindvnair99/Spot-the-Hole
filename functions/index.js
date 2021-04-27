@@ -1,6 +1,3 @@
-const { rejects } = require("assert");
-const { Console } = require("console");
-
 const functions = require("firebase-functions"),
 	express = require("express"),
 	app = express(),
@@ -11,14 +8,9 @@ const functions = require("firebase-functions"),
 	os = require("os"),
 	fs = require("fs"),
 	vader = require("vader-sentiment"),
-	{PredictionServiceClient} = require("@google-cloud/automl").v1,
 	morgan = require("morgan"),
 	axios = require("axios"),
-	tf = require("@tensorflow/tfjs"),
 	tfnode = require("@tensorflow/tfjs-node"),
-	Canvas = require("canvas"),
-	atob = require("atob"),
-	jpeg = require("jpeg-js"),
 	automl = require("@tensorflow/tfjs-automl");
 /*=============================================>>>>>
 
@@ -112,7 +104,6 @@ app.use((req, res, next) => {
 app.use(cookieParser());
 app.set("views", "./views");
 app.set("view engine", "ejs");
-const client = new PredictionServiceClient();
 const db = admin.firestore();
 const storage = admin.storage();
 
@@ -621,7 +612,7 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 		else
 		res.redirect("/cameraCaptureRetry");
 	});
-	
+
 	/*AutoMLAPI(
 		fs
 			.readFileSync(
@@ -708,11 +699,11 @@ async function pred(req, res) {
 	var promise = new Promise(function(resolve, reject) {
 		resolve(predictions[0]['prob']);
 	  });
-	
-	  return promise;
-  
 
-  
+	  return promise;
+
+
+
 }
 
 /*const readImage = path => {
@@ -725,13 +716,13 @@ async function pred(req, res) {
 	const pixels = image.data
 	const numPixels = image.width * image.height;
 	const values = new Int32Array(numPixels * numChannels);
-  
+
 	for (let i = 0; i < numPixels; i++) {
 	  for (let channel = 0; channel < numChannels; ++channel) {
 		values[i * numChannels + channel] = pixels[i * 4 + channel];
 	  }
 	}
-  
+
 	return values
   }
 
@@ -739,7 +730,7 @@ async function pred(req, res) {
 	const values = imageByteArray(image, numChannels)
 	const outShape = [image.height, image.width, numChannels];
 	const input = tf.tensor3d(values, outShape, 'int32');
-  
+
 	return input
   }*/
 /*=============================================>>>>>
