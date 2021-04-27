@@ -596,22 +596,23 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 		"\n\n"
 	);
 	console.log(
-		path.join(os.tmpdir(), path.basename(""+req.files.file[0].originalname))
+		path.join(
+			os.tmpdir(),
+			path.basename("" + req.files.file[0].originalname)
+		)
 	);
-
-	 pred(req, res).catch((error) => {
-		if (error.code === 9) {
-			res.status(503).render("errors/modelNotDeployed");
-		}
-		console.error("\n\nuploadPotholePicture error:\n\n", error, "\n\n");
-	});
-	var x = pred(req,res).then(function(result){
-		console.log("XXXXXXXXXXXXXXXXXXXXXXX"+result);
-		if(result>0.85)
-		res.redirect("/Dashboard");
-		else
-		res.redirect("/cameraCaptureRetry");
-	});
+	pred(req, res)
+		.then(function (result) {
+			console.log(result);
+			if (result > 0.85) res.redirect("/Dashboard");
+			else res.redirect("/cameraCaptureRetry");
+		})
+		.catch((error) => {
+			if (error.code === 9) {
+				res.status(503).render("errors/modelNotDeployed");
+			}
+			console.error("\n\nuploadPotholePicture error:\n\n", error, "\n\n");
+		});
 
 	/*AutoMLAPI(
 		fs
@@ -683,27 +684,26 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 });
 
 async function pred(req, res) {
-
 	console.log(req.files.file[0].fieldname);
 	const modelUrl =
 		"https://raw.githubusercontent.com/aravindvnair99/Spot-the-Hole/tfjs-automl/functions/tf_js-pothole_classification_edge/model.json";
 	const model = await automl.loadImageClassification(modelUrl);
-	const Buffer = await fs.readFileSync(path.join(os.tmpdir(),path.basename(req.files.file[0].fieldname)),"");
-   // const pixels = jpeg.decode(Buffer, true)
+	const Buffer = await fs.readFileSync(
+		path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname)),
+		""
+	);
+	// const pixels = jpeg.decode(Buffer, true)
 	//const image = pixels;
 	//const input = imageToInput(image, 3);
 	const decodedImage = tfnode.node.decodeImage(Buffer, 3);
- 	const predictions = await model.classify(decodedImage);
-  	console.log('classification results:', predictions)
-  	console.log(predictions[0]['prob']);
-	var promise = new Promise(function(resolve, reject) {
-		resolve(predictions[0]['prob']);
-	  });
+	const predictions = await model.classify(decodedImage);
+	console.log("classification results:", predictions);
+	console.log(predictions[0]["prob"]);
+	var promise = new Promise(function (resolve, reject) {
+		resolve(predictions[0]["prob"]);
+	});
 
-	  return promise;
-
-
-
+	return promise;
 }
 
 /*const readImage = path => {
