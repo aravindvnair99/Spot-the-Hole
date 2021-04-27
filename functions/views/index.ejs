@@ -9,9 +9,12 @@
 			property="og:url"
 			content="https://spot-the-hole.web.app/dashboard"
 		/>
+		
+		<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
 		<%- include('components/meta') -%> <%- include('components/corecss') -%>
 		<link
-			href="/css/customforcss.css"
+			href="/css/customforhome.css"
 			rel="stylesheet"
 			type="text/css"
 			media="screen"
@@ -30,34 +33,74 @@
 		data-footer_menu="show"
 		data-footer_menu_style="light"
 	>
-		<div class="preloader-background">
-			<div class="preloader-wrapper">
-				<div id="preloader"></div>
-			</div>
-		</div>
 		
-			<div class="section">
-				<h5 class="pagetitle">Dashboard</h5>
-				<p>
-					You have reported NO
-					potholes!
-				</p>
-				<div class="divider"></div>
-			</div>
+	<section id="pot-cont">
+		<h1 class="mainhead" >
+			SPOT <span class="thespan">THE</span> HOLE <span></span>
+		</h1> 
+		<div class="mpara">
+			<p class="tm-mb-0 insidespan">Potholes are the biggest problem faced by everyone today. Driving down these roads is a nightmare. Repaving the roads would be a big investment in many ways, not only would it improve the towns look, but it would also make it safer for the community members to drive on the roads. Now the problem lies in the fact that concerned departments are not able to coordinate to resolve the issue and citizens also find it hard to file a complaint.
+
+				Fundamentally there is a disconnection between civil agencies, people, and elected representatives. Our aim is to build a web-based dynamic reporting system which will facilitate the flow of information among all concerned stakeholders. It also provides better governance by more involvement of the public.</p>
+		</div>
+	</section>
+	<section class="tm-about tm-mb-80 tm-p-50 tm-bgcolor-2 tm-border-rounded" style="margin: 5rem; margin-top: 0%; background-color: yellow;">
+		<div class="tm-about-header tm-flex-center">
+			<i class="fas fa-globe fa-5x" style="color: black;"></i>
+			<h2 style="color:black;"> About Us</h2>
+		</div>
+		<div class="tm-about-text">
+			<p class="tm-mb-40" style="color:black;">Fully autonomous and intelligent platform to detect, monitor and manage potholes issues. An end-to-end system with a PWA front-end for users to report potholes and government authorities to track and manage them.</p>
+			
+		</div>
+	</section>
+	
+	<section class="tm-about tm-mb-80 tm-p-50 tm-bgcolor-2 tm-border-rounded" style="margin: 5rem; margin-top: 0%; background-color: yellow">
+		<div class="tm-about-header tm-flex-center">
+			<i class="fas fa-users fa-5x" style="color: black;"></i>
+			<h2 style="color: black;">About model used</h2>
+		</div>
+		<div class="tm-about-text">
+			<p class="tm-mb-40" style="color: black;">We make use of a GCP cloud model where an image is sent as the input and the model tells us if there are potholes visible in the image or not.</p>
+		</div>
+	</section>
+
+		<div class="tm-gallery-section tm-mb-80">
+			
+			<div class="tm-gallery">				
+				
+				<div class="tm-gallery-item portraits">
+		            <a class="dev" href="/dashboard">
+		            	DASHBOARD
+		            </a>
+		        </div>
+				<div class="tm-gallery-item city">
+		            <a class="dev" href="/cameraCapture">
+		            	UPLOAD
+		            </a>
+		        </div>
+		        <div class="tm-gallery-item nature">
+		            <a class="dev" href="/locations">
+		            	LOCATIONS
+		            </a>
+		        </div>
+				<div class="tm-gallery-item city">
+		            <a class="dev" href="/cameraCapture">
+		            	TEAM
+		            </a>
+		        </div>
+				
+				<div class="tm-gallery-item portraits">
+		            <a class="dev" href="/showGlobalCodes">
+		            	EXPLORE
+		            </a>
+		        </div>
+			</div>			
 		</div>
 
-		<section class="tm-site-header tm-flex-center tm-mb-50 tm-border-rounded" id="pot-cont">
-			<h1 class="mainhead" >
-				SPOT <span class="thespan">THE</span> HOLE
-			</h1> 
-		</section>
 
 
-		<div class="container">
-			<div class="section">
-			BLEH
-			</div>
-		</div>
+		
 		<%-
 		include('components/pwa') -%> <%- include('components/corejs') -%>
 		<script type="text/javascript">
