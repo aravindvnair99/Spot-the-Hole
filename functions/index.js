@@ -226,11 +226,14 @@ app.get("/", (req, res) => {
 	if (req.cookies.__session) {
 		res.redirect("/dashboard");
 	} else {
-		res.render("index");
+		res.render("/index");
 	}
 });
 app.get("/comingSoon", (req, res) => {
 	res.render("comingSoon");
+});
+app.get("/index", (req, res) => {
+	res.render("index");
 });
 app.get("/profile", checkCookieMiddleware, (req, res) => {
 	var i = 0,
