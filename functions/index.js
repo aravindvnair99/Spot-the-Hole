@@ -689,7 +689,7 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 async function pred(req, res) {
 	console.log(req.files.file[0].fieldname);
 	const modelUrl =
-		"https://raw.githubusercontent.com/aravindvnair99/Spot-the-Hole/tfjs-automl/functions/tf_js-pothole_classification_edge/model.json";
+		"https://raw.githubusercontent.com/aravindvnair99/Spot-the-Hole/main/functions/tf_js-pothole_classification_edge/model.json";
 	const model = await automl.loadImageClassification(modelUrl);
 	const Buffer = await fs.readFileSync(
 		path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname)),
