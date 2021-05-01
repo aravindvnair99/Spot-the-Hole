@@ -12,7 +12,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@main
       - name: Install Dependencies
-        run: cd functions/ && npm install
+        run: cd functions/ && npm i
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
