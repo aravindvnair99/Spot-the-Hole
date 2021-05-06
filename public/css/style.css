@@ -1225,6 +1225,7 @@ blockquote.accent {
 ------------------------------------------*/
 
 #logo-container {
+	left: 40%;
 	font-weight: bold;
 	font-size: 24px;
 	line-height: 64px;
@@ -1290,6 +1291,7 @@ nav .nav-wrapper {
 		line-height: 56px;
 	}
 	#logo-container {
+		left: 50%;
 		line-height: 56px;
 	}
 }
@@ -4521,7 +4523,6 @@ body[data-site_mode="dark"] .preloader-background {
 	z-index: 3;
 	margin-left: 5%;
 	margin-top: 14%;
-
   height:20rem;
   width:14rem;
   display:-webkit-box;
