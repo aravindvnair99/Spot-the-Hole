@@ -19,10 +19,14 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@main
+    - name: Use Node.js 14
+      uses: actions/setup-node@main
+      with:
+        node-version: v14.x
     - name: Install Dependencies
       run: |
         cd functions/
-        npm i -g npm
+        sudo npm i -g npm
         npm ci
     - name: Initialize CodeQL
       uses: github/codeql-action/init@main
