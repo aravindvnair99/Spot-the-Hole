@@ -2,8 +2,12 @@ name: Firebase CD
 on:
   workflow_dispatch:
   push:
-    paths-ignore:
-      - '.github/**'
+    paths:
+      - 'functions/**'
+      - 'public/**'
+      - '.firebaserc'
+      - 'firebase.json'
+      - '.github/workflows/firebase.yml'
     branches:
       - main
 
