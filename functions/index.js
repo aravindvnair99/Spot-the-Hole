@@ -301,6 +301,72 @@ app.get("/dashboard", checkCookieMiddleware, (req, res) => {
 	var i = 0,
 		potholeData = new Array(),
 		potholeID = new Array();
+
+	/*	var GeocodePlacename; 
+		db.collection("globalCodes")
+		.get()
+		.then((snapshot) => {
+			snapshot.forEach((doc) => {
+				GeocodePlacename = doc.data().completeAddress.split(' ').join('');
+				if(String(doc.data().completeAddress).includes("/"))
+				GeocodePlacename = GeocodePlacename.split('/').join('#');
+
+				
+				//adding the new collection and its first document with the locations actual name;
+				 db.collection("locations").doc(GeocodePlacename).set({
+					geocode: doc.id,
+					rating: doc.data().rating
+				})
+				.then((docRef) => {
+
+
+					console.log("Document written with ID: ", doc.id);
+
+
+					//after adding the document get its reported potholes from inside the potholes collection in each geocode;
+
+					db.collection("globalCodes").doc(doc.id).collection("potholes").get().then((snapshot1)=>{
+						snapshot1.forEach((doc1)=>{
+							console.log(doc1.id);
+							db.collection("locations").doc(GeocodePlacename).collection("potholes").add({
+							administrative_area_level_1: doc1.data().administrative_area_level_1,
+							administrative_area_level_2: doc1.data().administrative_area_level_2,
+							completeAddress: doc1.data().completeAddress,
+							description: doc1.data().description,
+							globalCode: doc1.data().globalCode,
+							image: doc1.data().image,
+							latitude: doc1.data().latitude,
+							locality: doc1.data().locality,
+							longitude: doc1.data().longitude,
+							neg: doc1.data().neg,
+							neighborhood: doc1.data().neighborhood,
+							placeID: doc1.data().placeID,
+							postal_code: doc1.data().postal_code,
+							premise: doc1.data().premise,
+							sublocality: doc1.data().sublocality
+							}).then((success)=>{
+								console.log(doc1.id);
+								console.log("ALL DONE SUCCESS",success);
+							}).catch((err)=>{
+								console.log("The last write failed: \n",err);
+							});
+
+						});
+					}).catch((err)=>{
+						console.log("ERR ",err);
+					});
+
+
+				})
+				.catch((error) => {
+					console.error("Error adding document to locations: ", error);
+				});		
+			});
+			
+		}).catch((er)=>{
+			console.log("First access db failed :\n",er);
+		});*/
+
 	db.collection("users")
 		.doc(req.decodedClaims.uid)
 		.collection("potholes")
@@ -337,7 +403,7 @@ app.get("/dashboard", checkCookieMiddleware, (req, res) => {
 app.get("/locations", checkCookieMiddleware, (req, res) => {
 	var i = 0,
 		globalCode = new Array();
-	db.collection("globalCodes")
+	db.collection("exactLocation")
 		.get()
 		.then((snapshot) => {
 			snapshot.forEach((doc) => {
@@ -365,8 +431,10 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 	var i = 0,
 		potholeData = new Array(),
 		potholeID = new Array();
-	db.collection("globalCodes")
-		.doc(req.query.globalCode.split(" ").join("+"))
+	console.log("HEEEEEEEEEEEEEEEEEEEEEEERRREEEEEEEEEEEEE")
+	console.log(req.query.globalCode+"\n");
+	db.collection("exactLocation")
+		.doc(req.query.globalCode.split(" ").join(""))
 		.collection("potholes")
 		.get()
 		.then((querySnapshot) => {
@@ -393,8 +461,8 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 			);
 		});
 	function getRating() {
-		db.collection("globalCodes")
-			.doc(req.query.globalCode.split(" ").join("+"))
+		db.collection("exactLocation")
+			.doc(req.query.globalCode.split(" ").join(""))
 			.get()
 			.then((querySnapshot) => {
 				rating = querySnapshot.data().rating;
@@ -442,7 +510,7 @@ app.get("/heatmap", checkCookieMiddleware, (req, res) => {
 			res.send("Error getting pothole data");
 		});
 	function getRating() {
-		db.collection("globalCodes")
+		db.collection("exactLocation")
 			.get()
 			.then((snapshot) => {
 				snapshot.forEach((doc) => {
@@ -468,7 +536,7 @@ app.get("/heatmap", checkCookieMiddleware, (req, res) => {
 	}
 });
 app.post("/setRating", checkCookieMiddleware, (req, res) => {
-	db.collection("globalCodes")
+	db.collection("exactLocation")
 		.doc(req.body.globalCode)
 		.update({ rating: req.body.rating })
 		.then(res.status(200).send("Set"))
@@ -623,26 +691,8 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 		JSON.stringify(user),
 		"\n\n"
 	);
-	AutoMLAPI(
-		fs
-			.readFileSync(
-				path.join(
-					os.tmpdir(),
-					path.basename(req.files.file[0].fieldname)
-				)
-			)
-			.toString("base64")
-	)
-		.then((prediction) => {
-			console.info(
-				"\n\nPrediction result is:\n\n",
-				prediction[0],
-				"\n\n"
-			);
-			if (
-				prediction[0].displayName === "pothole" &&
-				prediction[0].classification.score >= 0.93
-			) {
+	
+		
 				storage.bucket().upload(
 					path.join(
 						os.tmpdir(),
@@ -681,15 +731,9 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 						);
 					}
 				);
-			} else return res.redirect("/cameraCaptureRetry");
-			return null;
-		})
-		.catch((error) => {
-			if (error.code === 9) {
-				res.status(503).render("errors/modelNotDeployed");
-			}
-			console.error("\n\nuploadPotholePicture error:\n\n", error, "\n\n");
-		});
+			
+		
+		
 });
 
 /*=============================================>>>>>
@@ -821,12 +865,19 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 				.collection("potholes")
 				.doc(ID)
 				.set(obj);
-			db.collection("globalCodes").doc(obj.globalCode).set({
-				completeAddress: obj.completeAddress,
+			var locationTag;
+			locationTag = obj.completeAddress.split(' ').join('');
+			if(obj.completeAddress.includes("/"))
+			{
+				locationTag = obj.completeAddress.split('/').join('');
+			}
+			
+			db.collection("exactLocation").doc(locationTag).set({
+				globalcode: obj.globalCode,
 				rating: 50,
 			});
-			db.collection("globalCodes")
-				.doc(obj.globalCode)
+			db.collection("exactLocation")
+				.doc(locationTag)
 				.collection("potholes")
 				.doc(ID)
 				.set(obj);
