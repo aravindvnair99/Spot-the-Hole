@@ -12,6 +12,65 @@
 		<%- include('components/meta') -%> <%- include('components/corecss') -%>
 	</head>
 
+	<style>
+					
+
+		#btn {
+			margin: auto;
+			margin-top: 5rem;
+			background: #222;
+			height: 75px;
+			max-width: 200px;
+			border: none;
+			border-radius: 10px;
+			color: #eee;
+			font-size: 40px;
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+			position: relative;
+			transition: 1s;
+			-webkit-tap-highlight-color: transparent;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			padding-top: 5px;
+			}
+
+			#btn #circle {
+			width: 5px;
+			height: 5px;
+			background: transparent;
+			border-radius: 50%;
+			position: absolute;
+			top: 0;
+			left: 50%;
+			overflow: hidden;
+			transition: 500ms;
+			}
+
+			.noselect {
+			-webkit-touch-callout: none;
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+				-ms-user-select: none;
+					user-select: none;
+			}
+
+			#btn:hover {
+			background: transparent;
+			color: yellow;
+			}
+
+			#btn:hover #circle {
+			height: 75px;
+			width: 200px;
+			left: 0;
+			border-radius: 0;
+			border-bottom: 2px solid yellow;
+			}
+		</style>
+
 	<body
 		class="isfullscreen html"
 		data-header="light"
@@ -43,7 +102,7 @@
 							alt="Spot the Hole logo"
 						/>
 					</div>
-					<div class="col s9 infoarea" style="background-color: gray;">
+					<div class="col s9 infoarea">
 						<h5>
 							SPOT<span class="thespan">THE</span>HOLE
 						</h5> 
@@ -129,11 +188,15 @@
 
 		<%- include('components/customisation') -%>
 
-		
+	
+		  
+
+
 		<div class="fullfixed">
 			<div
 				class="carousel carousel-fullscreen carousel-slider walk_carousel"
 			>
+			
 				<div class="carousel-item" href="#one!">
 					<div
 						class="bg"
@@ -225,64 +288,7 @@
 				</div>
 
 
-				<style>
-					
-
-					#btn {
-						margin: auto;
-						margin-top: 5rem;
-						background: #222;
-		  height: 75px;
-		  max-width: 200px;
-		  border: none;
-		  border-radius: 10px;
-		  color: #eee;
-		  font-size: 40px;
-		  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-		  position: relative;
-		  transition: 1s;
-		  -webkit-tap-highlight-color: transparent;
-		  display: flex;
-		  align-items: center;
-		  justify-content: center;
-		  cursor: pointer;
-		  padding-top: 5px;
-		}
-		
-		#btn #circle {
-		  width: 5px;
-		  height: 5px;
-		  background: transparent;
-		  border-radius: 50%;
-		  position: absolute;
-		  top: 0;
-		  left: 50%;
-		  overflow: hidden;
-		  transition: 500ms;
-		}
-		
-		.noselect {
-		  -webkit-touch-callout: none;
-			-webkit-user-select: none;
-			 -khtml-user-select: none;
-			   -moz-user-select: none;
-				-ms-user-select: none;
-					user-select: none;
-		}
-		
-		#btn:hover {
-		  background: transparent;
-		  color: yellow;
-		}
-		
-		#btn:hover #circle {
-		  height: 75px;
-		  width: 200px;
-		  left: 0;
-		  border-radius: 0;
-		  border-bottom: 2px solid yellow;
-		}
-					</style>
+				
 
 
 				<div class="carousel-item" href="#three!">
@@ -362,6 +368,7 @@
 					setTimeout(autoplay, 3500);
 				}
 			});
+			
 		</script>
 		<!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - END -->
 

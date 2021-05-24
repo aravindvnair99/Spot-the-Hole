@@ -34,11 +34,13 @@
 		include('components/sideMenu') -%> <%-
 		include('components/customisation') -%>
 		<div class="container">
-			<div class="section">
+			<div class="section" id="fine">
 				<h5 class="pagetitle">Locations</h5>
 				<p>
 					View location of potholes
 				</p>
+				<input placeholder="Search" id="searchbar" >
+					
 				<div class="divider"></div>
 			</div>
 		</div>
@@ -55,4 +57,23 @@
 		-%> <%- include('components/footerMenu') -%> <%-
 		include('components/pwa') -%> <%- include('components/corejs') -%>
 	</body>
+	<script>
+		$("#searchbar").keyup(function(){
+				var x = $("#searchbar").val().toString();
+				var classes = document.getElementsByClassName("thegcode");
+				var pclass = document.getElementsByClassName("collection-item");
+				console.log(x.toLowerCase()+"\n\n\n"+x.toUpperCase())
+
+				for (var i = 0; i < classes.length; i++) {
+ 				   if(!((classes[i].innerHTML.toString().includes(x.toLowerCase()))||(classes[i].innerHTML.toString().includes(x.toUpperCase()))))
+					{
+						pclass[i].style.display = "none";
+					}
+					else
+					{
+						pclass[i].style.display = "block";
+					}
+					}
+		});
+	</script>
 </html>
