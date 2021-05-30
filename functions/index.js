@@ -334,10 +334,6 @@ app.get("/dashboard", checkCookieMiddleware, (req, res) => {
 			res.redirect("/login");
 		});
 });
-
-
-
-
 app.get("/index", checkCookieMiddleware, (req, res) => {
 	var i = 0,
 		potholeData = new Array(),
@@ -368,21 +364,13 @@ app.get("/index", checkCookieMiddleware, (req, res) => {
 		})
 		.catch((err) => {
 			console.error(
-				"\n\index - error getting potholes:\n\n",
+				"\n\nindex - error getting potholes:\n\n",
 				err,
 				"\n\n"
 			);
 			res.redirect("/login");
 		});
 });
-
-
-
-
-
-
-
-
 app.get("/locations", checkCookieMiddleware, (req, res) => {
 	var i = 0,
 		globalCode = new Array();
