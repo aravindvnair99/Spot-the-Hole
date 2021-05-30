@@ -1,6 +1,13 @@
 name: Firebase CD
 on:
+  workflow_dispatch:
   push:
+    paths:
+      - 'functions/**'
+      - 'public/**'
+      - '.firebaserc'
+      - 'firebase.json'
+      - '.github/workflows/firebase.yml'
     branches:
       - main
 
@@ -9,10 +16,17 @@ jobs:
     name: Firebase Deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
+      - name: Checkout repository
         uses: actions/checkout@main
+      - name: Setup Node.js 14
+        uses: actions/setup-node@main
+        with:
+          node-version: v14.x
       - name: Install Dependencies
-        run: cd functions/ && npm install
+        run: |
+          cd functions/
+          sudo npm i -g npm
+          npm ci
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:

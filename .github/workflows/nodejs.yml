@@ -17,7 +17,7 @@ jobs:
     - name: Lint
       run: |
         cd functions/
-        npm i
+        npm ci
         npm run lint
       env:
         CI: true
