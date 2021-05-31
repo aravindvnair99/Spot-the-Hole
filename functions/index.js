@@ -426,7 +426,7 @@ app.get("/heatmap", checkCookieMiddleware, (req, res) => {
 				snapshot.forEach((doc) => {
 					potholeData.forEach((element) => {
 						console.log(element);
-						if (element.locatlity === doc.id) {
+						if (element.locality === doc.id) {
 							element.rating = doc.data().rating;
 						}
 					});
