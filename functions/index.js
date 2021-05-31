@@ -12,7 +12,7 @@ const functions = require("firebase-functions"),
 	axios = require("axios"),
 	tfnode = require("@tensorflow/tfjs-node"),
 	automl = require("@tensorflow/tfjs-automl");
-/*=============================================>>>>>
+/* =============================================>>>>>
 
 				= init and config =
 
@@ -107,7 +107,7 @@ app.set("view engine", "ejs");
 const db = admin.firestore();
 const storage = admin.storage();
 
-/*=============================================>>>>>
+/* =============================================>>>>>
 
 				= security functions =
 
@@ -216,7 +216,7 @@ function makeID(length) {
 	return result;
 }
 
-/*=============================================>>>>>
+/* =============================================>>>>>
 
 				= basic routes =
 
@@ -465,7 +465,7 @@ app.get("/offline", (req, res) => {
 	});
 });
 
-/*=============================================>>>>>
+/* =============================================>>>>>
 
 				= legal routes =
 
@@ -481,7 +481,7 @@ app.get("/termsConditions", (req, res) => {
 	res.status(302).redirect("/FAQ");
 });
 
-/*=============================================>>>>>
+/* =============================================>>>>>
 
 			= authentication routes =
 
@@ -565,7 +565,7 @@ app.post("/onUpdateProfile", checkCookieMiddleware, (req, res) => {
 		});
 });
 
-/*=============================================>>>>>
+/* =============================================>>>>>
 
 			= AutoML routes =
 
@@ -667,8 +667,8 @@ async function pred(req, res) {
 		""
 	);
 	// const pixels = jpeg.decode(Buffer, true)
-	//const image = pixels;
-	//const input = imageToInput(image, 3);
+	// const image = pixels;
+	// const input = imageToInput(image, 3);
 	const decodedImage = tfnode.node.decodeImage(Buffer, 3);
 	const predictions = await model.classify(decodedImage);
 	console.log("classification results:", predictions);
@@ -680,7 +680,7 @@ async function pred(req, res) {
 	return promise;
 }
 
-/*const readImage = path => {
+/* const readImage = path => {
 	const buf = fs.readFileSync(path)
 	const pixels = jpeg.decode(buf, true)
 	return pixels
@@ -707,7 +707,7 @@ async function pred(req, res) {
 
 	return input
   }*/
-/*=============================================>>>>>
+/* =============================================>>>>>
 
 				= Report =
 
@@ -854,7 +854,7 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 			res.send("Error");
 		});
 });
-/*=============================================>>>>>
+/* =============================================>>>>>
 
 				= Coming Soon =
 
@@ -864,7 +864,7 @@ app.get("/notifications", checkCookieMiddleware, (req, res) => {
 	res.status(302).redirect("/comingSoon");
 });
 
-/*=============================================>>>>>
+/* =============================================>>>>>
 
 				= errors =
 
