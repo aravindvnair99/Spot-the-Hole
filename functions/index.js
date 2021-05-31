@@ -1,5 +1,3 @@
-const { Console } = require("console");
-
 const functions = require("firebase-functions"),
 	express = require("express"),
 	app = express(),
