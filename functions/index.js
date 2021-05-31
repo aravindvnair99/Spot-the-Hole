@@ -220,32 +220,6 @@ function makeID(length) {
 
 /*=============================================>>>>>
 
-				= AutoML =
-
-===============================================>>>>>*/
-
-function AutoMLAPI(content) {
-	async function predict() {
-		const request = {
-			name: client.modelPath(
-				"spot-the-hole",
-				"us-central1",
-				"ICN4586489609965273088"
-			),
-			payload: {
-				image: {
-					imageBytes: content,
-				},
-			},
-		};
-		const [response] = await client.predict(request);
-		return response.payload;
-	}
-	return predict();
-}
-
-/*=============================================>>>>>
-
 				= basic routes =
 
 ===============================================>>>>>*/
