@@ -220,32 +220,6 @@ function makeID(length) {
 
 /*=============================================>>>>>
 
-				= AutoML =
-
-===============================================>>>>>*/
-
-function AutoMLAPI(content) {
-	async function predict() {
-		const request = {
-			name: client.modelPath(
-				"spot-the-hole",
-				"us-central1",
-				"ICN4586489609965273088"
-			),
-			payload: {
-				image: {
-					imageBytes: content,
-				},
-			},
-		};
-		const [response] = await client.predict(request);
-		return response.payload;
-	}
-	return predict();
-}
-
-/*=============================================>>>>>
-
 				= basic routes =
 
 ===============================================>>>>>*/
@@ -337,7 +311,7 @@ app.get("/dashboard", checkCookieMiddleware, (req, res) => {
 app.get("/locations", checkCookieMiddleware, (req, res) => {
 	var i = 0,
 		globalCode = new Array();
-	db.collection("globalCodes")
+	db.collection("exactLocation")
 		.get()
 		.then((snapshot) => {
 			snapshot.forEach((doc) => {
@@ -365,8 +339,10 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 	var i = 0,
 		potholeData = new Array(),
 		potholeID = new Array();
-	db.collection("globalCodes")
-		.doc(req.query.globalCode.split(" ").join("+"))
+	console.log("HEEEEEEEEEEEEEEEEEEEEEEERRREEEEEEEEEEEEE")
+	console.log(req.query.globalCode+"\n");
+	db.collection("exactLocation")
+		.doc(req.query.globalCode.split(" ").join(""))
 		.collection("potholes")
 		.get()
 		.then((querySnapshot) => {
@@ -393,8 +369,8 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 			);
 		});
 	function getRating() {
-		db.collection("globalCodes")
-			.doc(req.query.globalCode.split(" ").join("+"))
+		db.collection("exactLocation")
+			.doc(req.query.globalCode.split(" ").join(""))
 			.get()
 			.then((querySnapshot) => {
 				rating = querySnapshot.data().rating;
@@ -442,7 +418,7 @@ app.get("/heatmap", checkCookieMiddleware, (req, res) => {
 			res.send("Error getting pothole data");
 		});
 	function getRating() {
-		db.collection("globalCodes")
+		db.collection("exactLocation")
 			.get()
 			.then((snapshot) => {
 				snapshot.forEach((doc) => {
@@ -468,7 +444,7 @@ app.get("/heatmap", checkCookieMiddleware, (req, res) => {
 	}
 });
 app.post("/setRating", checkCookieMiddleware, (req, res) => {
-	db.collection("globalCodes")
+	db.collection("exactLocation")
 		.doc(req.body.globalCode)
 		.update({ rating: req.body.rating })
 		.then(res.status(200).send("Set"))
@@ -623,26 +599,8 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 		JSON.stringify(user),
 		"\n\n"
 	);
-	AutoMLAPI(
-		fs
-			.readFileSync(
-				path.join(
-					os.tmpdir(),
-					path.basename(req.files.file[0].fieldname)
-				)
-			)
-			.toString("base64")
-	)
-		.then((prediction) => {
-			console.info(
-				"\n\nPrediction result is:\n\n",
-				prediction[0],
-				"\n\n"
-			);
-			if (
-				prediction[0].displayName === "pothole" &&
-				prediction[0].classification.score >= 0.93
-			) {
+	
+		
 				storage.bucket().upload(
 					path.join(
 						os.tmpdir(),
@@ -681,15 +639,9 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 						);
 					}
 				);
-			} else return res.redirect("/cameraCaptureRetry");
-			return null;
-		})
-		.catch((error) => {
-			if (error.code === 9) {
-				res.status(503).render("errors/modelNotDeployed");
-			}
-			console.error("\n\nuploadPotholePicture error:\n\n", error, "\n\n");
-		});
+			
+		
+		
 });
 
 /*=============================================>>>>>
@@ -821,12 +773,19 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 				.collection("potholes")
 				.doc(ID)
 				.set(obj);
-			db.collection("globalCodes").doc(obj.globalCode).set({
-				completeAddress: obj.completeAddress,
+			var locationTag;
+			locationTag = obj.completeAddress.split(' ').join('');
+			if(obj.completeAddress.includes("/"))
+			{
+				locationTag = obj.completeAddress.split('/').join('');
+			}
+			
+			db.collection("exactLocation").doc(locationTag).set({
+				globalcode: obj.globalCode,
 				rating: 50,
 			});
-			db.collection("globalCodes")
-				.doc(obj.globalCode)
+			db.collection("exactLocation")
+				.doc(locationTag)
 				.collection("potholes")
 				.doc(ID)
 				.set(obj);
