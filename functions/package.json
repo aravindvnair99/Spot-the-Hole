@@ -46,7 +46,6 @@
 		"express": "^4.17.1",
 		"firebase-admin": "^9.7.0",
 		"firebase-functions": "^3.13.2",
-		"firebase-tools": "^9.10.2",
 		"morgan": "^1.10.0",
 		"vader-sentiment": "^1.1.3"
 	},
