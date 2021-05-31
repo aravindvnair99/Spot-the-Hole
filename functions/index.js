@@ -659,12 +659,6 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 		});
 });
 
-
-			
-			
-		
-		
-
 async function pred(req, res) {
 	console.log(req.files.file[0].fieldname);
 	const modelUrl =
