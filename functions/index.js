@@ -1,3 +1,5 @@
+const { Console } = require("console");
+
 const functions = require("firebase-functions"),
 	express = require("express"),
 	app = express(),
@@ -340,10 +342,9 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 	var i = 0,
 		potholeData = new Array(),
 		potholeID = new Array();
-	console.log("HEEEEEEEEEEEEEEEEEEEEEEERRREEEEEEEEEEEEE")
 	console.log(req.query.globalCode+"\n");
 	db.collection("exactLocation")
-		.doc(req.query.globalCode.split(" ").join(""))
+		.doc(req.query.globalCode)
 		.collection("potholes")
 		.get()
 		.then((querySnapshot) => {
@@ -371,7 +372,7 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 		});
 	function getRating() {
 		db.collection("exactLocation")
-			.doc(req.query.globalCode.split(" ").join(""))
+			.doc(req.query.globalCode)
 			.get()
 			.then((querySnapshot) => {
 				rating = querySnapshot.data().rating;
@@ -424,7 +425,8 @@ app.get("/heatmap", checkCookieMiddleware, (req, res) => {
 			.then((snapshot) => {
 				snapshot.forEach((doc) => {
 					potholeData.forEach((element) => {
-						if (element.globalCode === doc.id) {
+						console.log(element);
+						if (element.locatlity === doc.id) {
 							element.rating = doc.data().rating;
 						}
 					});
@@ -603,53 +605,21 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 	console.log(
 		path.join(
 			os.tmpdir(),
-			path.basename("" + req.files.file[0].originalname)
+			path.basename(req.files.file[0].originalname)
 		)
 	);
-	pred(req, res)
-		.then(function (result) {
+	pred(req, res).then(function (result) {
 			console.log(result);
-			if (result > 0.85) res.redirect("/Dashboard");
-			else res.redirect("/cameraCaptureRetry");
-		})
-		.catch((error) => {
-			if (error.code === 9) {
-				res.status(503).render("errors/modelNotDeployed");
-			}
-			console.error("\n\nuploadPotholePicture error:\n\n", error, "\n\n");
-		});
-
-	/*AutoMLAPI(
-		fs
-			.readFileSync(
-				path.join(
-					os.tmpdir(),
-					path.basename(req.files.file[0].fieldname)
-				)
-			)
-			.toString("base64")
-	)
-		.then((prediction) => {
-			console.info(
-				"\n\nPrediction result is:\n\n",
-				prediction[0],
-				"\n\n"
-			);
-			if (
-				prediction[0].displayName === "pothole" &&
-				prediction[0].classification.score >= 0.93
-			) {
+			if (result > 0.85)
+			{
 				storage.bucket().upload(
-					path.join(
-						os.tmpdir(),
-						path.basename(req.files.file[0].fieldname)
-					),
+					path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname)),
 					{
 						destination:
 							"potholePictures/" +
 							req.decodedClaims.uid +
 							"/" +
-							req.files.file[0].originalname,
+							req.files.file[0].fieldname,
 						public: true,
 						gzip: true,
 						resumable: false,
@@ -677,16 +647,23 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 						);
 					}
 				);
-			} else return res.redirect("/cameraCaptureRetry");
-			return null;
+			}
+			else
+			 res.redirect("/cameraCaptureRetry");
 		})
 		.catch((error) => {
 			if (error.code === 9) {
 				res.status(503).render("errors/modelNotDeployed");
 			}
 			console.error("\n\nuploadPotholePicture error:\n\n", error, "\n\n");
-		});*/
+		});
 });
+
+
+			
+			
+		
+		
 
 async function pred(req, res) {
 	console.log(req.files.file[0].fieldname);
@@ -867,19 +844,13 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 				.collection("potholes")
 				.doc(ID)
 				.set(obj);
-			var locationTag;
-			locationTag = obj.completeAddress.split(' ').join('');
-			if(obj.completeAddress.includes("/"))
-			{
-				locationTag = obj.completeAddress.split('/').join('');
-			}
 			
-			db.collection("exactLocation").doc(locationTag).set({
-				globalcode: obj.globalCode,
+			db.collection("exactLocation").doc(obj.locality).set({
+				globalCode: obj.globalCode,
 				rating: 50,
 			});
 			db.collection("exactLocation")
-				.doc(locationTag)
+				.doc(obj.locality)
 				.collection("potholes")
 				.doc(ID)
 				.set(obj);
