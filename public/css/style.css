@@ -276,14 +276,15 @@ label {
 	Page Title
 ------------------------------------------*/
 .mainhead{
-    margin-top: 20%;
+    margin-top: 25%;
+	margin-right: 80%;
     display: block;
     font-size: 5rem;
     font-family: Arial, Helvetica, sans-serif;
 }
 
 .thespan{
-    font-size: large;
+    font-size: 1.5rem;
     color:yellow;
 }
 
@@ -701,8 +702,10 @@ button:focus {
 	border: none;
 }
 .carousel.carousel-slider .carousel-item p {
-	font-size: 16px;
-	line-height: 26px;
+	color: darkslategray;
+	font-size: 1rem;
+	line-height: 16px;
+	margin-bottom: 2px;
 }
 .carousel .item-content {
 	z-index: 2;
@@ -1222,6 +1225,7 @@ blockquote.accent {
 ------------------------------------------*/
 
 #logo-container {
+	left: 40%;
 	font-weight: bold;
 	font-size: 24px;
 	line-height: 64px;
@@ -1287,6 +1291,7 @@ nav .nav-wrapper {
 		line-height: 56px;
 	}
 	#logo-container {
+		left: 50%;
 		line-height: 56px;
 	}
 }
@@ -4500,7 +4505,7 @@ body[data-site_mode="dark"] .preloader-background {
 }
  /* EXTRA */
 .smalldate{
-	font-size: 8px;
+	font-size: 5%;
 }
  .center
 {
@@ -4518,9 +4523,8 @@ body[data-site_mode="dark"] .preloader-background {
 	z-index: 3;
 	margin-left: 5%;
 	margin-top: 14%;
-
-  height:18em;
-  width:14em;
+  height:20rem;
+  width:14rem;
   display:-webkit-box;
   display:-ms-flexbox;
   display:inline-flex;
@@ -4534,8 +4538,7 @@ body[data-site_mode="dark"] .preloader-background {
   transition:all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
   border-radius:16px;
   overflow:hidden;
-  -webkit-box-shadow:  15px 15px 27px #2e2e2e, -15px -15px 27px #2e2e2e;
-  box-shadow:  15px 15px 27px #2e2e2e, -15px -15px 27px #2e2e2e;
+  
 }
 /* ^-- The margin bottom is necessary for the drop shadow otherwise it gets clipped in certain cases. */
 
@@ -4543,8 +4546,8 @@ body[data-site_mode="dark"] .preloader-background {
 
 .property-image
 {
-  height:6em;
-  width:14em;
+  height:6rem;
+  width:14rem;
   padding:1em 2em;
   position:Absolute;
   top:0px;
@@ -4560,8 +4563,8 @@ body[data-site_mode="dark"] .preloader-background {
 .property-description
 {
   background-color: #FAFAFC;
-  height:12em;
-  width:14em;
+  height:14rem;
+  width:14rem;
   position:absolute;
   bottom:0em;
   -webkit-transition:all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
@@ -4595,7 +4598,7 @@ body[data-site_mode="dark"] .preloader-background {
 }
 .property-card:hover .property-image
 {
-  height:18em;
+  height:20em;
 }
 
 .property-card:hover .property-social-icons

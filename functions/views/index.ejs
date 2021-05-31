@@ -12,6 +12,63 @@
 		<%- include('components/meta') -%> <%- include('components/corecss') -%>
 	</head>
 
+	<style>
+		#btn {
+			margin: auto;
+			margin-top: 5rem;
+			background: #222;
+			height: 75px;
+			max-width: 200px;
+			border: none;
+			border-radius: 10px;
+			color: #eee;
+			font-size: 40px;
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+			position: relative;
+			transition: 1s;
+			-webkit-tap-highlight-color: transparent;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			padding-top: 5px;
+			}
+
+			#btn #circle {
+			width: 5px;
+			height: 5px;
+			background: transparent;
+			border-radius: 50%;
+			position: absolute;
+			top: 0;
+			left: 50%;
+			overflow: hidden;
+			transition: 500ms;
+			}
+
+			.noselect {
+			-webkit-touch-callout: none;
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+				-ms-user-select: none;
+					user-select: none;
+			}
+
+			#btn:hover {
+			background: transparent;
+			color: yellow;
+			}
+
+			#btn:hover #circle {
+			height: 75px;
+			width: 200px;
+			left: 0;
+			border-radius: 0;
+			border-bottom: 2px solid yellow;
+			}
+		</style>
+
 	<body
 		class="isfullscreen html"
 		data-header="light"
@@ -43,12 +100,12 @@
 							alt="Spot the Hole logo"
 						/>
 					</div>
-					<div class="col s9 infoarea" style="background-color: gray;">
+					<div class="col s9 infoarea">
 						<h5>
-							SPOT<span class="thespan">THE</span>HOLE
+							Spot<span class="thespan">the</span>Hole
 						</h5> 
 						<span class="email">Login to continue!</span>
-					</di	v>
+					</div>
 				</div>
 			</li>
 
@@ -126,14 +183,17 @@
 				</div>
 			</li>
 		</ul>
-
 		<%- include('components/customisation') -%>
 
-		
+	
+		  
+
+
 		<div class="fullfixed">
 			<div
 				class="carousel carousel-fullscreen carousel-slider walk_carousel"
 			>
+			
 				<div class="carousel-item" href="#one!">
 					<div
 						class="bg"
@@ -144,13 +204,11 @@
 					<div class="item-content center-align white-text">
 						<div class="spacer-xlarge"></div>
 						<h1 class="mainhead" >
-							SPOT<span class="thespan">THE</span>HOLE
+							Spot<span class="thespan">the</span>Hole
 						</h1> 
 					
 					</div>
 				</div>
-
-
 				<div class="carousel-item" href="#two!">
 					<div
 						class="bg"
@@ -158,133 +216,72 @@
 							background-image: url('zak/assets/images/cones.jpg');
 						"
 					></div>
-					<div class="">
-						
-
+					<div style="text-align: center;">
 						<div class="center">
 							<div class="property-card" >
-							  <a href="#">
+							  <a target="_blank" href="https://m.timesofindia.com/city/goa/potholes-unavoidable-as-state-receives-heavy-rainfall-sudin/amp_articleshow/65663142.cms">
 								<div class="property-image" style="background-image: url('zak/assets/images/potholenews1.png');">
 								  <div class="property-image-title">
-									<!-- Optional <h5>Card Title</h5> If you want it, turn on the CSS also. -->
 								  </div>
 								</div></a>
 							  <div class="property-description">
 								<h6> Potholes unavoidable </h6>
-								<p class="smalldate" style="font-size: 8px;">TNN | Updated: Sep 4, 2018, 07:53 IST</p>
-								<p style="font-size: 14px;">“In nearly 50% of the roads, the roads have not completed the maintenance period and there are potholes in them. The only thing we can do now is to seize the security and performance guarantee of the contractor. We will have to do it. Or else if there is an inquiry then our PWD engineers will be under fire,” Dhavalikar said.</p>
+								<p class="smalldate" >TNN | Updated: Jan 5, 2015</p>
+								<p style="font-size: 14px;">“In nearly 50% of the roads, the roads have not completed the maintenance period and..</p>
 							  </div>
 							  
 							</div>
 						  </div>
 						  <div class="center">
 							<div class="property-card">
-							  <a href="#">
+							  <a target="_blank" href="https://englishnews.thegoan.net/M/#!/detail.html?id=54271&secid=1">
 								<div class="property-image" style="background-image: url('zak/assets/images/potholenews2.jpg');">
 								  <div class="property-image-title">
-									<!-- Optional <h5>Card Title</h5> If you want it, turn on the CSS also. -->
 								  </div>
 								</div></a>
 							  <div class="property-description">
 								<h6> Potholes Free Goa </h6>
-								<p class="smalldate" style="font-size: 8px;">TG | Updated: Sep 4, 2018, 07:53 IST</p>
-								<p style="font-size: 14px;">The promises made by Chief Minister and PWD Minister to give pothole free roads are not yet delivered. As a result, some engineers across Goa came together and started this app. People are requested to click photos of potholes, so they can drag concern authorities and contractors to court.</p>
+								<p class="smalldate" >TG | Updated: Sep 4, 2018</p>
+								<p style="font-size: 14px;">The promises made by Chief Minister and PWD Minister to give pothole free roads are..</p>
 							  </div>
 							  
 							</div>
 						  </div>
 						  <div class="center">
 							<div class="property-card"> 
-							  <a href="#">
+							  <a target="_blank" href="https://www.goa365.tv/issues/B/those-responsible-for-potholes-be-ready-to-face-fury-potholes-free-goa/08146.html">
 								<div class="property-image"style="background-image: url('zak/assets/images/potholenews3.jpg');">
 								  <div class="property-image-title">
-									<!-- Optional <h5>Card Title</h5> If you want it, turn on the CSS also. -->
 								  </div>
 								</div></a>
 							  <div class="property-description">
-								<h6 style="line-height: normal;"> Goa’s pothole syndrome
-									Soter D’Souza </h6>
-								<p class="smalldate" style="font-size: 8px;">TNN | Updated: Sep 4, 2018, 07:53 IST</p>
-								<p style="font-size: 14px;">The casual attitude of the government, to such dangerous road conditions, arises from several associated factors ranging from criminal and corrupt governance to conflicting and enabling public behaviour. </p>
+								<h6 style="line-height: normal;"> Goa’s pothole syndrome </h6>
+								<p class="smalldate">TNN | Updated: Sep 4, 2018</p>
+								<p style="font-size: 14px;">The casual attitude of the government, to such dangerous road conditions, arises from..</p>
 							  </div>
-							
 							</div>
 						  </div>
 						  <div class="center">
 							<div class="property-card">
-							  <a href="#">
+							  <a target="_blank" href="https://www.bbc.com/news/uk-politics-56590518">
 								<div class="property-image" style="background-image: url('zak/assets/images/potholenews4.jpeg');">
 								  <div class="property-image-title">
-									<!-- Optional <h5>Card Title</h5> If you want it, turn on the CSS also. -->
 								  </div>
 								</div></a>
 							  <div class="property-description">
 								<h6 style="line-height: normal;"> Councils filling potholes 'every 19 seconds' </h6>
-								<p class="smalldate" style="font-size: 8px;">BBC | 19:18 31 Mar</p>
+								<p class="smalldate" >BBC | 19:18 31 Mar</p>
 								<p style="font-size: 14px;">The number of repairs has increased to 1.7 million in England and Wales in the past year, a survey says.</p>
 							  </div>
-							  
-							
 							</div>
 						  </div>
-
-						  <style>
-							#btn {
-				  background: #222;
-				  height: 50px;
-				  min-width: 150px;
-				  border: none;
-				  border-radius: 10px;
-				  color: #eee;
-				  font-size: 40px;
-				  font-family: 'Cookie', cursive;
-				  position: relative;
-				  transition: 1s;
-				  -webkit-tap-highlight-color: transparent;
-				  display: flex;
-				  align-items: center;
-				  justify-content: center;
-				  cursor: pointer;
-				  padding-top: 5px;
-				}
-				
-				#btn #circle {
-				  width: 5px;
-				  height: 5px;
-				  background: transparent;
-				  border-radius: 50%;
-				  position: absolute;
-				  top: 0;
-				  left: 50%;
-				  overflow: hidden;
-				  transition: 500ms;
-				}
-				
-				.noselect {
-				  -webkit-touch-callout: none;
-					-webkit-user-select: none;
-					 -khtml-user-select: none;
-					   -moz-user-select: none;
-						-ms-user-select: none;
-							user-select: none;
-				}
-				
-				#btn:hover {
-				  background: transparent;
-				}
-				
-				#btn:hover #circle {
-				  height: 50px;
-				  width: 150px;
-				  left: 0;
-				  border-radius: 0;
-				  border-bottom: 2px solid #eee;
-				}
-							</style>
-				
-						
 					</div>
 				</div>
+
+
+				
+
+
 				<div class="carousel-item" href="#three!">
 					<div
 						class="bg"
@@ -292,14 +289,13 @@
 							background-image: url('zak/assets/images/potholepic.jpg');
 						"
 					></div>
-					<div class="item-content center-align white-text">
-						<div class="spacer-xlarge"></div>
+					<div class="item-content center-align white-text" style="text-align: center;">
 						<p style="color:yellow; font-size: large;">Fully autonomous and intelligent platform to detect, monitor and manage potholes issues. An end-to-end system with a PWA front-end for users to report potholes and government authorities to track and manage them.</p>
 					</p>
-					<div id="btn"><span class="noselect">Upload a Pothole</span><div id="circle"></div></div>
-						<p class="light white-text" style="margin-top: 20px;">
+						<p class="light white-text" style="margin-top: 30px;">
 							We make use of a GCP cloud model where an image is sent as the input and the model tells us if there are potholes visible in the image or not.
 						</p>
+						<a href="/login"><div id="btn"><span class="noselect">GET STARTED</span><div id="circle"></div></div></a>
 					</div>
 				</div>
 				
@@ -363,6 +359,7 @@
 					setTimeout(autoplay, 3500);
 				}
 			});
+			
 		</script>
 		<!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - END -->
 
