@@ -253,7 +253,8 @@ app.get("/index", (req, res) => {
 	res.render("index");
 });
 app.get("/profile", checkCookieMiddleware, (req, res) => {
-	let i = 0, potholeData = [],
+	let i = 0, user, potholesData, potholesID;
+	const potholeData = [],
 		potholeID = [];
 	db.collection("users")
 		.doc(req.decodedClaims.uid)
@@ -289,8 +290,8 @@ app.get("/profile", checkCookieMiddleware, (req, res) => {
 		});
 });
 app.get("/dashboard", checkCookieMiddleware, (req, res) => {
-	let i = 0,
-		potholeData = [],
+	let i = 0, user, potholesData, potholesID;
+	const potholeData = [],
 		potholeID = [];
 	db.collection("users")
 		.doc(req.decodedClaims.uid)
@@ -326,8 +327,8 @@ app.get("/dashboard", checkCookieMiddleware, (req, res) => {
 		});
 });
 app.get("/locations", checkCookieMiddleware, (req, res) => {
-	let i = 0,
-		globalCode = [];
+	let i = 0, user, globalCodes;
+	const globalCode = [];
 	db.collection("exactLocation")
 		.get()
 		.then((snapshot) => {
@@ -353,7 +354,7 @@ app.get("/locations", checkCookieMiddleware, (req, res) => {
 		});
 });
 app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
-	let i = 0;
+	let i = 0, user, potholesID, potholesData;
 	const potholeData = [],
 		potholeID = [];
 	console.log(req.query.globalCode+"\n");
@@ -388,6 +389,7 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 	 * Get rating for locations
 	 */
 	function getRating() {
+		let rating;
 		db.collection("exactLocation")
 			.doc(req.query.globalCode)
 			.get()
@@ -402,7 +404,7 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 			})
 			.catch((err) => {
 				console.error(
-					`\n\npotholesByLocation - error getting rating for ${globalCode}\n\n`,
+					`\n\npotholesByLocation - error getting rating for ${req.query.globalCode}\n\n`,
 					err,
 					"\n\n"
 				);
@@ -410,8 +412,8 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 	}
 });
 app.get("/heatmap", checkCookieMiddleware, (req, res) => {
-	let i = 0,
-		potholeData = [];
+	let i = 0, user, potholesData;
+	const potholeData = [];
 	db.collectionGroup("potholes")
 		.get()
 		.then((querySnapshot) => {
@@ -480,7 +482,7 @@ app.post("/setRating", checkCookieMiddleware, (req, res) => {
 		});
 });
 app.get("/offline", (req, res) => {
-	user = Object.assign({}, req.decodedClaims);
+	const user = Object.assign({}, req.decodedClaims);
 	console.info("\n\n Accessing offline:\n\n", JSON.stringify(user), "\n\n");
 	return res.render("offline", {
 		user
@@ -620,7 +622,7 @@ app.get("/cameraCaptureRetry", checkCookieMiddleware, (req, res) => {
 	});
 });
 app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
-	user = Object.assign({}, req.decodedClaims);
+	const user = Object.assign({}, req.decodedClaims);
 	console.info(
 		"\n\nAccessing uploadPotholePicture:\n\n",
 		JSON.stringify(user),
@@ -738,7 +740,7 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 			}
 		})
 		.then((response) => {
-			let obj = {};
+			const obj = {};
 			console.info(
 				"\n\nGoogle Maps Geocoding Response:\n\n",
 				response.data.results[0],
