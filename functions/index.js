@@ -176,6 +176,9 @@ function setCookie(idToken, res, isNewUser) {
 				"\n\n"
 			);
 		});
+	/**
+	 * Verify the ID Token and redirect user accordingly.
+	 */
 	function verifyIdToken() {
 		admin
 			.auth()
@@ -212,13 +215,17 @@ function setCookie(idToken, res, isNewUser) {
 			});
 	}
 }
-
+/**
+ * Random ID generator
+ * @param {int} length Number of characters
+ * @returns {string} Random string of given length
+ */
 function makeID(length) {
-	var result = "";
-	var characters =
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	var charactersLength = characters.length;
-	for (var i = 0; i < length; i++) {
+	let result = "";
+	const characters =
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+		charactersLength = characters.length;
+	for (let i = 0; i < length; i++) {
 		result += characters.charAt(
 			Math.floor(Math.random() * charactersLength)
 		);
@@ -246,8 +253,7 @@ app.get("/index", (req, res) => {
 	res.render("index");
 });
 app.get("/profile", checkCookieMiddleware, (req, res) => {
-	var i = 0,
-		potholeData = [],
+	let i = 0, potholeData = [],
 		potholeID = [];
 	db.collection("users")
 		.doc(req.decodedClaims.uid)
@@ -283,7 +289,7 @@ app.get("/profile", checkCookieMiddleware, (req, res) => {
 		});
 });
 app.get("/dashboard", checkCookieMiddleware, (req, res) => {
-	var i = 0,
+	let i = 0,
 		potholeData = [],
 		potholeID = [];
 	db.collection("users")
@@ -320,7 +326,7 @@ app.get("/dashboard", checkCookieMiddleware, (req, res) => {
 		});
 });
 app.get("/locations", checkCookieMiddleware, (req, res) => {
-	var i = 0,
+	let i = 0,
 		globalCode = [];
 	db.collection("exactLocation")
 		.get()
@@ -347,8 +353,8 @@ app.get("/locations", checkCookieMiddleware, (req, res) => {
 		});
 });
 app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
-	var i = 0,
-		potholeData = [],
+	let i = 0;
+	const potholeData = [],
 		potholeID = [];
 	console.log(req.query.globalCode+"\n");
 	db.collection("exactLocation")
@@ -378,6 +384,9 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 				"\n\n"
 			);
 		});
+	/**
+	 * Get rating for locations
+	 */
 	function getRating() {
 		db.collection("exactLocation")
 			.doc(req.query.globalCode)
@@ -401,7 +410,7 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 	}
 });
 app.get("/heatmap", checkCookieMiddleware, (req, res) => {
-	var i = 0,
+	let i = 0,
 		potholeData = [];
 	db.collectionGroup("potholes")
 		.get()
@@ -427,15 +436,18 @@ app.get("/heatmap", checkCookieMiddleware, (req, res) => {
 			);
 			res.send("Error getting pothole data");
 		});
+	/**
+	 * Get location rating for plotting on heatmap
+	 */
 	function getRating() {
 		db.collection("exactLocation")
 			.get()
 			.then((snapshot) => {
 				snapshot.forEach((doc) => {
-					potholeData.forEach((element) => {
-						console.log(element);
-						if (element.locality === doc.id) {
-							element.rating = doc.data().rating;
+					potholeData.forEach((ele) => {
+						console.log(ele);
+						if (ele.locality === doc.id) {
+							ele.rating = doc.data().rating;
 						}
 					});
 				});
@@ -522,6 +534,10 @@ app.post("/onLogin", (req, res) => {
 			console.error(error);
 			res.send("/login");
 		});
+	/**
+	 * Retrieve user info
+	 * @param {object} decodedToken Decoded token
+	 */
 	function getUser(decodedToken) {
 		admin
 			.auth()
@@ -582,7 +598,7 @@ app.post("/onUpdateProfile", checkCookieMiddleware, (req, res) => {
 ===============================================>>>>>*/
 
 app.get("/cameraCapture", checkCookieMiddleware, (req, res) => {
-	user = Object.assign({}, req.decodedClaims);
+	const user = Object.assign({}, req.decodedClaims);
 	console.info(
 		"\n\nAccessing cameraCapture:\n\n",
 		JSON.stringify(user),
@@ -593,7 +609,7 @@ app.get("/cameraCapture", checkCookieMiddleware, (req, res) => {
 	});
 });
 app.get("/cameraCaptureRetry", checkCookieMiddleware, (req, res) => {
-	user = Object.assign({}, req.decodedClaims);
+	const user = Object.assign({}, req.decodedClaims);
 	console.info(
 		"\n\nAccessing cameraCaptureRetry:\n\n",
 		JSON.stringify(user),
@@ -654,8 +670,9 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 					);
 				}
 			);
-		} else
+		} else {
 			res.redirect("/cameraCaptureRetry");
+		}
 	})
 		.catch((error) => {
 			if (error.code === 9) {
@@ -664,64 +681,39 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 			console.error("\n\nuploadPotholePicture error:\n\n", error, "\n\n");
 		});
 });
-
+/**
+ * Predict if pothole or not using local AutoML
+ * @param {object} req Request from client
+ * @param {object} res Response from server
+ * @returns {object} Prediction output
+ */
 async function pred(req, res) {
 	console.log(req.files.file[0].fieldname);
 	const modelUrl =
-		"https://raw.githubusercontent.com/aravindvnair99/Spot-the-Hole/main/functions/tf_js-pothole_classification_edge/model.json";
-	const model = await automl.loadImageClassification(modelUrl);
-	const Buffer = await fs.readFileSync(
-		path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname)),
-		""
-	);
-	// const pixels = jpeg.decode(Buffer, true)
-	// const image = pixels;
-	// const input = imageToInput(image, 3);
-	const decodedImage = tfnode.node.decodeImage(Buffer, 3);
-	const predictions = await model.classify(decodedImage);
+		"https://raw.githubusercontent.com/aravindvnair99/Spot-the-Hole/main/functions/tf_js-pothole_classification_edge/model.json",
+		model = await automl.loadImageClassification(modelUrl),
+		Buffer = await fs.readFileSync(
+			path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname)),
+			""
+		),
+		decodedImage = tfnode.node.decodeImage(Buffer, 3),
+		predictions = await model.classify(decodedImage);
 	console.log("classification results:", predictions);
 	console.log(predictions[0]["prob"]);
-	var promise = new Promise(function(resolve, reject) {
+	const promise = new Promise(function(resolve, reject) {
 		resolve(predictions[0]["prob"]);
 	});
 
 	return promise;
 }
 
-/* const readImage = path => {
-	const buf = fs.readFileSync(path)
-	const pixels = jpeg.decode(buf, true)
-	return pixels
-  }
-
-  const imageByteArray = (image, numChannels) => {
-	const pixels = image.data
-	const numPixels = image.width * image.height;
-	const values = new Int32Array(numPixels * numChannels);
-
-	for (let i = 0; i < numPixels; i++) {
-	  for (let channel = 0; channel < numChannels; ++channel) {
-		values[i * numChannels + channel] = pixels[i * 4 + channel];
-	  }
-	}
-
-	return values
-  }
-
-  const imageToInput = (image, numChannels) => {
-	const values = imageByteArray(image, numChannels)
-	const outShape = [image.height, image.width, numChannels];
-	const input = tf.tensor3d(values, outShape, 'int32');
-
-	return input
-  }*/
 /* =============================================>>>>>
 
 				= Report =
 
 ===============================================>>>>>*/
 app.get("/report", checkCookieMiddleware, (req, res) => {
-	user = Object.assign({}, req.decodedClaims);
+	const user = Object.assign({}, req.decodedClaims);
 	console.info(
 		"\n\nAccessing report page for :",
 		req.query.image,
@@ -746,83 +738,84 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 			}
 		})
 		.then((response) => {
-			var obj = {};
+			let obj = {};
 			console.info(
 				"\n\nGoogle Maps Geocoding Response:\n\n",
 				response.data.results[0],
 				"\n\n"
 			);
-			response.data.results[0].address_components.forEach((element) => {
+			response.data.results[0].address_components.forEach((ele) => {
 				if (
-					element.types[0] === "street_address" ||
-					element.types[1] === "street_address"
-				)
-					obj.street_address = element.long_name;
-				else if (
-					element.types[0] === "route" ||
-					element.types[1] === "route"
-				)
-					obj.route = element.long_name;
-				else if (
-					element.types[0] === "intersection" ||
-					element.types[1] === "intersection"
-				)
-					obj.intersection = element.long_name;
-				else if (
-					element.types[0] === "administrative_area_level_5" ||
-					element.types[1] === "administrative_area_level_5"
-				)
-					obj.administrative_area_level_5 = element.long_name;
-				else if (
-					element.types[0] === "administrative_area_level_4" ||
-					element.types[1] === "administrative_area_level_4"
-				)
-					obj.administrative_area_level_4 = element.long_name;
-				else if (
-					element.types[0] === "administrative_area_level_3" ||
-					element.types[1] === "administrative_area_level_3"
-				)
-					obj.administrative_area_level_3 = element.long_name;
-				else if (
-					element.types[0] === "administrative_area_level_2" ||
-					element.types[1] === "administrative_area_level_2"
-				)
-					obj.administrative_area_level_2 = element.long_name;
-				else if (
-					element.types[0] === "administrative_area_level_1" ||
-					element.types[1] === "administrative_area_level_1"
-				)
-					obj.administrative_area_level_1 = element.long_name;
-				else if (
-					element.types[0] === "locality" ||
-					element.types[1] === "locality"
-				)
-					obj.locality = element.long_name;
-				else if (
-					element.types[0] === "sublocality" ||
-					element.types[1] === "sublocality"
-				)
-					obj.sublocality = element.long_name;
-				else if (
-					element.types[0] === "neighborhood" ||
-					element.types[1] === "neighborhood"
-				)
-					obj.neighborhood = element.long_name;
-				else if (
-					element.types[0] === "premise" ||
-					element.types[1] === "premise"
-				)
-					obj.premise = element.long_name;
-				else if (
-					element.types[0] === "subpremise" ||
-					element.types[1] === "subpremise"
-				)
-					obj.subpremise = element.long_name;
-				else if (
-					element.types[0] === "postal_code" ||
-					element.types[1] === "postal_code"
-				)
-					obj.postal_code = element.long_name;
+					ele.types[0] === "street_address" ||
+					ele.types[1] === "street_address"
+				) {
+					obj.street_address = ele.long_name;
+				} else if (
+					ele.types[0] === "route" ||
+					ele.types[1] === "route"
+				) {
+					obj.route = ele.long_name;
+				} else if (
+					ele.types[0] === "intersection" ||
+					ele.types[1] === "intersection"
+				) {
+					obj.intersection = ele.long_name;
+				} else if (
+					ele.types[0] === "administrative_area_level_5" ||
+					ele.types[1] === "administrative_area_level_5"
+				) {
+					obj.administrative_area_level_5 = ele.long_name;
+				} else if (
+					ele.types[0] === "administrative_area_level_4" ||
+					ele.types[1] === "administrative_area_level_4"
+				) {
+					obj.administrative_area_level_4 = ele.long_name;
+				} else if (
+					ele.types[0] === "administrative_area_level_3" ||
+					ele.types[1] === "administrative_area_level_3"
+				) {
+					obj.administrative_area_level_3 = ele.long_name;
+				} else if (
+					ele.types[0] === "administrative_area_level_2" ||
+					ele.types[1] === "administrative_area_level_2"
+				) {
+					obj.administrative_area_level_2 = ele.long_name;
+				} else if (
+					ele.types[0] === "administrative_area_level_1" ||
+					ele.types[1] === "administrative_area_level_1"
+				) {
+					obj.administrative_area_level_1 = ele.long_name;
+				} else if (
+					ele.types[0] === "locality" ||
+					ele.types[1] === "locality"
+				) {
+					obj.locality = ele.long_name;
+				} else if (
+					ele.types[0] === "sublocality" ||
+					ele.types[1] === "sublocality"
+				) {
+					obj.sublocality = ele.long_name;
+				} else if (
+					ele.types[0] === "neighborhood" ||
+					ele.types[1] === "neighborhood"
+				) {
+					obj.neighborhood = ele.long_name;
+				} else if (
+					ele.types[0] === "premise" ||
+					ele.types[1] === "premise"
+				) {
+					obj.premise = ele.long_name;
+				} else if (
+					ele.types[0] === "subpremise" ||
+					ele.types[1] === "subpremise"
+				) {
+					obj.subpremise = ele.long_name;
+				} else if (
+					ele.types[0] === "postal_code" ||
+					ele.types[1] === "postal_code"
+				) {
+					obj.postal_code = ele.long_name;
+				}
 			});
 			obj.completeAddress = response.data.results[0].formatted_address;
 			obj.placeID = response.data.results[0].place_id;

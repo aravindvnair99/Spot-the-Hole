@@ -10,7 +10,9 @@
 		"no-tabs": 0,
         "indent": [2, "tab"],
         "one-var": ["error", "consecutive"],
-        "comma-dangle": ["error", "never"]
+        "comma-dangle": ["error", "never"],
+		"max-len": ["error", { "code": 120,"tabWidth": 4, "comments": 120, "ignoreUrls": true }],
+		"valid-jsdoc": ["error", { "prefer": { "return": "returns" }, "requireReturn": false }]
 	},
 	"parserOptions": {
 		"ecmaVersion": 2019
