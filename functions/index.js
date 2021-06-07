@@ -1,6 +1,8 @@
 const functions = require("firebase-functions"),
 	express = require("express"),
 	app = express(),
+	contentType = require("content-type"),
+	getRawBody = require("raw-body"),
 	admin = require("firebase-admin"),
 	cookieParser = require("cookie-parser"),
 	Busboy = require("busboy"),
