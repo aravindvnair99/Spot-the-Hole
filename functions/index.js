@@ -31,30 +31,30 @@ app.use(
 		extended: true
 	})
 );
-app.use((req, res, next) => {
-	if (
-		req.rawBody === undefined &&
-		req.method === "POST" &&
-		req.headers["content-type"].startsWith("multipart/form-data")
-	) {
-		getRawBody(
-			req,
-			{
-				length: req.headers["content-length"],
-				limit: "10mb",
-				encoding: contentType.parse(req).parameters.charset
-			},
-			(err, string) => {
-				if (err) return next(err);
-				req.rawBody = string;
-				return next();
-			}
-		);
-	} else {
-		next();
-		return;
-	}
-});
+// app.use((req, res, next) => {
+// 	if (
+// 		req.rawBody === undefined &&
+// 		req.method === "POST" &&
+// 		req.headers["content-type"].startsWith("multipart/form-data")
+// 	) {
+// 		getRawBody(
+// 			req,
+// 			{
+// 				length: req.headers["content-length"],
+// 				limit: "10mb",
+// 				encoding: contentType.parse(req).parameters.charset
+// 			},
+// 			(err, string) => {
+// 				if (err) return next(err);
+// 				req.rawBody = string;
+// 				return next();
+// 			}
+// 		);
+// 	} else {
+// 		next();
+// 		return;
+// 	}
+// });
 
 app.use((req, res, next) => {
 	if (
