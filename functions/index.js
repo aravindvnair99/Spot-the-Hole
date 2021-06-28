@@ -31,36 +31,32 @@ app.use(
 		extended: true
 	})
 );
-// app.use((req, res, next) => {
-// 	if (
-// 		req.rawBody === undefined &&
-// 		req.method === "POST" &&
-// 		req.headers["content-type"].startsWith("multipart/form-data")
-// 	) {
-// 		getRawBody(
-// 			req,
-// 			{
-// 				length: req.headers["content-length"],
-// 				limit: "10mb",
-// 				encoding: contentType.parse(req).parameters.charset
-// 			},
-// 			(err, string) => {
-// 				if (err) return next(err);
-// 				req.rawBody = string;
-// 				return next();
-// 			}
-// 		);
-// 	} else {
-// 		next();
-// 		return;
-// 	}
-// });
-
 app.use((req, res, next) => {
 	if (
+		req.rawBody === undefined &&
 		req.method === "POST" &&
 		req.headers["content-type"].startsWith("multipart/form-data")
 	) {
+		getRawBody(
+			req,
+			{
+				length: req.headers["content-length"],
+				limit: "10mb",
+				encoding: contentType.parse(req).parameters.charset
+			},
+			(err, string) => {
+				if (err) return next(err);
+				req.rawBody = string;
+				return next();
+			}
+		);
+	} else {
+		next();
+	}
+});
+
+app.use((req, res, next) => {
+	if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
 		const busboy = new Busboy({
 			headers: req.headers
 		});
@@ -100,13 +96,13 @@ app.use((req, res, next) => {
 		req.pipe(busboy);
 	} else {
 		next();
-		return;
 	}
 });
 app.use(cookieParser());
 app.set("views", "./views");
 app.set("view engine", "ejs");
-const db = admin.firestore(), storage = admin.storage();
+const db = admin.firestore(),
+	storage = admin.storage();
 
 /* =============================================>>>>>
 
@@ -130,11 +126,7 @@ function checkCookieMiddleware(req, res, next) {
 			return next();
 		})
 		.catch((error) => {
-			console.error(
-				"\n\nIn checkCookieMiddleware(), catch:\n\n",
-				error,
-				"\n\n"
-			);
+			console.error("\n\nIn checkCookieMiddleware(), catch:\n\n", error, "\n\n");
 			res.redirect("/signOut");
 		});
 }
@@ -163,20 +155,12 @@ function setCookie(idToken, res, isNewUser) {
 				return verifyIdToken();
 			},
 			(error) => {
-				console.error(
-					"\n\nIn sessionCookie, catch:\n\n",
-					error,
-					"\n\n"
-				);
+				console.error("\n\nIn sessionCookie, catch:\n\n", error, "\n\n");
 				res.status(401).render("errors/401");
 			}
 		)
 		.catch((error) => {
-			console.error(
-				"\n\nIn createSessionCookie(), catch:\n\n",
-				error,
-				"\n\n"
-			);
+			console.error("\n\nIn createSessionCookie(), catch:\n\n", error, "\n\n");
 		});
 	/**
 	 * Verify the ID Token and redirect user accordingly.
@@ -201,19 +185,11 @@ function setCookie(idToken, res, isNewUser) {
 						"\n\n"
 					);
 				} else {
-					return console.error(
-						"\n\nisNewUser param not set for\n\n",
-						JSON.stringify(decodedClaims),
-						"\n\n"
-					);
+					return console.error("\n\nisNewUser param not set for\n\n", JSON.stringify(decodedClaims), "\n\n");
 				}
 			})
 			.catch((error) => {
-				console.error(
-					"\n\nIn verifyIdToken(), catch:\n\n",
-					error,
-					"\n\n"
-				);
+				console.error("\n\nIn verifyIdToken(), catch:\n\n", error, "\n\n");
 			});
 	}
 }
@@ -224,13 +200,10 @@ function setCookie(idToken, res, isNewUser) {
  */
 function makeID(length) {
 	let result = "";
-	const characters =
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+	const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
 		charactersLength = characters.length;
 	for (let i = 0; i < length; i++) {
-		result += characters.charAt(
-			Math.floor(Math.random() * charactersLength)
-		);
+		result += characters.charAt(Math.floor(Math.random() * charactersLength));
 	}
 	return result;
 }
@@ -255,7 +228,10 @@ app.get("/index", (req, res) => {
 	res.render("index");
 });
 app.get("/profile", checkCookieMiddleware, (req, res) => {
-	let i = 0, user, potholesData, potholesID;
+	let i = 0,
+		user,
+		potholesData,
+		potholesID;
 	const potholeData = [],
 		potholeID = [];
 	db.collection("users")
@@ -271,11 +247,7 @@ app.get("/profile", checkCookieMiddleware, (req, res) => {
 			potholesData = Object.assign({}, potholeData);
 			potholesID = Object.assign({}, potholeID);
 			user = Object.assign({}, req.decodedClaims);
-			console.info(
-				"\n\n Accessing profile:\n\n",
-				JSON.stringify(user),
-				"\n\n"
-			);
+			console.info("\n\n Accessing profile:\n\n", JSON.stringify(user), "\n\n");
 			return res.render("profile", {
 				user,
 				potholesData,
@@ -283,16 +255,15 @@ app.get("/profile", checkCookieMiddleware, (req, res) => {
 			});
 		})
 		.catch((err) => {
-			console.error(
-				"\n\nProfile - error getting potholes:\n\n",
-				err,
-				"\n\n"
-			);
+			console.error("\n\nProfile - error getting potholes:\n\n", err, "\n\n");
 			res.redirect("/login");
 		});
 });
 app.get("/dashboard", checkCookieMiddleware, (req, res) => {
-	let i = 0, user, potholesData, potholesID;
+	let i = 0,
+		user,
+		potholesData,
+		potholesID;
 	const potholeData = [],
 		potholeID = [];
 	db.collection("users")
@@ -308,11 +279,7 @@ app.get("/dashboard", checkCookieMiddleware, (req, res) => {
 			potholesData = Object.assign({}, potholeData);
 			potholesID = Object.assign({}, potholeID);
 			user = Object.assign({}, req.decodedClaims);
-			console.info(
-				"\n\n Accessing dashboard:\n\n",
-				JSON.stringify(user),
-				"\n\n"
-			);
+			console.info("\n\n Accessing dashboard:\n\n", JSON.stringify(user), "\n\n");
 			return res.render("dashboard", {
 				user,
 				potholesData,
@@ -320,16 +287,14 @@ app.get("/dashboard", checkCookieMiddleware, (req, res) => {
 			});
 		})
 		.catch((err) => {
-			console.error(
-				"\n\nDashboard - error getting potholes:\n\n",
-				err,
-				"\n\n"
-			);
+			console.error("\n\nDashboard - error getting potholes:\n\n", err, "\n\n");
 			res.redirect("/login");
 		});
 });
 app.get("/locations", checkCookieMiddleware, (req, res) => {
-	let i = 0, user, globalCodes;
+	let i = 0,
+		user,
+		globalCodes;
 	const globalCode = [];
 	db.collection("exactLocation")
 		.get()
@@ -340,26 +305,21 @@ app.get("/locations", checkCookieMiddleware, (req, res) => {
 			});
 			globalCodes = Object.assign({}, globalCode);
 			user = Object.assign({}, req.decodedClaims);
-			console.info(
-				"\n\n Accessing locations:\n\n",
-				JSON.stringify(user),
-				"\n\n"
-			);
+			console.info("\n\n Accessing locations:\n\n", JSON.stringify(user), "\n\n");
 			return res.render("locations", {user, globalCodes});
 		})
 		.catch((err) => {
-			console.error(
-				"\n\nLocations - error getting globalCodes:\n\n",
-				err,
-				"\n\n"
-			);
+			console.error("\n\nLocations - error getting globalCodes:\n\n", err, "\n\n");
 		});
 });
 app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
-	let i = 0, user, potholesID, potholesData;
+	let i = 0,
+		user,
+		potholesID,
+		potholesData;
 	const potholeData = [],
 		potholeID = [];
-	console.log(req.query.globalCode+"\n");
+	console.log(req.query.globalCode + "\n");
 	db.collection("exactLocation")
 		.doc(req.query.globalCode)
 		.collection("potholes")
@@ -373,19 +333,11 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 			potholesData = Object.assign({}, potholeData);
 			potholesID = Object.assign({}, potholeID);
 			user = Object.assign({}, req.decodedClaims);
-			console.info(
-				"\n\n Accessing potholesByLocation:\n\n",
-				JSON.stringify(user),
-				"\n\n"
-			);
+			console.info("\n\n Accessing potholesByLocation:\n\n", JSON.stringify(user), "\n\n");
 			return getRating();
 		})
 		.catch((err) => {
-			console.error(
-				"\n\npotholesByLocation - error getting potholes:\n\n",
-				err,
-				"\n\n"
-			);
+			console.error("\n\npotholesByLocation - error getting potholes:\n\n", err, "\n\n");
 		});
 	/**
 	 * Get rating for locations
@@ -414,7 +366,9 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 	}
 });
 app.get("/heatmap", checkCookieMiddleware, (req, res) => {
-	let i = 0, user, potholesData;
+	let i = 0,
+		user,
+		potholesData;
 	const potholeData = [];
 	db.collectionGroup("potholes")
 		.get()
@@ -425,19 +379,11 @@ app.get("/heatmap", checkCookieMiddleware, (req, res) => {
 			});
 			potholesData = Object.assign({}, potholeData);
 			user = Object.assign({}, req.decodedClaims);
-			console.info(
-				"\n\n Accessing heatmap:\n\n",
-				JSON.stringify(user),
-				"\n\n"
-			);
+			console.info("\n\n Accessing heatmap:\n\n", JSON.stringify(user), "\n\n");
 			return getRating();
 		})
 		.catch((err) => {
-			console.error(
-				"\n\nheatmap - error getting pothole data:\n\n",
-				err,
-				"\n\n"
-			);
+			console.error("\n\nheatmap - error getting pothole data:\n\n", err, "\n\n");
 			res.send("Error getting pothole data");
 		});
 	/**
@@ -461,11 +407,7 @@ app.get("/heatmap", checkCookieMiddleware, (req, res) => {
 				});
 			})
 			.catch((err) => {
-				console.error(
-					"\n\nheatmap - error getting rating:\n\n",
-					err,
-					"\n\n"
-				);
+				console.error("\n\nheatmap - error getting rating:\n\n", err, "\n\n");
 				res.send("Error getting rating");
 			});
 	}
@@ -476,10 +418,7 @@ app.post("/setRating", checkCookieMiddleware, (req, res) => {
 		.update({rating: req.body.rating})
 		.then(res.status(200).send("Set"))
 		.catch((err) => {
-			console.error(
-				`\n\nError setting ${req.body.globalCode} to ${req.body.rating}\n\n`,
-				err
-			);
+			console.error(`\n\nError setting ${req.body.globalCode} to ${req.body.rating}\n\n`, err);
 			res.status(500).send("Error");
 		});
 });
@@ -547,10 +486,7 @@ app.post("/onLogin", (req, res) => {
 			.auth()
 			.getUser(decodedToken.uid)
 			.then((userRecord) => {
-				console.log(
-					"Successfully fetched user data:",
-					userRecord.toJSON()
-				);
+				console.log("Successfully fetched user data:", userRecord.toJSON());
 				if (userRecord.phoneNumber && userRecord.emailVerified) {
 					return res.send({
 						path: "/dashboard"
@@ -603,81 +539,51 @@ app.post("/onUpdateProfile", checkCookieMiddleware, (req, res) => {
 
 app.get("/cameraCapture", checkCookieMiddleware, (req, res) => {
 	const user = Object.assign({}, req.decodedClaims);
-	console.info(
-		"\n\nAccessing cameraCapture:\n\n",
-		JSON.stringify(user),
-		"\n\n"
-	);
+	console.info("\n\nAccessing cameraCapture:\n\n", JSON.stringify(user), "\n\n");
 	res.render("cameraCapture", {
 		user
 	});
 });
 app.get("/cameraCaptureRetry", checkCookieMiddleware, (req, res) => {
 	const user = Object.assign({}, req.decodedClaims);
-	console.info(
-		"\n\nAccessing cameraCaptureRetry:\n\n",
-		JSON.stringify(user),
-		"\n\n"
-	);
+	console.info("\n\nAccessing cameraCaptureRetry:\n\n", JSON.stringify(user), "\n\n");
 	res.render("cameraCaptureRetry", {
 		user
 	});
 });
 app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 	const user = Object.assign({}, req.decodedClaims);
-	console.info(
-		"\n\nAccessing uploadPotholePicture:\n\n",
-		JSON.stringify(user),
-		"\n\n"
-	);
-	console.log(
-		path.join(
-			os.tmpdir(),
-			path.basename(req.files.file[0].originalname)
-		)
-	);
-	pred(req, res).then(function(result) {
-		console.log(result);
-		if (result > 0.85) {
-			storage.bucket().upload(
-				path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname)),
-				{
-					destination:
-							"potholePictures/" +
-							req.decodedClaims.uid +
-							"/" +
-							req.files.file[0].fieldname,
-					public: true,
-					gzip: true,
-					resumable: false,
-					metadata: {
-						contentType: req.files.file[0].mimetype,
-						cacheControl: "public, max-age=604800"
+	console.info("\n\nAccessing uploadPotholePicture:\n\n", JSON.stringify(user), "\n\n");
+	console.log(path.join(os.tmpdir(), path.basename(req.files.file[0].originalname)));
+	pred(req, res)
+		.then(function (result) {
+			console.log(result);
+			if (result > 0.85) {
+				storage.bucket().upload(
+					path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname)),
+					{
+						destination: "potholePictures/" + req.decodedClaims.uid + "/" + req.files.file[0].fieldname,
+						public: true,
+						gzip: true,
+						resumable: false,
+						metadata: {
+							contentType: req.files.file[0].mimetype,
+							cacheControl: "public, max-age=604800"
+						}
+					},
+					(err, file) => {
+						if (err) {
+							console.error("\n\nuploadPotholePicture Google Cloud Storage error:\n\n", err, "\n\n");
+							return;
+						}
+						console.info("\n\nGoogle Cloud Storage metadata:\n\n", file.metadata);
+						res.redirect("/report?image=" + encodeURIComponent(file.metadata.mediaLink));
 					}
-				},
-				(err, file) => {
-					if (err) {
-						console.error(
-							"\n\nuploadPotholePicture Google Cloud Storage error:\n\n",
-							err,
-							"\n\n"
-						);
-						return;
-					}
-					console.info(
-						"\n\nGoogle Cloud Storage metadata:\n\n",
-						file.metadata
-					);
-					res.redirect(
-						"/report?image=" +
-								encodeURIComponent(file.metadata.mediaLink)
-					);
-				}
-			);
-		} else {
-			res.redirect("/cameraCaptureRetry");
-		}
-	})
+				);
+			} else {
+				res.redirect("/cameraCaptureRetry");
+			}
+		})
 		.catch((error) => {
 			if (error.code === 9) {
 				res.status(503).render("errors/modelNotDeployed");
@@ -694,17 +600,14 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 async function pred(req, res) {
 	console.log(req.files.file[0].fieldname);
 	const modelUrl =
-		"https://raw.githubusercontent.com/aravindvnair99/Spot-the-Hole/main/functions/tf_js-pothole_classification_edge/model.json",
+			"https://raw.githubusercontent.com/aravindvnair99/Spot-the-Hole/main/functions/tf_js-pothole_classification_edge/model.json",
 		model = await automl.loadImageClassification(modelUrl),
-		Buffer = await fs.readFileSync(
-			path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname)),
-			""
-		),
+		Buffer = await fs.readFileSync(path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname)), ""),
 		decodedImage = tfnode.node.decodeImage(Buffer, 3),
 		predictions = await model.classify(decodedImage);
 	console.log("classification results:", predictions);
 	console.log(predictions[0]["prob"]);
-	const promise = new Promise(function(resolve, reject) {
+	const promise = new Promise(function (resolve, reject) {
 		resolve(predictions[0]["prob"]);
 	});
 
@@ -718,22 +621,14 @@ async function pred(req, res) {
 ===============================================>>>>>*/
 app.get("/report", checkCookieMiddleware, (req, res) => {
 	const user = Object.assign({}, req.decodedClaims);
-	console.info(
-		"\n\nAccessing report page for :",
-		req.query.image,
-		" by:\n\n",
-		JSON.stringify(user),
-		"\n\n"
-	);
+	console.info("\n\nAccessing report page for :", req.query.image, " by:\n\n", JSON.stringify(user), "\n\n");
 	res.render("report", {
 		pothole: req.query.image,
 		user
 	});
 });
 app.post("/submitReport", checkCookieMiddleware, (req, res) => {
-	console.info(
-		`\n\nLatitude received from user is ${req.body.latitude} and longitude is ${req.body.longitude}\n\n`
-	);
+	console.info(`\n\nLatitude received from user is ${req.body.latitude} and longitude is ${req.body.longitude}\n\n`);
 	axios
 		.post("https://maps.googleapis.com/maps/api/geocode/json", null, {
 			params: {
@@ -743,26 +638,13 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 		})
 		.then((response) => {
 			const obj = {};
-			console.info(
-				"\n\nGoogle Maps Geocoding Response:\n\n",
-				response.data.results[0],
-				"\n\n"
-			);
+			console.info("\n\nGoogle Maps Geocoding Response:\n\n", response.data.results[0], "\n\n");
 			response.data.results[0].address_components.forEach((ele) => {
-				if (
-					ele.types[0] === "street_address" ||
-					ele.types[1] === "street_address"
-				) {
+				if (ele.types[0] === "street_address" || ele.types[1] === "street_address") {
 					obj.street_address = ele.long_name;
-				} else if (
-					ele.types[0] === "route" ||
-					ele.types[1] === "route"
-				) {
+				} else if (ele.types[0] === "route" || ele.types[1] === "route") {
 					obj.route = ele.long_name;
-				} else if (
-					ele.types[0] === "intersection" ||
-					ele.types[1] === "intersection"
-				) {
+				} else if (ele.types[0] === "intersection" || ele.types[1] === "intersection") {
 					obj.intersection = ele.long_name;
 				} else if (
 					ele.types[0] === "administrative_area_level_5" ||
@@ -789,35 +671,17 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 					ele.types[1] === "administrative_area_level_1"
 				) {
 					obj.administrative_area_level_1 = ele.long_name;
-				} else if (
-					ele.types[0] === "locality" ||
-					ele.types[1] === "locality"
-				) {
+				} else if (ele.types[0] === "locality" || ele.types[1] === "locality") {
 					obj.locality = ele.long_name;
-				} else if (
-					ele.types[0] === "sublocality" ||
-					ele.types[1] === "sublocality"
-				) {
+				} else if (ele.types[0] === "sublocality" || ele.types[1] === "sublocality") {
 					obj.sublocality = ele.long_name;
-				} else if (
-					ele.types[0] === "neighborhood" ||
-					ele.types[1] === "neighborhood"
-				) {
+				} else if (ele.types[0] === "neighborhood" || ele.types[1] === "neighborhood") {
 					obj.neighborhood = ele.long_name;
-				} else if (
-					ele.types[0] === "premise" ||
-					ele.types[1] === "premise"
-				) {
+				} else if (ele.types[0] === "premise" || ele.types[1] === "premise") {
 					obj.premise = ele.long_name;
-				} else if (
-					ele.types[0] === "subpremise" ||
-					ele.types[1] === "subpremise"
-				) {
+				} else if (ele.types[0] === "subpremise" || ele.types[1] === "subpremise") {
 					obj.subpremise = ele.long_name;
-				} else if (
-					ele.types[0] === "postal_code" ||
-					ele.types[1] === "postal_code"
-				) {
+				} else if (ele.types[0] === "postal_code" || ele.types[1] === "postal_code") {
 					obj.postal_code = ele.long_name;
 				}
 			});
@@ -828,28 +692,17 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 			obj.image = req.body.imageURL;
 			obj.description = req.body.description;
 			obj.globalCode = response.data.plus_code.global_code;
-			obj.neg =
-				vader.SentimentIntensityAnalyzer.polarity_scores(
-					req.body.description
-				).neg * 100;
+			obj.neg = vader.SentimentIntensityAnalyzer.polarity_scores(req.body.description).neg * 100;
 			const ID = makeID(36);
 			db.collection("users").doc(req.decodedClaims.uid).set({
 				uid: req.decodedClaims.uid
 			});
-			db.collection("users")
-				.doc(req.decodedClaims.uid)
-				.collection("potholes")
-				.doc(ID)
-				.set(obj);
+			db.collection("users").doc(req.decodedClaims.uid).collection("potholes").doc(ID).set(obj);
 			db.collection("exactLocation").doc(obj.locality).set({
 				globalCode: obj.globalCode,
 				rating: 50
 			});
-			db.collection("exactLocation")
-				.doc(obj.locality)
-				.collection("potholes")
-				.doc(ID)
-				.set(obj);
+			db.collection("exactLocation").doc(obj.locality).collection("potholes").doc(ID).set(obj);
 
 			return res.redirect("/dashboard");
 		})
