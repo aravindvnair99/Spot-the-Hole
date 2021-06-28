@@ -8,11 +8,12 @@
 	"rules": {
 		"quotes": ["error", "double"],
 		"no-tabs": 0,
-        "indent": [2, "tab"],
-        "one-var": ["error", "consecutive"],
-        "comma-dangle": ["error", "never"],
-		"max-len": ["error", { "code": 120,"tabWidth": 4, "comments": 120, "ignoreUrls": true }],
-		"valid-jsdoc": ["error", { "prefer": { "return": "returns" }, "requireReturn": false }]
+		"indent": [2, "tab"],
+		"one-var": ["error", "consecutive"],
+		"comma-dangle": ["error", "never"],
+		"max-len": ["error", {"code": 120, "tabWidth": 4, "comments": 120, "ignoreUrls": true}],
+		"valid-jsdoc": ["error", {"prefer": {"return": "returns"}, "requireReturn": false}],
+		"space-before-function-paren": ["error", {"named": "never"}]
 	},
 	"parserOptions": {
 		"ecmaVersion": 2019
