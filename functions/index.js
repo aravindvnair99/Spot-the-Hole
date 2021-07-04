@@ -170,14 +170,14 @@ function setCookie(idToken, res, isNewUser) {
 			.auth()
 			.verifyIdToken(idToken)
 			.then((decodedClaims) => {
-				if (isNewUser === "true") {
+				if (isNewUser == "true") {
 					res.redirect("/dashboard");
 					return console.info(
 						"\n\nNew user has been verified with\n\n",
 						JSON.stringify(decodedClaims),
 						"\n\n"
 					);
-				} else if (isNewUser === "false") {
+				} else if (isNewUser == "false") {
 					res.redirect("/dashboard");
 					return console.info(
 						"\n\nExisting user has been verified with\n\n",
@@ -221,10 +221,10 @@ app.get("/", (req, res) => {
 		res.render("index");
 	}
 });
-app.get("/comingSoon", (req, res) => {
+app.get("/comingSoon", (_req, res) => {
 	res.render("comingSoon");
 });
-app.get("/index", (req, res) => {
+app.get("/index", (_req, res) => {
 	res.render("index");
 });
 app.get("/profile", checkCookieMiddleware, (req, res) => {
@@ -555,7 +555,7 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
 	const user = Object.assign({}, req.decodedClaims);
 	console.info("\n\nAccessing uploadPotholePicture:\n\n", JSON.stringify(user), "\n\n");
 	console.log(path.join(os.tmpdir(), path.basename(req.files.file[0].originalname)));
-	pred(req, res)
+	predictPotholes(req)
 		.then(function (result) {
 			console.log(result);
 			if (result > 0.85) {
@@ -597,7 +597,7 @@ app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
  * @param {object} res Response from server
  * @returns {object} Prediction output
  */
-async function pred(req, res) {
+async function predictPotholes(req) {
 	console.log(req.files.file[0].fieldname);
 	const modelUrl =
 			"https://raw.githubusercontent.com/aravindvnair99/Spot-the-Hole/main/functions/tf_js-pothole_classification_edge/model.json",
@@ -606,11 +606,9 @@ async function pred(req, res) {
 		decodedImage = tfnode.node.decodeImage(Buffer, 3),
 		predictions = await model.classify(decodedImage);
 	console.log("classification results:", predictions);
-	console.log(predictions[0]["prob"]);
 	const promise = new Promise(function (resolve, reject) {
 		resolve(predictions[0]["prob"]);
 	});
-
 	return promise;
 }
 
