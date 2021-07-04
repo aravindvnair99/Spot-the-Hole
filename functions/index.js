@@ -13,7 +13,8 @@ const functions = require("firebase-functions"),
 	morgan = require("morgan"),
 	axios = require("axios"),
 	tfnode = require("@tensorflow/tfjs-node"),
-	automl = require("@tensorflow/tfjs-automl");
+	automl = require("@tensorflow/tfjs-automl"),
+	slowDown = require("express-slow-down");
 /* =============================================>>>>>
 
 				= init and config =
@@ -25,6 +26,13 @@ admin.initializeApp({
 	storageBucket: process.env.GCLOUD_PROJECT + ".appspot.com"
 });
 app.use(morgan("dev"));
+app.use(
+	slowDown({
+		windowMs: 15 * 60 * 1000, // 15 minutes
+		delayAfter: 100, // allow 100 requests per 15 minutes, then...
+		delayMs: 500 // begin adding 500ms of delay per request above 100
+	})
+);
 app.use(express.json());
 app.use(
 	express.urlencoded({
