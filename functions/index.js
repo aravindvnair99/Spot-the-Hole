@@ -612,10 +612,7 @@ async function predictPotholes(req) {
 		decodedImage = tfnode.node.decodeImage(Buffer, 3),
 		predictions = await model.classify(decodedImage);
 	console.log("classification results:", predictions);
-	const promise = new Promise(function (resolve, reject) {
-		resolve(predictions[0]["prob"]);
-	});
-	return promise;
+	return Promise.resolve(predictions[0]["prob"]);
 }
 
 /* =============================================>>>>>
