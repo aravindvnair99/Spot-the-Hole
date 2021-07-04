@@ -10,7 +10,6 @@ const functions = require("firebase-functions"),
 	os = require("os"),
 	fs = require("fs"),
 	vader = require("vader-sentiment"),
-	morgan = require("morgan"),
 	axios = require("axios"),
 	tfnode = require("@tensorflow/tfjs-node"),
 	automl = require("@tensorflow/tfjs-automl"),
@@ -25,7 +24,6 @@ admin.initializeApp({
 	credential: admin.credential.applicationDefault(),
 	storageBucket: process.env.GCLOUD_PROJECT + ".appspot.com"
 });
-app.use(morgan("dev"));
 app.use(
 	slowDown({
 		windowMs: 15 * 60 * 1000, // 15 minutes
