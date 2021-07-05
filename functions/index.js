@@ -325,7 +325,7 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 		potholesData;
 	const potholeData = [],
 		potholeID = [];
-	console.log(req.query.globalCode + "\n");
+	console.log(req.query.globalCode + "\n"); // Switched to location name from globalCode
 	db.collection("exactLocation")
 		.doc(req.query.globalCode)
 		.collection("potholes")
