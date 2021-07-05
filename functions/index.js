@@ -356,7 +356,8 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 			})
 			.catch((err) => {
 				console.error(
-					`\n\npotholesByLocation - error getting rating for ${req.query.globalCode}\n\n`,
+					"\n\npotholesByLocation - error getting rating for %s\n\n",
+					req.query.globalCode,
 					err,
 					"\n\n"
 				);
