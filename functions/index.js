@@ -24,6 +24,7 @@ admin.initializeApp({
 	credential: admin.credential.applicationDefault(),
 	storageBucket: process.env.GCLOUD_PROJECT + ".appspot.com"
 });
+app.enable("trust proxy");
 app.use(
 	slowDown({
 		windowMs: 15 * 60 * 1000, // 15 minutes
