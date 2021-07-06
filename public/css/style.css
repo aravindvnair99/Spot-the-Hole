@@ -4462,7 +4462,7 @@ body[data-site_mode="dark"] .preloader-background {
 	width: 14rem;
 	padding: 1em 2em;
 	position: Absolute;
-	top: 0px;
+	top: 0;
 	-webkit-transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
 	-o-transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
 	transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
@@ -4477,7 +4477,7 @@ body[data-site_mode="dark"] .preloader-background {
 	height: 14rem;
 	width: 14rem;
 	position: absolute;
-	bottom: 0em;
+	bottom: 0;
 	-webkit-transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
 	-o-transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
 	transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
@@ -4502,8 +4502,8 @@ body[data-site_mode="dark"] .preloader-background {
 /* Property Cards Hover States */
 
 .property-card:hover .property-description {
-	height: 0em;
-	padding: 0px 1em;
+	height: 0;
+	padding: 0 1em;
 }
 .property-card:hover .property-image {
 	height: 20em;
