@@ -1,6 +1,11 @@
 name: Node CI
 
-on: push
+on:
+  workflow_dispatch:
+  push:
+    paths:
+        - 'functions/**'
+        - '.github/workflows/nodejs.yml'
 
 jobs:
     lint:
