@@ -1,7 +1,8 @@
 const functions = require("firebase-functions"),
 	express = require("express"),
 	app = express(),
-	bodyParser = require("body-parser"),
+	contentType = require("content-type"),
+	getRawBody = require("raw-body"),
 	admin = require("firebase-admin"),
 	cookieParser = require("cookie-parser"),
 	Busboy = require("busboy"),
@@ -9,11 +10,10 @@ const functions = require("firebase-functions"),
 	os = require("os"),
 	fs = require("fs"),
 	vader = require("vader-sentiment"),
-	{ PredictionServiceClient } = require("@google-cloud/automl").v1,
-	morgan = require("morgan"),
-	axios = require("axios");
-
-/*=============================================>>>>>
+	axios = require("axios"),
+	tfnode = require("@tensorflow/tfjs-node"),
+	automl = require("@tensorflow/tfjs-automl");
+/* =============================================>>>>>
 
 				= init and config =
 
@@ -21,13 +21,12 @@ const functions = require("firebase-functions"),
 
 admin.initializeApp({
 	credential: admin.credential.applicationDefault(),
-	storageBucket: process.env.GCLOUD_PROJECT + ".appspot.com",
+	storageBucket: process.env.GCLOUD_PROJECT + ".appspot.com"
 });
-app.use(morgan("dev"));
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(
-	bodyParser.urlencoded({
-		extended: true,
+	express.urlencoded({
+		extended: true
 	})
 );
 app.use((req, res, next) => {
@@ -41,7 +40,7 @@ app.use((req, res, next) => {
 			{
 				length: req.headers["content-length"],
 				limit: "10mb",
-				encoding: contentType.parse(req).parameters.charset,
+				encoding: contentType.parse(req).parameters.charset
 			},
 			(err, string) => {
 				if (err) return next(err);
@@ -51,21 +50,17 @@ app.use((req, res, next) => {
 		);
 	} else {
 		next();
-		return;
 	}
 });
 
 app.use((req, res, next) => {
-	if (
-		req.method === "POST" &&
-		req.headers["content-type"].startsWith("multipart/form-data")
-	) {
+	if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
 		const busboy = new Busboy({
-			headers: req.headers,
+			headers: req.headers
 		});
 		let fileBuffer = Buffer.from("");
 		req.files = {
-			file: [],
+			file: []
 		};
 
 		busboy.on("field", (fieldname, value) => {
@@ -73,21 +68,21 @@ app.use((req, res, next) => {
 		});
 
 		busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
-			var saveTo = path.join(os.tmpdir(), path.basename(fieldname));
+			const saveTo = path.join(os.tmpdir(), path.basename(fieldname));
 			file.pipe(fs.createWriteStream(saveTo));
 			file.on("data", (data) => {
 				fileBuffer = Buffer.concat([fileBuffer, data]);
 			});
 
 			file.on("end", () => {
-				const file_object = {
+				const fileObject = {
 					fieldname,
 					originalname: filename,
 					encoding,
 					mimetype,
-					buffer: fileBuffer,
+					buffer: fileBuffer
 				};
-				req.files.file.push(file_object);
+				req.files.file.push(fileObject);
 			});
 		});
 
@@ -99,22 +94,26 @@ app.use((req, res, next) => {
 		req.pipe(busboy);
 	} else {
 		next();
-		return;
 	}
 });
 app.use(cookieParser());
 app.set("views", "./views");
 app.set("view engine", "ejs");
-const client = new PredictionServiceClient();
-const db = admin.firestore();
-const storage = admin.storage();
+const db = admin.firestore(),
+	storage = admin.storage();
 
-/*=============================================>>>>>
+/* =============================================>>>>>
 
 				= security functions =
 
 ===============================================>>>>>*/
 
+/**
+ * Checking if request is authorised and linked to user account
+ * @param {string} req Request from client
+ * @param {string} res Response from server
+ * @param {*} next Next function
+ */
 function checkCookieMiddleware(req, res, next) {
 	const sessionCookie = req.cookies.__session || "";
 	admin
@@ -125,21 +124,22 @@ function checkCookieMiddleware(req, res, next) {
 			return next();
 		})
 		.catch((error) => {
-			console.error(
-				"\n\nIn checkCookieMiddleware(), catch:\n\n",
-				error,
-				"\n\n"
-			);
+			console.error("\n\nIn checkCookieMiddleware(), catch:\n\n", error, "\n\n");
 			res.redirect("/signOut");
 		});
 }
-
+/**
+ * Set cookie for session
+ * @param {string} idToken ID Token
+ * @param {string} res Response from server
+ * @param {boolean} isNewUser New user or not
+ */
 function setCookie(idToken, res, isNewUser) {
 	const expiresIn = 60 * 60 * 24 * 7 * 1000;
 	admin
 		.auth()
 		.createSessionCookie(idToken, {
-			expiresIn,
+			expiresIn
 		})
 		.then(
 			(sessionCookie) => {
@@ -147,40 +147,35 @@ function setCookie(idToken, res, isNewUser) {
 					maxAge: expiresIn,
 					httpOnly: true,
 					secure: true,
-					SameSite: "Strict",
+					SameSite: "Strict"
 				};
 				res.cookie("__session", sessionCookie, options);
 				return verifyIdToken();
 			},
 			(error) => {
-				console.error(
-					"\n\nIn sessionCookie, catch:\n\n",
-					error,
-					"\n\n"
-				);
+				console.error("\n\nIn sessionCookie, catch:\n\n", error, "\n\n");
 				res.status(401).render("errors/401");
 			}
 		)
 		.catch((error) => {
-			console.error(
-				"\n\nIn createSessionCookie(), catch:\n\n",
-				error,
-				"\n\n"
-			);
+			console.error("\n\nIn createSessionCookie(), catch:\n\n", error, "\n\n");
 		});
+	/**
+	 * Verify the ID Token and redirect user accordingly.
+	 */
 	function verifyIdToken() {
 		admin
 			.auth()
 			.verifyIdToken(idToken)
 			.then((decodedClaims) => {
-				if (isNewUser === "true") {
+				if (isNewUser == "true") {
 					res.redirect("/dashboard");
 					return console.info(
 						"\n\nNew user has been verified with\n\n",
 						JSON.stringify(decodedClaims),
 						"\n\n"
 					);
-				} else if (isNewUser === "false") {
+				} else if (isNewUser == "false") {
 					res.redirect("/dashboard");
 					return console.info(
 						"\n\nExisting user has been verified with\n\n",
@@ -188,37 +183,30 @@ function setCookie(idToken, res, isNewUser) {
 						"\n\n"
 					);
 				} else {
-					return console.error(
-						"\n\nisNewUser param not set for\n\n",
-						JSON.stringify(decodedClaims),
-						"\n\n"
-					);
+					return console.error("\n\nisNewUser param not set for\n\n", JSON.stringify(decodedClaims), "\n\n");
 				}
 			})
 			.catch((error) => {
-				console.error(
-					"\n\nIn verifyIdToken(), catch:\n\n",
-					error,
-					"\n\n"
-				);
+				console.error("\n\nIn verifyIdToken(), catch:\n\n", error, "\n\n");
 			});
 	}
 }
-
+/**
+ * Random ID generator
+ * @param {int} length Number of characters
+ * @returns {string} Random string of given length
+ */
 function makeID(length) {
-	var result = "";
-	var characters =
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	var charactersLength = characters.length;
-	for (var i = 0; i < length; i++) {
-		result += characters.charAt(
-			Math.floor(Math.random() * charactersLength)
-		);
+	let result = "";
+	const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+		charactersLength = characters.length;
+	for (let i = 0; i < length; i++) {
+		result += characters.charAt(Math.floor(Math.random() * charactersLength));
 	}
 	return result;
 }
 
-/*=============================================>>>>>
+/* =============================================>>>>>
 
 				= basic routes =
 
@@ -228,16 +216,22 @@ app.get("/", (req, res) => {
 	if (req.cookies.__session) {
 		res.redirect("/dashboard");
 	} else {
-		res.redirect("/login");
+		res.render("index");
 	}
 });
-app.get("/comingSoon", (req, res) => {
+app.get("/comingSoon", (_req, res) => {
 	res.render("comingSoon");
 });
+app.get("/index", (_req, res) => {
+	res.render("index");
+});
 app.get("/profile", checkCookieMiddleware, (req, res) => {
-	var i = 0,
-		potholeData = new Array(),
-		potholeID = new Array();
+	let i = 0,
+		user,
+		potholesData,
+		potholesID;
+	const potholeData = [],
+		potholeID = [];
 	db.collection("users")
 		.doc(req.decodedClaims.uid)
 		.collection("potholes")
@@ -251,30 +245,25 @@ app.get("/profile", checkCookieMiddleware, (req, res) => {
 			potholesData = Object.assign({}, potholeData);
 			potholesID = Object.assign({}, potholeID);
 			user = Object.assign({}, req.decodedClaims);
-			console.info(
-				"\n\n Accessing profile:\n\n",
-				JSON.stringify(user),
-				"\n\n"
-			);
+			console.info("\n\n Accessing profile:\n\n", JSON.stringify(user), "\n\n");
 			return res.render("profile", {
 				user,
 				potholesData,
-				potholesID,
+				potholesID
 			});
 		})
 		.catch((err) => {
-			console.error(
-				"\n\nProfile - error getting potholes:\n\n",
-				err,
-				"\n\n"
-			);
+			console.error("\n\nProfile - error getting potholes:\n\n", err, "\n\n");
 			res.redirect("/login");
 		});
 });
 app.get("/dashboard", checkCookieMiddleware, (req, res) => {
-	var i = 0,
-		potholeData = new Array(),
-		potholeID = new Array();
+	let i = 0,
+		user,
+		potholesData,
+		potholesID;
+	const potholeData = [],
+		potholeID = [];
 	db.collection("users")
 		.doc(req.decodedClaims.uid)
 		.collection("potholes")
@@ -288,29 +277,23 @@ app.get("/dashboard", checkCookieMiddleware, (req, res) => {
 			potholesData = Object.assign({}, potholeData);
 			potholesID = Object.assign({}, potholeID);
 			user = Object.assign({}, req.decodedClaims);
-			console.info(
-				"\n\n Accessing dashboard:\n\n",
-				JSON.stringify(user),
-				"\n\n"
-			);
+			console.info("\n\n Accessing dashboard:\n\n", JSON.stringify(user), "\n\n");
 			return res.render("dashboard", {
 				user,
 				potholesData,
-				potholesID,
+				potholesID
 			});
 		})
 		.catch((err) => {
-			console.error(
-				"\n\nDashboard - error getting potholes:\n\n",
-				err,
-				"\n\n"
-			);
+			console.error("\n\nDashboard - error getting potholes:\n\n", err, "\n\n");
 			res.redirect("/login");
 		});
 });
 app.get("/locations", checkCookieMiddleware, (req, res) => {
-	var i = 0,
-		globalCode = new Array();
+	let i = 0,
+		user,
+		globalCodes;
+	const globalCode = [];
 	db.collection("exactLocation")
 		.get()
 		.then((snapshot) => {
@@ -320,29 +303,23 @@ app.get("/locations", checkCookieMiddleware, (req, res) => {
 			});
 			globalCodes = Object.assign({}, globalCode);
 			user = Object.assign({}, req.decodedClaims);
-			console.info(
-				"\n\n Accessing locations:\n\n",
-				JSON.stringify(user),
-				"\n\n"
-			);
-			return res.render("locations", { user, globalCodes });
+			console.info("\n\n Accessing locations:\n\n", JSON.stringify(user), "\n\n");
+			return res.render("locations", {user, globalCodes});
 		})
 		.catch((err) => {
-			console.error(
-				"\n\nLocations - error getting globalCodes:\n\n",
-				err,
-				"\n\n"
-			);
+			console.error("\n\nLocations - error getting globalCodes:\n\n", err, "\n\n");
 		});
 });
 app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
-	var i = 0,
-		potholeData = new Array(),
-		potholeID = new Array();
-	console.log("HEEEEEEEEEEEEEEEEEEEEEEERRREEEEEEEEEEEEE")
-	console.log(req.query.globalCode+"\n");
+	let i = 0,
+		user,
+		potholesID,
+		potholesData;
+	const potholeData = [],
+		potholeID = [];
+	console.log(req.query.globalCode + "\n"); // Switched to location name from globalCode
 	db.collection("exactLocation")
-		.doc(req.query.globalCode.split(" ").join(""))
+		.doc(req.query.globalCode)
 		.collection("potholes")
 		.get()
 		.then((querySnapshot) => {
@@ -354,23 +331,19 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 			potholesData = Object.assign({}, potholeData);
 			potholesID = Object.assign({}, potholeID);
 			user = Object.assign({}, req.decodedClaims);
-			console.info(
-				"\n\n Accessing potholesByLocation:\n\n",
-				JSON.stringify(user),
-				"\n\n"
-			);
+			console.info("\n\n Accessing potholesByLocation:\n\n", JSON.stringify(user), "\n\n");
 			return getRating();
 		})
 		.catch((err) => {
-			console.error(
-				"\n\npotholesByLocation - error getting potholes:\n\n",
-				err,
-				"\n\n"
-			);
+			console.error("\n\npotholesByLocation - error getting potholes:\n\n", err, "\n\n");
 		});
+	/**
+	 * Get rating for locations
+	 */
 	function getRating() {
+		let rating;
 		db.collection("exactLocation")
-			.doc(req.query.globalCode.split(" ").join(""))
+			.doc(req.query.globalCode)
 			.get()
 			.then((querySnapshot) => {
 				rating = querySnapshot.data().rating;
@@ -378,12 +351,13 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 					user,
 					potholesData,
 					potholesID,
-					rating,
+					rating
 				});
 			})
 			.catch((err) => {
 				console.error(
-					`\n\npotholesByLocation - error getting rating for ${globalCode}\n\n`,
+					"\n\npotholesByLocation - error getting rating for %s\n\n",
+					req.query.globalCode,
 					err,
 					"\n\n"
 				);
@@ -391,8 +365,10 @@ app.get("/potholesByLocation", checkCookieMiddleware, (req, res) => {
 	}
 });
 app.get("/heatmap", checkCookieMiddleware, (req, res) => {
-	var i = 0,
-		potholeData = new Array();
+	let i = 0,
+		user,
+		potholesData;
+	const potholeData = [];
 	db.collectionGroup("potholes")
 		.get()
 		.then((querySnapshot) => {
@@ -402,43 +378,35 @@ app.get("/heatmap", checkCookieMiddleware, (req, res) => {
 			});
 			potholesData = Object.assign({}, potholeData);
 			user = Object.assign({}, req.decodedClaims);
-			console.info(
-				"\n\n Accessing heatmap:\n\n",
-				JSON.stringify(user),
-				"\n\n"
-			);
+			console.info("\n\n Accessing heatmap:\n\n", JSON.stringify(user), "\n\n");
 			return getRating();
 		})
 		.catch((err) => {
-			console.error(
-				"\n\nheatmap - error getting pothole data:\n\n",
-				err,
-				"\n\n"
-			);
+			console.error("\n\nheatmap - error getting pothole data:\n\n", err, "\n\n");
 			res.send("Error getting pothole data");
 		});
+	/**
+	 * Get location rating for plotting on heatmap
+	 */
 	function getRating() {
 		db.collection("exactLocation")
 			.get()
 			.then((snapshot) => {
 				snapshot.forEach((doc) => {
-					potholeData.forEach((element) => {
-						if (element.globalCode === doc.id) {
-							element.rating = doc.data().rating;
+					potholeData.forEach((ele) => {
+						console.log(ele);
+						if (ele.locality === doc.id) {
+							ele.rating = doc.data().rating;
 						}
 					});
 				});
 				return res.render("heatmap", {
 					user,
-					potholesData,
+					potholesData
 				});
 			})
 			.catch((err) => {
-				console.error(
-					"\n\nheatmap - error getting rating:\n\n",
-					err,
-					"\n\n"
-				);
+				console.error("\n\nheatmap - error getting rating:\n\n", err, "\n\n");
 				res.send("Error getting rating");
 			});
 	}
@@ -446,25 +414,22 @@ app.get("/heatmap", checkCookieMiddleware, (req, res) => {
 app.post("/setRating", checkCookieMiddleware, (req, res) => {
 	db.collection("exactLocation")
 		.doc(req.body.globalCode)
-		.update({ rating: req.body.rating })
+		.update({rating: req.body.rating})
 		.then(res.status(200).send("Set"))
 		.catch((err) => {
-			console.error(
-				`\n\nError setting ${req.body.globalCode} to ${req.body.rating}\n\n`,
-				err
-			);
+			console.error(`\n\nError setting ${req.body.globalCode} to ${req.body.rating}\n\n`, err);
 			res.status(500).send("Error");
 		});
 });
 app.get("/offline", (req, res) => {
-	user = Object.assign({}, req.decodedClaims);
+	const user = Object.assign({}, req.decodedClaims);
 	console.info("\n\n Accessing offline:\n\n", JSON.stringify(user), "\n\n");
 	return res.render("offline", {
-		user,
+		user
 	});
 });
 
-/*=============================================>>>>>
+/* =============================================>>>>>
 
 				= legal routes =
 
@@ -480,7 +445,7 @@ app.get("/termsConditions", (req, res) => {
 	res.status(302).redirect("/FAQ");
 });
 
-/*=============================================>>>>>
+/* =============================================>>>>>
 
 			= authentication routes =
 
@@ -511,26 +476,27 @@ app.post("/onLogin", (req, res) => {
 			console.error(error);
 			res.send("/login");
 		});
+	/**
+	 * Retrieve user info
+	 * @param {object} decodedToken Decoded token
+	 */
 	function getUser(decodedToken) {
 		admin
 			.auth()
 			.getUser(decodedToken.uid)
 			.then((userRecord) => {
-				console.log(
-					"Successfully fetched user data:",
-					userRecord.toJSON()
-				);
+				console.log("Successfully fetched user data:", userRecord.toJSON());
 				if (userRecord.phoneNumber && userRecord.emailVerified) {
 					return res.send({
-						path: "/dashboard",
+						path: "/dashboard"
 					});
 				} else if (!userRecord.emailVerified) {
 					return res.send({
-						path: "/emailVerification",
+						path: "/emailVerification"
 					});
 				} else {
 					return res.send({
-						path: "/updateProfile",
+						path: "/updateProfile"
 					});
 				}
 			})
@@ -553,7 +519,7 @@ app.post("/onUpdateProfile", checkCookieMiddleware, (req, res) => {
 			phoneNumber: "+91" + req.body.phoneNumber,
 			password: req.body.password,
 			displayName: req.body.firstName + " " + req.body.lastName,
-			photoURL: req.body.photoURL,
+			photoURL: req.body.photoURL
 		})
 		.then((userRecord) => {
 			console.log("Successfully updated user", userRecord.toJSON());
@@ -564,194 +530,154 @@ app.post("/onUpdateProfile", checkCookieMiddleware, (req, res) => {
 		});
 });
 
-/*=============================================>>>>>
+/* =============================================>>>>>
 
 			= AutoML routes =
 
 ===============================================>>>>>*/
 
 app.get("/cameraCapture", checkCookieMiddleware, (req, res) => {
-	user = Object.assign({}, req.decodedClaims);
-	console.info(
-		"\n\nAccessing cameraCapture:\n\n",
-		JSON.stringify(user),
-		"\n\n"
-	);
+	const user = Object.assign({}, req.decodedClaims);
+	console.info("\n\nAccessing cameraCapture:\n\n", JSON.stringify(user), "\n\n");
 	res.render("cameraCapture", {
-		user,
+		user
 	});
 });
 app.get("/cameraCaptureRetry", checkCookieMiddleware, (req, res) => {
-	user = Object.assign({}, req.decodedClaims);
-	console.info(
-		"\n\nAccessing cameraCaptureRetry:\n\n",
-		JSON.stringify(user),
-		"\n\n"
-	);
+	const user = Object.assign({}, req.decodedClaims);
+	console.info("\n\nAccessing cameraCaptureRetry:\n\n", JSON.stringify(user), "\n\n");
 	res.render("cameraCaptureRetry", {
-		user,
+		user
 	});
 });
 app.post("/uploadPotholePicture", checkCookieMiddleware, (req, res) => {
-	user = Object.assign({}, req.decodedClaims);
-	console.info(
-		"\n\nAccessing uploadPotholePicture:\n\n",
-		JSON.stringify(user),
-		"\n\n"
-	);
-	
-		
+	const user = Object.assign({}, req.decodedClaims);
+	console.info("\n\nAccessing uploadPotholePicture:\n\n", JSON.stringify(user), "\n\n");
+	console.log(path.join(os.tmpdir(), path.basename(req.files.file[0].originalname)));
+	predictPotholes(req)
+		.then(function (result) {
+			console.log(result);
+			if (result > 0.85) {
 				storage.bucket().upload(
-					path.join(
-						os.tmpdir(),
-						path.basename(req.files.file[0].fieldname)
-					),
+					path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname)),
 					{
-						destination:
-							"potholePictures/" +
-							req.decodedClaims.uid +
-							"/" +
-							req.files.file[0].originalname,
+						destination: "potholePictures/" + req.decodedClaims.uid + "/" + req.files.file[0].fieldname,
 						public: true,
 						gzip: true,
 						resumable: false,
 						metadata: {
 							contentType: req.files.file[0].mimetype,
-							cacheControl: "public, max-age=604800",
-						},
+							cacheControl: "public, max-age=604800"
+						}
 					},
 					(err, file) => {
 						if (err) {
-							console.error(
-								"\n\nuploadPotholePicture Google Cloud Storage error:\n\n",
-								err,
-								"\n\n"
-							);
+							console.error("\n\nuploadPotholePicture Google Cloud Storage error:\n\n", err, "\n\n");
 							return;
 						}
-						console.info(
-							"\n\nGoogle Cloud Storage metadata:\n\n",
-							file.metadata
-						);
-						res.redirect(
-							"/report?image=" +
-								encodeURIComponent(file.metadata.mediaLink)
-						);
+						console.info("\n\nGoogle Cloud Storage metadata:\n\n", file.metadata);
+						res.redirect("/report?image=" + encodeURIComponent(file.metadata.mediaLink));
 					}
 				);
-			
-		
-		
+			} else {
+				res.redirect("/cameraCaptureRetry");
+			}
+		})
+		.catch((error) => {
+			if (error.code === 9) {
+				res.status(503).render("errors/modelNotDeployed");
+			}
+			console.error("\n\nuploadPotholePicture error:\n\n", error, "\n\n");
+		});
 });
+/**
+ * Predict if pothole or not using local AutoML
+ * @param {object} req Request from client
+ * @param {object} res Response from server
+ * @returns {object} Prediction output
+ */
+async function predictPotholes(req) {
+	console.log(req.files.file[0].fieldname);
+	const modelUrl =
+			"https://raw.githubusercontent.com/aravindvnair99/Spot-the-Hole/main/functions/tf_js-pothole_classification_edge/model.json",
+		model = await automl.loadImageClassification(modelUrl),
+		Buffer = await fs.readFileSync(path.join(os.tmpdir(), path.basename(req.files.file[0].fieldname)), ""),
+		decodedImage = tfnode.node.decodeImage(Buffer, 3),
+		predictions = await model.classify(decodedImage);
+	console.log("classification results:", predictions);
+	return Promise.resolve(predictions[0]["prob"]);
+}
 
-/*=============================================>>>>>
+/* =============================================>>>>>
 
 				= Report =
 
 ===============================================>>>>>*/
 app.get("/report", checkCookieMiddleware, (req, res) => {
-	user = Object.assign({}, req.decodedClaims);
-	console.info(
-		"\n\nAccessing report page for :",
-		req.query.image,
-		" by:\n\n",
-		JSON.stringify(user),
-		"\n\n"
-	);
+	const user = Object.assign({}, req.decodedClaims);
+	console.info("\n\nAccessing report page for :", req.query.image, " by:\n\n", JSON.stringify(user), "\n\n");
 	res.render("report", {
 		pothole: req.query.image,
-		user,
+		user
 	});
 });
 app.post("/submitReport", checkCookieMiddleware, (req, res) => {
-	console.info(
-		`\n\nLatitude received from user is ${req.body.latitude} and longitude is ${req.body.longitude}\n\n`
-	);
+	console.info(`\n\nLatitude received from user is ${req.body.latitude} and longitude is ${req.body.longitude}\n\n`);
 	axios
 		.post("https://maps.googleapis.com/maps/api/geocode/json", null, {
 			params: {
 				latlng: `${req.body.latitude},${req.body.longitude}`,
-				key: "AIzaSyB1x605iH6saTC_1U8L1VMwdWbNsEIIZj8",
-			},
+				key: "AIzaSyB1x605iH6saTC_1U8L1VMwdWbNsEIIZj8"
+			}
 		})
 		.then((response) => {
-			var obj = {};
-			console.info(
-				"\n\nGoogle Maps Geocoding Response:\n\n",
-				response.data.results[0],
-				"\n\n"
-			);
-			response.data.results[0].address_components.forEach((element) => {
-				if (
-					element.types[0] === "street_address" ||
-					element.types[1] === "street_address"
-				)
-					obj.street_address = element.long_name;
-				else if (
-					element.types[0] === "route" ||
-					element.types[1] === "route"
-				)
-					obj.route = element.long_name;
-				else if (
-					element.types[0] === "intersection" ||
-					element.types[1] === "intersection"
-				)
-					obj.intersection = element.long_name;
-				else if (
-					element.types[0] === "administrative_area_level_5" ||
-					element.types[1] === "administrative_area_level_5"
-				)
-					obj.administrative_area_level_5 = element.long_name;
-				else if (
-					element.types[0] === "administrative_area_level_4" ||
-					element.types[1] === "administrative_area_level_4"
-				)
-					obj.administrative_area_level_4 = element.long_name;
-				else if (
-					element.types[0] === "administrative_area_level_3" ||
-					element.types[1] === "administrative_area_level_3"
-				)
-					obj.administrative_area_level_3 = element.long_name;
-				else if (
-					element.types[0] === "administrative_area_level_2" ||
-					element.types[1] === "administrative_area_level_2"
-				)
-					obj.administrative_area_level_2 = element.long_name;
-				else if (
-					element.types[0] === "administrative_area_level_1" ||
-					element.types[1] === "administrative_area_level_1"
-				)
-					obj.administrative_area_level_1 = element.long_name;
-				else if (
-					element.types[0] === "locality" ||
-					element.types[1] === "locality"
-				)
-					obj.locality = element.long_name;
-				else if (
-					element.types[0] === "sublocality" ||
-					element.types[1] === "sublocality"
-				)
-					obj.sublocality = element.long_name;
-				else if (
-					element.types[0] === "neighborhood" ||
-					element.types[1] === "neighborhood"
-				)
-					obj.neighborhood = element.long_name;
-				else if (
-					element.types[0] === "premise" ||
-					element.types[1] === "premise"
-				)
-					obj.premise = element.long_name;
-				else if (
-					element.types[0] === "subpremise" ||
-					element.types[1] === "subpremise"
-				)
-					obj.subpremise = element.long_name;
-				else if (
-					element.types[0] === "postal_code" ||
-					element.types[1] === "postal_code"
-				)
-					obj.postal_code = element.long_name;
+			const obj = {};
+			console.info("\n\nGoogle Maps Geocoding Response:\n\n", response.data.results[0], "\n\n");
+			response.data.results[0].address_components.forEach((ele) => {
+				if (ele.types[0] === "street_address" || ele.types[1] === "street_address") {
+					obj.street_address = ele.long_name;
+				} else if (ele.types[0] === "route" || ele.types[1] === "route") {
+					obj.route = ele.long_name;
+				} else if (ele.types[0] === "intersection" || ele.types[1] === "intersection") {
+					obj.intersection = ele.long_name;
+				} else if (
+					ele.types[0] === "administrative_area_level_5" ||
+					ele.types[1] === "administrative_area_level_5"
+				) {
+					obj.administrative_area_level_5 = ele.long_name;
+				} else if (
+					ele.types[0] === "administrative_area_level_4" ||
+					ele.types[1] === "administrative_area_level_4"
+				) {
+					obj.administrative_area_level_4 = ele.long_name;
+				} else if (
+					ele.types[0] === "administrative_area_level_3" ||
+					ele.types[1] === "administrative_area_level_3"
+				) {
+					obj.administrative_area_level_3 = ele.long_name;
+				} else if (
+					ele.types[0] === "administrative_area_level_2" ||
+					ele.types[1] === "administrative_area_level_2"
+				) {
+					obj.administrative_area_level_2 = ele.long_name;
+				} else if (
+					ele.types[0] === "administrative_area_level_1" ||
+					ele.types[1] === "administrative_area_level_1"
+				) {
+					obj.administrative_area_level_1 = ele.long_name;
+				} else if (ele.types[0] === "locality" || ele.types[1] === "locality") {
+					obj.locality = ele.long_name;
+				} else if (ele.types[0] === "sublocality" || ele.types[1] === "sublocality") {
+					obj.sublocality = ele.long_name;
+				} else if (ele.types[0] === "neighborhood" || ele.types[1] === "neighborhood") {
+					obj.neighborhood = ele.long_name;
+				} else if (ele.types[0] === "premise" || ele.types[1] === "premise") {
+					obj.premise = ele.long_name;
+				} else if (ele.types[0] === "subpremise" || ele.types[1] === "subpremise") {
+					obj.subpremise = ele.long_name;
+				} else if (ele.types[0] === "postal_code" || ele.types[1] === "postal_code") {
+					obj.postal_code = ele.long_name;
+				}
 			});
 			obj.completeAddress = response.data.results[0].formatted_address;
 			obj.placeID = response.data.results[0].place_id;
@@ -760,35 +686,17 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 			obj.image = req.body.imageURL;
 			obj.description = req.body.description;
 			obj.globalCode = response.data.plus_code.global_code;
-			obj.neg =
-				vader.SentimentIntensityAnalyzer.polarity_scores(
-					req.body.description
-				).neg * 100;
-			var ID = makeID(36);
+			obj.neg = vader.SentimentIntensityAnalyzer.polarity_scores(req.body.description).neg * 100;
+			const ID = makeID(36);
 			db.collection("users").doc(req.decodedClaims.uid).set({
-				uid: req.decodedClaims.uid,
+				uid: req.decodedClaims.uid
 			});
-			db.collection("users")
-				.doc(req.decodedClaims.uid)
-				.collection("potholes")
-				.doc(ID)
-				.set(obj);
-			var locationTag;
-			locationTag = obj.completeAddress.split(' ').join('');
-			if(obj.completeAddress.includes("/"))
-			{
-				locationTag = obj.completeAddress.split('/').join('');
-			}
-			
-			db.collection("exactLocation").doc(locationTag).set({
-				globalcode: obj.globalCode,
-				rating: 50,
+			db.collection("users").doc(req.decodedClaims.uid).collection("potholes").doc(ID).set(obj);
+			db.collection("exactLocation").doc(obj.locality).set({
+				globalCode: obj.globalCode,
+				rating: 50
 			});
-			db.collection("exactLocation")
-				.doc(locationTag)
-				.collection("potholes")
-				.doc(ID)
-				.set(obj);
+			db.collection("exactLocation").doc(obj.locality).collection("potholes").doc(ID).set(obj);
 
 			return res.redirect("/dashboard");
 		})
@@ -797,7 +705,7 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 			res.send("Error");
 		});
 });
-/*=============================================>>>>>
+/* =============================================>>>>>
 
 				= Coming Soon =
 
@@ -807,7 +715,7 @@ app.get("/notifications", checkCookieMiddleware, (req, res) => {
 	res.status(302).redirect("/comingSoon");
 });
 
-/*=============================================>>>>>
+/* =============================================>>>>>
 
 				= errors =
 

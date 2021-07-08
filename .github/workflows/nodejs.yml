@@ -1,23 +1,30 @@
 name: Node CI
 
-on: push
+on:
+  workflow_dispatch:
+  push:
+    paths:
+        - 'functions/**'
+        - '.github/workflows/nodejs.yml'
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x]
-    steps:
-    - uses: actions/checkout@main
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@main
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Lint
-      run: |
-        cd functions/
-        npm ci
-        npm run lint
-      env:
-        CI: true
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@main
+            - name: Setup Node.js 14
+              uses: actions/setup-node@main
+              with:
+                  node-version: v14.x
+            - name: Install Dependencies
+              run: |
+                  cd functions/
+                  sudo npm i -g npm
+                  npm ci
+            - name: Lint
+              run: |
+                  cd functions/
+                  npm run lint
+              env:
+                  CI: true
