@@ -24,7 +24,7 @@
 		"node": "14"
 	},
 	"dependencies": {
-		"@tensorflow/tfjs-automl": "^1.2.0",
+		"@tensorflow/tfjs-automl": "^1.3.0",
 		"@tensorflow/tfjs-converter": "^3.9.0",
 		"@tensorflow/tfjs-core": "^3.8.0",
 		"@tensorflow/tfjs-node": "^3.9.0",
