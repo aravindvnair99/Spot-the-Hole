@@ -14,7 +14,9 @@ const functions = require("firebase-functions"),
 	tfnode = require("@tensorflow/tfjs-node"),
 	automl = require("@tensorflow/tfjs-automl");
 /* =============================================>>>>>
+
 				= init and config =
+
 ===============================================>>>>>*/
 
 admin.initializeApp({
@@ -101,7 +103,9 @@ const db = admin.firestore(),
 	storage = admin.storage();
 
 /* =============================================>>>>>
+
 				= security functions =
+
 ===============================================>>>>>*/
 
 /**
@@ -203,7 +207,9 @@ function makeID(length) {
 }
 
 /* =============================================>>>>>
+
 				= basic routes =
+
 ===============================================>>>>>*/
 
 app.get("/", (req, res) => {
@@ -424,7 +430,9 @@ app.get("/offline", (req, res) => {
 });
 
 /* =============================================>>>>>
+
 				= legal routes =
+
 ===============================================>>>>>*/
 
 app.get("/FAQ", (req, res) => {
@@ -438,7 +446,9 @@ app.get("/termsConditions", (req, res) => {
 });
 
 /* =============================================>>>>>
+
 			= authentication routes =
+
 ===============================================>>>>>*/
 
 app.get("/login", (req, res) => {
@@ -521,7 +531,9 @@ app.post("/onUpdateProfile", checkCookieMiddleware, (req, res) => {
 });
 
 /* =============================================>>>>>
+
 			= AutoML routes =
+
 ===============================================>>>>>*/
 
 app.get("/cameraCapture", checkCookieMiddleware, (req, res) => {
@@ -597,7 +609,9 @@ async function predictPotholes(req) {
 }
 
 /* =============================================>>>>>
+
 				= Report =
+
 ===============================================>>>>>*/
 app.get("/report", checkCookieMiddleware, (req, res) => {
 	const user = Object.assign({}, req.decodedClaims);
@@ -692,7 +706,9 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 		});
 });
 /* =============================================>>>>>
+
 				= Coming Soon =
+
 ===============================================>>>>>*/
 
 app.get("/notifications", checkCookieMiddleware, (req, res) => {
@@ -700,7 +716,9 @@ app.get("/notifications", checkCookieMiddleware, (req, res) => {
 });
 
 /* =============================================>>>>>
+
 				= errors =
+
 ===============================================>>>>>*/
 
 app.use((req, res) => {
