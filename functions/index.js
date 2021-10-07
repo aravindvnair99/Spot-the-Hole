@@ -168,14 +168,14 @@ function setCookie(idToken, res, isNewUser) {
 			.auth()
 			.verifyIdToken(idToken)
 			.then((decodedClaims) => {
-				if (isNewUser == "true") {
+				if (isNewUser === "true") {
 					res.redirect("/dashboard");
 					return console.info(
 						"\n\nNew user has been verified with\n\n",
 						JSON.stringify(decodedClaims),
 						"\n\n"
 					);
-				} else if (isNewUser == "false") {
+				} else if (isNewUser === "false") {
 					res.redirect("/dashboard");
 					return console.info(
 						"\n\nExisting user has been verified with\n\n",
