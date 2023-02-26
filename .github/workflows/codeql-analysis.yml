@@ -1,6 +1,7 @@
 name: "CodeQL"
 
 on:
+  push:
   pull_request:
   schedule:
     - cron: '20 17 * * 1'
@@ -30,6 +31,9 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@main
       with:
-        languages: javascript
+        languages: ${{ matrix.language }}
+        queries: security-and-quality
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@main
+      with:
+        category: "/language:${{matrix.language}}"
