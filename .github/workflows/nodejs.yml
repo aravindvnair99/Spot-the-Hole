@@ -29,3 +29,34 @@ jobs:
                   npm run lint
               env:
                   CI: true
+    
+    deploy:
+        runs-on: ubuntu-latest
+        needs: lint # Only run deploy if lint job succeeds
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' # Only deploy on push to main
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@main
+            - name: Setup Node.js 14
+              uses: actions/setup-node@main
+              with:
+                  node-version: v14.x
+            
+            - name: Run backend tests
+              working-directory: ./functions
+              run: |
+                  npm install
+                  npm test
+            
+            - name: Deploy to Firebase Functions
+              if: success() # Explicitly run only if previous steps (including tests) succeed
+              uses: w9jds/firebase-action@master # Using a common firebase action, replace if different
+              with:
+                  args: deploy --only functions
+              env:
+                  FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }} # Assumes FIREBASE_TOKEN is set in GitHub secrets
+                  PROJECT_ID: ${{ secrets.PROJECT_ID }} # Assumes PROJECT_ID is set for firebase-tools, or configured in .firebaserc
+                  # Or use specific service account for deployment if preferred:
+                  # FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+[end of .github/workflows/nodejs.yml]
