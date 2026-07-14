@@ -445,6 +445,9 @@ app.get("/privacyPolicy", (req, res) => {
 app.get("/termsConditions", (req, res) => {
 	res.status(302).redirect("/FAQ");
 });
+app.get("/ToS", (req, res) => {
+	res.status(302).redirect("/FAQ");
+});
 
 /* =============================================>>>>>
 
@@ -628,7 +631,7 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 		.post("https://maps.googleapis.com/maps/api/geocode/json", null, {
 			params: {
 				latlng: `${req.body.latitude},${req.body.longitude}`,
-				key: "AIzaSyB1x605iH6saTC_1U8L1VMwdWbNsEIIZj8"
+				key: process.env.Google_Maps_key_for_Firebase_Functions
 			}
 		})
 		.then((response) => {
@@ -726,4 +729,6 @@ app.use((req, res) => {
 	res.status(404).render("errors/404");
 });
 
-exports.app = functions.https.onRequest(app);
+exports.app = functions.runWith({
+	secrets: ["Google_Maps_key_for_Firebase_Functions"]
+}).https.onRequest(app);
