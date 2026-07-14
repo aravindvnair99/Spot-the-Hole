@@ -55,7 +55,7 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
 	if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
-		const busboy = new Busboy({
+		const busboy = Busboy({
 			headers: req.headers
 		});
 		let fileBuffer = Buffer.from("");
@@ -67,8 +67,9 @@ app.use((req, res, next) => {
 			req.body[fieldname] = value;
 		});
 
-		busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
-			const saveTo = path.join(os.tmpdir(), path.basename(fieldname));
+		busboy.on("file", (fieldname, file, info) => {
+			const { filename, encoding, mimeType } = info,
+				saveTo = path.join(os.tmpdir(), path.basename(fieldname));
 			file.pipe(fs.createWriteStream(saveTo));
 			file.on("data", (data) => {
 				fileBuffer = Buffer.concat([fileBuffer, data]);
@@ -79,7 +80,7 @@ app.use((req, res, next) => {
 					fieldname,
 					originalname: filename,
 					encoding,
-					mimetype,
+					mimetype: mimeType,
 					buffer: fileBuffer
 				};
 				req.files.file.push(fileObject);
