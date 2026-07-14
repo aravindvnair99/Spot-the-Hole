@@ -1,1 +1,62 @@
-###### This is a sample app. Privacy Policy comes here. ######
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Privacy Policy | Spot the Hole</title>
+		<meta property="og:title" content="Privacy Policy | Spot the Hole" />
+		<meta
+			name="description"
+			content="We care about your privacy!"
+		/>
+		<meta
+			property="og:description"
+			content="We care about your privacy!"
+		/>
+		<meta property="og:url" content="https://spot-the-hole.web.app/privacyPolicy" />
+		<%- include('../components/meta') -%> <%-
+		include('../components/corecss') -%>
+	</head>
+	<body
+		class="html"
+		data-header="light"
+		data-footer="dark"
+		data-header_align="center"
+		data-menu_type="left"
+		data-menu="light"
+		data-menu_icons="on"
+		data-footer_type="left"
+		data-site_mode="light"
+		data-footer_menu="show"
+		data-footer_menu_style="light"
+	>
+		<div class="preloader-background">
+			<div class="preloader-wrapper">
+				<div id="preloader"></div>
+			</div>
+		</div>
+		<%- include('../components/headerMenu') -%> <%-
+		include('../components/customisation') -%>
+		<div class="container">
+			<div class="section">
+				<h5 class="pagetitle">Privacy Policy</h5>
+				<p>
+					We care about your privacy. Please read our Privacy Policy carefully.
+				</p>
+				<div class="divider"></div>
+			</div>
+		</div>
+		<div class="container">
+			<div class="section" style="font-size: 16px; line-height: 1.8;">
+				<p>
+					Spot the Hole collects your Google profile information (name, email, profile picture) when you authenticate using Google Sign-In. We also collect the pothole reports you submit, including the uploaded images, geocoded locations, and descriptions.
+				</p>
+				<p>
+					This data is stored securely in Firebase/Google Cloud Platform and is used solely to display reported potholes on the map and dashboard. We do not sell or share your personal data with third parties.
+				</p>
+			</div>
+		</div>
+		<%- include('../components/footer') -%> <%-
+		include('../components/backtotop') -%> <%-
+		include('../components/footerMenu') -%> <%- include('../components/pwa')
+		-%> <%- include('../components/corejs') -%>
+	</body>
+</html>

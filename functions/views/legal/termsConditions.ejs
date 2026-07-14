@@ -1,1 +1,62 @@
-###### This is a sample app. Terms and conditions comes here. ######
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Terms and Conditions | Spot the Hole</title>
+		<meta property="og:title" content="Terms and Conditions | Spot the Hole" />
+		<meta
+			name="description"
+			content="Terms and Conditions for Spot the Hole"
+		/>
+		<meta
+			property="og:description"
+			content="Terms and Conditions for Spot the Hole"
+		/>
+		<meta property="og:url" content="https://spot-the-hole.web.app/termsConditions" />
+		<%- include('../components/meta') -%> <%-
+		include('../components/corecss') -%>
+	</head>
+	<body
+		class="html"
+		data-header="light"
+		data-footer="dark"
+		data-header_align="center"
+		data-menu_type="left"
+		data-menu="light"
+		data-menu_icons="on"
+		data-footer_type="left"
+		data-site_mode="light"
+		data-footer_menu="show"
+		data-footer_menu_style="light"
+	>
+		<div class="preloader-background">
+			<div class="preloader-wrapper">
+				<div id="preloader"></div>
+			</div>
+		</div>
+		<%- include('../components/headerMenu') -%> <%-
+		include('../components/customisation') -%>
+		<div class="container">
+			<div class="section">
+				<h5 class="pagetitle">Terms and Conditions</h5>
+				<p>
+					Please read our Terms and Conditions carefully.
+				</p>
+				<div class="divider"></div>
+			</div>
+		</div>
+		<div class="container">
+			<div class="section" style="font-size: 16px; line-height: 1.8;">
+				<p>
+					By using Spot the Hole, you agree to use the service only for reporting legitimate road pothole issues. You must not upload any copyrighted, offensive, or malicious images or text.
+				</p>
+				<p>
+					We reserve the right to remove any reports or user accounts that violate these terms. The service is provided "as is" without warranties of any kind.
+				</p>
+			</div>
+		</div>
+		<%- include('../components/footer') -%> <%-
+		include('../components/backtotop') -%> <%-
+		include('../components/footerMenu') -%> <%- include('../components/pwa')
+		-%> <%- include('../components/corejs') -%>
+	</body>
+</html>

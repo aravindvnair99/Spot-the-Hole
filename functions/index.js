@@ -440,13 +440,13 @@ app.get("/FAQ", (req, res) => {
 	res.render("legal/FAQ");
 });
 app.get("/privacyPolicy", (req, res) => {
-	res.status(302).redirect("/FAQ");
+	res.render("legal/privacyPolicy");
 });
 app.get("/termsConditions", (req, res) => {
-	res.status(302).redirect("/FAQ");
+	res.render("legal/termsConditions");
 });
 app.get("/ToS", (req, res) => {
-	res.status(302).redirect("/FAQ");
+	res.status(302).redirect("/termsConditions");
 });
 
 /* =============================================>>>>>
