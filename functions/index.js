@@ -628,7 +628,7 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 		.post("https://maps.googleapis.com/maps/api/geocode/json", null, {
 			params: {
 				latlng: `${req.body.latitude},${req.body.longitude}`,
-				key: "AIza" + "SyB1x605iH6saTC_1U8L1VMwdWbNsEIIZj8"
+				key: "AIzaSyB1x605iH6saTC_1U8L1VMwdWbNsEIIZj8"
 			}
 		})
 		.then((response) => {
