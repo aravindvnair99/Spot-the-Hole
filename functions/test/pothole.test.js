@@ -31,7 +31,7 @@ if (!admin.apps.length) {
 // Require the Express app from index.js
 // IMPORTANT: If makeID is truly global and defined in index.js, its direct mocking is hard.
 // We will stub it on `app.locals` if it's exposed there, or proceed without deterministic ID.
-const app = require('../index').app; 
+const app = require('../index').app;
 // Let's assume makeID is available via app.locals for robust stubbing.
 // If not, this stub won't work as intended.
 // const makeIDOriginal = app.locals.makeID; // Example if it were on app.locals
@@ -56,11 +56,11 @@ describe('POST /uploadPotholePicture', () => {
   beforeEach(() => {
     verifySessionCookieStub = sinon.stub(admin.auth(), 'verifySessionCookie');
     decodeImageStub = sinon.stub(tfnode.node, 'decodeImage');
-    
+
     mockModel = { classify: sinon.stub() };
     classifyStub = mockModel.classify;
     loadImageClassificationStub = sinon.stub(automl, 'loadImageClassification').resolves(mockModel);
-    
+
     const mockBucket = { upload: sinon.stub() };
     sinon.stub(admin.storage(), 'bucket').returns(mockBucket);
     bucketUploadStub = mockBucket.upload;
@@ -93,7 +93,7 @@ describe('POST /uploadPotholePicture', () => {
   it('should upload image and redirect to /report if prediction > 0.85', (done) => {
     verifySessionCookieStub.resolves(mockDecodedClaims);
     readFileSyncStub.withArgs(mockTmpFilePath).returns(Buffer.from('dummy image data'));
-    decodeImageStub.returns(sinon.stub()); 
+    decodeImageStub.returns(sinon.stub());
     classifyStub.resolves([{ prob: 0.9, className: 'Pothole' }]);
 
     const mockMediaLink = 'https://storage.googleapis.com/mock-bucket/mock-image.jpg';
@@ -155,8 +155,8 @@ describe('POST /uploadPotholePicture', () => {
     const modelError = new Error('Model not found'); modelError.code = 9;
     loadImageClassificationStub.rejects(modelError);
 
-    app.set('view engine', 'ejs'); 
-    app.set('views', './views');  
+    app.set('view engine', 'ejs');
+    app.set('views', './views');
 
     request(app)
       .post('/uploadPotholePicture')
@@ -172,7 +172,7 @@ describe('POST /uploadPotholePicture', () => {
         done();
       });
   });
-  
+
   it('should not redirect to /report and log error if GCS upload fails', (done) => {
     verifySessionCookieStub.resolves(mockDecodedClaims);
     readFileSyncStub.withArgs(mockTmpFilePath).returns(Buffer.from('dummy image data'));
@@ -190,12 +190,12 @@ describe('POST /uploadPotholePicture', () => {
       .post('/uploadPotholePicture')
       .attach('file', dummyImagePath, 'test-image.jpg')
       .set('Cookie', '__session=validMockSessionCookie')
-      .expect((res) => { 
+      .expect((res) => {
         if (res.status === 302 && res.headers.location.startsWith('/report')) {
           throw new Error('Should not redirect to /report on GCS error');
         }
       })
-      .end((err, res) => { 
+      .end((err, res) => {
         expect(verifySessionCookieStub.calledOnce).to.be.true;
         expect(classifyStub.calledOnce).to.be.true;
         expect(bucketUploadStub.calledOnce).to.be.true;
@@ -220,7 +220,7 @@ describe('POST /submitReport', () => {
   beforeEach(() => {
     verifySessionCookieStub = sinon.stub(admin.auth(), 'verifySessionCookie');
     axiosPostStub = sinon.stub(axios, 'post');
-    
+
     // Mock Firestore
     const mockDoc = { set: sinon.stub().resolves() };
     const mockCollection = { doc: sinon.stub().returns(mockDoc) };
@@ -305,9 +305,9 @@ describe('POST /submitReport', () => {
         // Verify axios URL and params (key might be from process.env, check actual implementation)
         const expectedMapsUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${reportData.latitude},${reportData.longitude}&key=${process.env.GOOGLE_MAPS_API_KEY_PROD}`;
         expect(axiosPostStub.getCall(0).args[0]).to.equal(expectedMapsUrl);
-        
+
         expect(sentimentPolarityScoresStub.calledOnceWith(reportData.description)).to.be.true;
-        
+
         // Assert Firestore calls
         // Path 1: users/<uid>/potholes/<generated_id>
         expect(firestoreSetStub.getCall(0).thisValue.parent.parent.path).to.equal(`users/${mockUid}/potholes`);
@@ -337,7 +337,7 @@ describe('POST /submitReport', () => {
         const exactLocationPotholeCall = firestoreSetStub.getCalls().find(call => call.thisValue.parent.parent.path === `exactLocation/Test City/potholes`);
         expect(exactLocationPotholeCall.thisValue.id).to.equal(fixedPotholeId);
         // (data is similar, can add checks)
-        
+
         // Call for `locality/<locality>`
         const localityCountCall = firestoreSetStub.getCalls().find(call => call.thisValue.parent.path === 'locality');
         expect(localityCountCall.thisValue.id).to.equal('Test City');
@@ -345,7 +345,7 @@ describe('POST /submitReport', () => {
         expect(localityCountCall.args[1]).to.deep.equal({ merge: true });
 
         expect(firestoreSetStub.callCount).to.equal(4); // users/.../potholes, potholes/, exactLocation/.../potholes, locality/
-        
+
         expect(res.headers.location).to.equal('/dashboard');
         done();
       });
@@ -372,7 +372,7 @@ describe('POST /submitReport', () => {
 
   it('should return "Error" if Firestore set fails for user pothole', (done) => {
     verifySessionCookieStub.resolves(mockDecodedClaims);
-    axiosPostStub.resolves({ /* ... successful maps response ... */ 
+    axiosPostStub.resolves({ /* ... successful maps response ... */
         data: {
             results: [{ address_components: [{ types: ['locality'], long_name: 'Test City' }] }],
             plus_code: { global_code: '7MVRCFMX+QG' },

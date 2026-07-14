@@ -13,7 +13,7 @@ if (!admin.apps.length) {
 
 // Require the Express app from index.js
 // Ensure this path is correct based on your project structure
-const app = require('../index').app; 
+const app = require('../index').app;
 
 describe('POST /onUpdateProfile', () => {
   let updateUserStub;
@@ -62,7 +62,7 @@ describe('POST /onUpdateProfile', () => {
       .expect(302) // Expecting a redirect
       .end((err, res) => {
         if (err) return done(err);
-        
+
         expect(verifySessionCookieStub.calledOnce).to.be.true;
         expect(updateUserStub.calledOnceWith(mockUid, {
           phoneNumber: validUpdateData.phoneNumber,
@@ -78,7 +78,7 @@ describe('POST /onUpdateProfile', () => {
   it('should redirect to /signOut if user is unauthenticated', (done) => {
     // Simulate unauthenticated user via checkCookieMiddleware
     verifySessionCookieStub.rejects(new Error('Session cookie verification failed'));
-    
+
     request(app)
       .post('/onUpdateProfile')
       .send(validUpdateData)
@@ -126,7 +126,7 @@ describe('POST /onUpdateProfile', () => {
           displayName: `${validUpdateData.firstName} ${validUpdateData.lastName}`,
           photoURL: validUpdateData.photoURL,
         })).to.be.true;
-        
+
         // expect(consoleErrorSpy.calledWith('Error updating user:', updateUserError)).to.be.true; // Check if error was logged
         // consoleErrorSpy.restore();
 

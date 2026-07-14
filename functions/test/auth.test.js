@@ -127,7 +127,7 @@ describe('GET /sessionLogin', () => {
       verifyIdTokenStub.withArgs(idTokenForCreateCookieFailure).resolves(mockDecodedClaims);
       // Mock createSessionCookie to reject
       createSessionCookieStub.withArgs(idTokenForCreateCookieFailure, { expiresIn }).rejects(new Error('Session cookie creation failed (mocked)'));
-      
+
       app.set('view engine', 'ejs');
       app.set('views', './views');
 
