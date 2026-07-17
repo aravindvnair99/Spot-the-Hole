@@ -55,7 +55,7 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
 	if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
-		const busboy = new Busboy({
+		const busboy = Busboy({
 			headers: req.headers
 		});
 		let fileBuffer = Buffer.from("");
@@ -67,8 +67,9 @@ app.use((req, res, next) => {
 			req.body[fieldname] = value;
 		});
 
-		busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
-			const saveTo = path.join(os.tmpdir(), path.basename(fieldname));
+		busboy.on("file", (fieldname, file, info) => {
+			const { filename, encoding, mimeType } = info,
+				saveTo = path.join(os.tmpdir(), path.basename(fieldname));
 			file.pipe(fs.createWriteStream(saveTo));
 			file.on("data", (data) => {
 				fileBuffer = Buffer.concat([fileBuffer, data]);
@@ -79,7 +80,7 @@ app.use((req, res, next) => {
 					fieldname,
 					originalname: filename,
 					encoding,
-					mimetype,
+					mimetype: mimeType,
 					buffer: fileBuffer
 				};
 				req.files.file.push(fileObject);
@@ -439,10 +440,13 @@ app.get("/FAQ", (req, res) => {
 	res.render("legal/FAQ");
 });
 app.get("/privacyPolicy", (req, res) => {
-	res.status(302).redirect("/FAQ");
+	res.render("legal/privacyPolicy");
 });
 app.get("/termsConditions", (req, res) => {
-	res.status(302).redirect("/FAQ");
+	res.render("legal/termsConditions");
+});
+app.get("/ToS", (req, res) => {
+	res.status(302).redirect("/termsConditions");
 });
 
 /* =============================================>>>>>
@@ -627,7 +631,7 @@ app.post("/submitReport", checkCookieMiddleware, (req, res) => {
 		.post("https://maps.googleapis.com/maps/api/geocode/json", null, {
 			params: {
 				latlng: `${req.body.latitude},${req.body.longitude}`,
-				key: "AIzaSyB1x605iH6saTC_1U8L1VMwdWbNsEIIZj8"
+				key: process.env.Google_Maps_key_for_Firebase_Functions
 			}
 		})
 		.then((response) => {
@@ -725,4 +729,6 @@ app.use((req, res) => {
 	res.status(404).render("errors/404");
 });
 
-exports.app = functions.https.onRequest(app);
+exports.app = functions.runWith({
+	secrets: ["Google_Maps_key_for_Firebase_Functions"]
+}).https.onRequest(app);

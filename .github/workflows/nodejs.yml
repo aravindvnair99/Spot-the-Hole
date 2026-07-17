@@ -14,10 +14,10 @@ jobs:
         steps:
             - name: Checkout repository
               uses: actions/checkout@main
-            - name: Setup Node.js 14
+            - name: Setup Node.js 22
               uses: actions/setup-node@main
               with:
-                  node-version: v14.x
+                  node-version: v22.x
             - name: Install Dependencies
               run: |
                   cd functions/
