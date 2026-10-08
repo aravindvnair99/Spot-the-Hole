@@ -31,7 +31,7 @@
 		"axios": "^1.19.0",
 		"busboy": "^1.6.0",
 		"cookie-parser": "^1.4.6",
-		"ejs": "^3.1.7",
+		"ejs": "^7.0.1",
 		"firebase-admin": "^14.3.0",
 		"firebase-functions": "^4.2.1",
 		"vader-sentiment": "^1.1.3"
